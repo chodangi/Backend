@@ -9,13 +9,20 @@ spring:
     username: admin
     password: zhxjf123
   jpa:
+#    hibernate:
+#      #ddl-auto: none
+#      ddl-auto: create
+#    properties:
+#      hibernate:
+#        # show_sql: true
+#        format_sql: true
+  database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    open-in-view: false
+    show-sql: true
     hibernate:
-      #ddl-auto: none
+      format_sql: true
       ddl-auto: create
-    properties:
-      hibernate:
-        # show_sql: true
-        format_sql: true
+
 logging.level:
   org.hibernate.SQL: debug
 

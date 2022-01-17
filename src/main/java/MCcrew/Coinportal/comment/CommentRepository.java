@@ -1,0 +1,52 @@
+package MCcrew.Coinportal.comment;
+
+import MCcrew.Coinportal.domain.Comment;
+import MCcrew.Coinportal.domain.Post;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
+@Repository
+@Transactional
+public class CommentRepository {
+
+    private final EntityManager em;
+
+    @Autowired
+    public CommentRepository(EntityManager em) {
+        this.em = em;
+    }
+
+    /*
+         댓글 저장
+     */
+    public Comment save(Comment comment) {
+        if(comment.getId() == null){
+            em.persist(comment);
+            return comment;
+        }
+        else{
+            em.merge(comment);
+            return comment;
+        }
+    }
+
+    /*
+        댓글 찾기
+     */
+    public Comment findById(Long commentId) {
+        return em.find(Comment.class, commentId);
+    }
+
+    /*
+        디비에서 댓글 삭제
+     */
+    public int delete(Long commentId) {
+        String sql = "delete from Comment c where c.id = :commentId";
+        Query query = em.createQuery(sql).setParameter("commentId", commentId);
+        return query.executeUpdate(); // return number of deleted column
+    }
+}

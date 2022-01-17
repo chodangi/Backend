@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -62,16 +63,18 @@ public class UserRepository {
     /*
         사용자 이메일로 정보 조회
     */
-    public User findByEmail(String email)
-    {
-        User result = em.createQuery("select u from User u where u.email = :email", User.class)
-                .setParameter("email", email)
-                .getSingleResult();
-        if(result == null ){
-            return new User();    // 임시 조치
-        }else{
-            return result;
+    public User findByEmail(String email) {
+        User result;
+        try {
+            result = em.createQuery("select u from User u where u.email = :email", User.class)
+                    .setParameter("email", email)
+                    .getSingleResult();
+        }catch(NoResultException e){
+            result = new User();
+            System.out.println("사용자 이메일로 정보 조회 중 예외발생 - NoResultException");
+            e.printStackTrace();
         }
+        return result;
     }
 
     /*

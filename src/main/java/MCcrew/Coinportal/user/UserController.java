@@ -20,15 +20,16 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
         this.userService = userService;
     }
 
-    @GetMapping("/allUserInHashMap")
-    @ResponseBody
-    public String getAllUserInHashMap(){
-        String result = "";
-        for(Map.Entry<String, String> entrySet: LoginController.getHashMap().entrySet()){
-            result += entrySet.getKey() + ":" + entrySet.getValue();
-        }
-        return result;
-    }
+//    @GetMapping("/allUserInHashMap")
+//    @ResponseBody
+//    public String getAllUserInHashMap(){
+//        String result = "";
+//        for(Map.Entry<String, String> entrySet: LoginController.getHashMap().entrySet()){
+//            result += entrySet.getKey() + ":" + entrySet.getValue();
+//        }
+//        return result;
+//    }
+
     @GetMapping("/user/all")
     @ResponseBody
     public List<User> getAllUserController(){

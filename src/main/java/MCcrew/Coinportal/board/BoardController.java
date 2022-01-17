@@ -172,8 +172,9 @@ public class BoardController {  // 게시판 관련 컨트롤러
             userId = jwtService.getUserIdByJwt(jwt);
         }catch(Exception e){
             e.printStackTrace();
+            return false;
         }
-        if(userId == 0L || userId == null){
+        if(userId == 0L){
             return false; // 글 삭제되지 않음.
         }else{
             return boardService.deletePost(postId);

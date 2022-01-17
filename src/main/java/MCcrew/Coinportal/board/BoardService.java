@@ -183,20 +183,17 @@ public class BoardService {   // 게시판 관련 핵심 로직 구현
     public boolean deletePost(Long postId) {
         Post findPost = boardRepository.findById(postId);
         List<Attachment> attachmentList = findPost.getAttachedFiles();
-//        if(findPost.getUserId() != userId){
-//            return false;
-//        }
-        //else{
-            for(int i = 0; i<attachmentList.size(); i++){
-                boolean deleted = deleteFile(attachmentList.get(i).getStoreFilename());
-            }
-            int deletedColumn = boardRepository.delete(postId);
 
-            if(deletedColumn > 0){ // delete 된 컬럼이 존재한다면
-                return true;
-            }
-            return false; // 아무것도 삭제되지 않음.
-        //}
+        for(int i = 0; i<attachmentList.size(); i++){
+            deleteFile(attachmentList.get(i).getStoreFilename());
+        }
+        int deletedColumn = boardRepository.delete(postId);
+
+        if(deletedColumn > 0){ // delete 된 컬럼이 존재한다면
+            return true;
+        }
+
+        return false; // 아무것도 삭제되지 않음.
     }
     /*
         삭제 상태로 변경

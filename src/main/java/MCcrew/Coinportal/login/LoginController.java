@@ -1,10 +1,5 @@
 package MCcrew.Coinportal.login;
 
-import MCcrew.Coinportal.domain.User;
-import MCcrew.Coinportal.user.UserRepository;
-import MCcrew.Coinportal.user.UserService;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,11 +7,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
+//import java.util.HashMap;
 
 @Controller
 public class LoginController {
@@ -30,8 +24,8 @@ public class LoginController {
     @Value("${kakao.oauth.logout_redirect_uri}")
     private String logout_redirect_uri;
 
-    @Getter
-    private static HashMap<String, String> hashMap = new HashMap<>(); // 사용자 로그인 상태를 유지
+//    @Getter
+//    private static HashMap<String, String> hashMap = new HashMap<>(); // 사용자 로그인 상태를 유지
 
     @Autowired
     public LoginController(LoginService loginService, JwtService jwtService) {
@@ -70,7 +64,7 @@ public class LoginController {
      */
     @GetMapping(value = "/login")
     public String loginController(@RequestParam("code") String code, RedirectAttributes re) throws UnsupportedEncodingException {
-            String jwt = loginService.getJwt(code, hashMap);
+            String jwt = loginService.getJwt(code);
             re.addAttribute("jwt", jwt);
             System.out.println("generated jwt = " + jwt);
             System.out.println("loginController to redirect:/");

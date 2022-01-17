@@ -162,7 +162,7 @@ public class LoginService {
         }
     }
 
-    public String getJwt(String code, HashMap<String, String> hashMap) throws UnsupportedEncodingException {
+    public String getJwt(String code) throws UnsupportedEncodingException {
         String jwt = "";
         System.out.println("code : " + code);
 
@@ -179,7 +179,7 @@ public class LoginService {
         // 이름과 이메일로 기존 사용자 조회
         //User findUser = userRepository.findByNameAndEmail(name, email);
         jwt = jwtService.generateJwt(name, email);
-        if(userRepository.findByNameAndEmail(name, email).getId() == null){ // 존재하지 않는 회원이라면 새롭게 추가 진행
+        if(userRepository.findByEmail(email).getId() == null){ // 존재하지 않는 회원이라면 새롭게 추가 진행
             User user = new User();
             user.setEmail(email);
             user.setUserNickname(getNicknameFromEmail(email)); // 이메일 기반 닉네임 생성
@@ -190,11 +190,8 @@ public class LoginService {
             userRepository.save(user);
 
             System.out.println("new User added. name = " + name + ", email = " + email + jwt);
-            hashMap.put(name, jwt); // 로그인 유지
         }else{ // 존재하는 회원이라면
-            hashMap.put(name, jwt);
-            System.out.println("already in member , get past jwt in hashMap : ");
-            jwt = hashMap.get(name); // 이미 저장되어있던 value인 jwt를 얻어낸다.
+            System.out.println("already in member. get past jwt. ");
             System.out.println("jwt : " + jwt);
         }
         return jwt;
@@ -207,13 +204,13 @@ public class LoginService {
         User findUser = loginRepository.findById(userId);
         return findUser.getUserNickname();
     }
+
     /*
-    @ 기호를 기준으로 이메일에서 닉네임을 뽑아냄.
+        기호를 기준으로 이메일에서 닉네임을 뽑아냄.
     */
     public String getNicknameFromEmail(String email){
         int position = email.indexOf('@');
         String nickname = email.substring(0, position);
         return nickname;
     }
-
 }

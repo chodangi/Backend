@@ -60,14 +60,13 @@ public class UserRepository {
     }
 
     /*
-        12.28 나리 추가 - 사용자 이메일로 정보 조회
+        사용자 이메일로 정보 조회
     */
     public User findByEmail(String email)
     {
         User result = em.createQuery("select u from User u where u.email = :email", User.class)
                 .setParameter("email", email)
-                .getResultList()
-                .get(0);
+                .getSingleResult();
         if(result == null ){
             return new User();    // 임시 조치
         }else{

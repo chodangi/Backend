@@ -45,3 +45,4 @@ kakao:
   oauth:
     client_id: bbac0c1542268d22cd795e3d398071f5
     redirect_uri: http://localhost:8080/login&response_type=code
+    logout_redirect_uri: http://localhost:8080/

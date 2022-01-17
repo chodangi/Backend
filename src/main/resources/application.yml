@@ -8,7 +8,7 @@ spring:
     url: jdbc:mysql://cortal-db-1.c7mfu0whlsaf.ap-northeast-2.rds.amazonaws.com:3306/temp?autoReconnetc=true
     username: admin
     password: zhxjf123
-  jpa:
+#  jpa:
 #    hibernate:
 #      #ddl-auto: none
 #      ddl-auto: create
@@ -16,7 +16,8 @@ spring:
 #      hibernate:
 #        # show_sql: true
 #        format_sql: true
-  database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     open-in-view: false
     show-sql: true
     hibernate:

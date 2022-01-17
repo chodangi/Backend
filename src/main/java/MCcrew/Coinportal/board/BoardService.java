@@ -265,7 +265,7 @@ public class BoardService {   // 게시판 관련 핵심 로직 구현
 
     // multipartFile 구현 2022-01-09
     public Post post(PostDto postDto, Long userIdx) throws IOException {
-        List<Attachment> attachments = attachmentService.saveAttachments(postDto.getAttachedFiles(), postDto.getPostId());
+        List<Attachment> attachments = attachmentService.saveAttachments(postDto.getAttachedFiles());
         Date date = new Date();
 
         Post post = new Post();

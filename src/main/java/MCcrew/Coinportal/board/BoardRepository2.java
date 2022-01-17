@@ -2,6 +2,8 @@ package MCcrew.Coinportal.board;
 
 import MCcrew.Coinportal.domain.Post;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -21,4 +23,6 @@ public interface BoardRepository2 extends JpaRepository<Post, Long> {
 
     @Override
     <S extends Post> long count(Example<S> example);
+
+    Page<Post> findByBoardName(String boardName, Pageable pageable);
 }

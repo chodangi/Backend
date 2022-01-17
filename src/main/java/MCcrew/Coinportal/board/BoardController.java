@@ -59,8 +59,9 @@ public class BoardController {  // 게시판 관련 컨트롤러
     @GetMapping("/community/page")
     @ResponseBody
     public List<Object> listController(@RequestParam(value="boardName") String boardName, @RequestParam(value = "page", defaultValue = "1") int page){
-        List<Post> postList = boardService.getPostlist(page);
-        int[] pageList = boardService.getPageList(page);
+        System.out.println("searching post about" + boardName + " with page " + page);
+        List<Post> postList = boardService.getPostlist(boardName, page);
+        int[] pageList = boardService.getPageList(boardName, page);
         List<Object> pagingInfo = new ArrayList<>();
         pagingInfo.add(postList);
         pagingInfo.add(pageList);

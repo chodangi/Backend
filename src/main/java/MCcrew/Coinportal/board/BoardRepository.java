@@ -64,6 +64,13 @@ public class BoardRepository{
         return em.createQuery(sql, Post.class)
                 .setParameter("userNickname", userNickname).getResultList().get(0);
     }
+    /*
+        게시판별로 게시글 조회
+     */
+    public List<Post> findByBoardName(String boardName){
+        String sql = "select p from Post p where p.boardName = :boardName";
+        return em.createQuery(sql, Post.class).setParameter("boardName", boardName).getResultList();
+    }
 
     /*
         해당 게시물 삭제

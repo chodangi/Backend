@@ -4,7 +4,6 @@ import MCcrew.Coinportal.Dto.PostDto;
 import MCcrew.Coinportal.domain.Post;
 import MCcrew.Coinportal.photo.Attachment;
 import MCcrew.Coinportal.photo.AttachmentService;
-import MCcrew.Coinportal.photo.BoardPostDto;
 import MCcrew.Coinportal.user.UserRepository;
 import MCcrew.Coinportal.user.UserService;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,13 +12,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BoardService {   // 게시판 관련 핵심 로직 구현
@@ -212,32 +211,50 @@ public class BoardService {   // 게시판 관련 핵심 로직 구현
             return true;
         }
     }
+
     private static final int BLOCK_PAGE_NUM_COUNT = 5; // 블럭에 존재하는 페이지 번호 수
     private static final int PAGE_POST_COUNT = 4; // 한 페이지에 존재하는 게시글 수
 
+    /*
+        페이징된 게시글 리스트
+     */
     @Transactional
-    public List<Post> getPostlist(int pageNum) {
-        Page<Post> page = boardRepository2.findAll(PageRequest.of(pageNum - 1, PAGE_POST_COUNT, Sort.by(Sort.Direction.ASC, "createdAt")));
+    public List<Post> getPostlist(String boardName, int pageNum) {
+        Page<Post> page = boardRepository2.findByBoardName(boardName, PageRequest.of(pageNum - 1, PAGE_POST_COUNT, Sort.by(Sort.Direction.ASC, "createdAt")));
         List<Post> postList = page.getContent();
         return postList;
     }
 
+    /*
+        전체 게시글 개수
+     */
     @Transactional
     public Long getBoardCount() {
         return boardRepository2.count();
     }
 
-    public int[] getPageList(int curPageNum) {
+    /*
+        게시판별 게시글 개수
+     */
+    @Transactional
+    public int getBoardCountByBoardName(String boardName){
+        return boardRepository.findByBoardName(boardName).size();
+    }
+
+    /*
+        페이징 번호 리스트
+     */
+    public int[] getPageList(String boardName, int curPageNum) {
         int[] pageList = new int[BLOCK_PAGE_NUM_COUNT]; // 5
 
         // 총 게시글 갯수
-        Double postsTotalCount = Double.valueOf(this.getBoardCount());
+        //Double postsTotalCount = Double.valueOf(this.getBoardCount());
+        Double postsTotalCount = Double.valueOf(this.getBoardCountByBoardName(boardName));
         System.out.println("총 게시글 갯수 : " + postsTotalCount);
 
         // 총 게시글 기준으로 계산한 마지막 페이지 번호 계산 (올림으로 계산)
-        Integer totalLastPageNum = (int)(Math.ceil((postsTotalCount/PAGE_POST_COUNT)));  // postsTotalCount/4
+        Integer totalLastPageNum = (int)(Math.ceil((postsTotalCount / PAGE_POST_COUNT)));  // postsTotalCount/4
         System.out.println("총 게시글 기준으로 계산한 마지막 페이지 번호 : " + totalLastPageNum);
-
 
         // 현재 페이지를 기준으로 블럭의 마지막 페이지 번호 계산
         Integer blockLastPageNum = (totalLastPageNum > curPageNum + BLOCK_PAGE_NUM_COUNT) // 13 > 2 + 5
@@ -263,7 +280,9 @@ public class BoardService {   // 게시판 관련 핵심 로직 구현
         return pageList;
     }
 
-    // multipartFile 구현 2022-01-09
+    /*
+        사진 업로드하기
+     */
     public Post post(PostDto postDto, Long userIdx) throws IOException {
         List<Attachment> attachments = attachmentService.saveAttachments(postDto.getAttachedFiles());
         Date date = new Date();

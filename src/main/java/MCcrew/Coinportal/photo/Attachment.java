@@ -21,6 +21,9 @@ public class Attachment {
     private String originFilename;
     private String storeFilename;
 
+//    @ManyToOne
+//    @JoinColumn(name = "post_id")
+//    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;

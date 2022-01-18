@@ -14,6 +14,7 @@ import MCcrew.Coinportal.game.GameService;
 import MCcrew.Coinportal.login.JwtService;
 import MCcrew.Coinportal.login.LoginService;
 import MCcrew.Coinportal.photo.Attachment;
+import MCcrew.Coinportal.photo.AttachmentRepository;
 import MCcrew.Coinportal.user.UserRepository;
 import MCcrew.Coinportal.user.UserService;
 import org.assertj.core.api.Assertions;
@@ -46,6 +47,7 @@ class BoardControllerTest {
     @Autowired private CoinTemperService coinTemperService;
     @Autowired private LoginService loginService;
     @Autowired private JwtService jwtService;
+    @Autowired private AttachmentRepository attachmentRepository;
     @Autowired private EntityManager em;
 
     @Test
@@ -540,8 +542,6 @@ class BoardControllerTest {
     @Test
     public void attachmentList테스트(){
         Post findPost = boardRepository.findById(229L);
-        for(Attachment attach : findPost.getAttachedFiles()){
-            System.out.println(attach.getStoreFilename());
-        }
+        Attachment attach = attachmentRepository.findById(findPost.getAttachedFiles().get(0).getId()).get();
     }
 }

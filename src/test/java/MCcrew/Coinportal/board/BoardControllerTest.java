@@ -530,4 +530,18 @@ class BoardControllerTest {
             System.out.println("result: " + post.getId() +"/" + post.getBoardName());
         }
     }
+
+    @Test
+    public void deleteFile메소드테스트(){
+        boolean deleted = boardService.deleteFile("21438db2-0c29-43f2-9817-ab324f5714ea.jpg");
+        Assertions.assertThat(deleted).isTrue();
+    }
+
+    @Test
+    public void attachmentList테스트(){
+        Post findPost = boardRepository.findById(229L);
+        for(Attachment attach : findPost.getAttachedFiles()){
+            System.out.println(attach.getStoreFilename());
+        }
+    }
 }

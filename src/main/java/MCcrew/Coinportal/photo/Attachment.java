@@ -31,4 +31,14 @@ public class Attachment {
         this.originFilename = originFileName;
         this.storeFilename = storePath;
     }
+
+    @Override
+    public String toString() {
+        return "Attachment{" +
+                "id=" + id +
+                ", originFilename='" + originFilename + '\'' +
+                ", storeFilename='" + storeFilename + '\'' +
+                ", post=" + post +
+                '}';
+    }
 }

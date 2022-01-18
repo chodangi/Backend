@@ -168,12 +168,14 @@ public class BoardService {   // 게시판 관련 핵심 로직 구현
                 System.out.println("delete successfully");
                 return true;
             } else {
+                System.out.println("cannot delete");
                 return false;
             }
         }catch(Exception e){
             System.out.println("Exception while deleting " + fileName);
             e.printStackTrace();
         }
+        System.out.println("method error");
         return false;
     }
 
@@ -183,18 +185,28 @@ public class BoardService {   // 게시판 관련 핵심 로직 구현
     public boolean deletePost(Long postId) {
         Post findPost = boardRepository.findById(postId);
         List<Attachment> attachmentList = findPost.getAttachedFiles();
+        System.out.println("attachmentList.size() : " + attachmentList.size());
+        boolean deleted = false;
 
-        for(int i = 0; i<attachmentList.size(); i++){
-            deleteFile(attachmentList.get(i).getStoreFilename());
+        for(int i = 0; i < attachmentList.size(); i++){
+            System.out.println("deleting " + attachmentList.get(i).getOriginFilename());
+            deleted = deleteFile(attachmentList.get(i).getStoreFilename());
         }
-        int deletedColumn = boardRepository.delete(postId);
+        if(!deleted){
+            System.out.println("삭제 되지 못함.");
+            return false;
+        }
 
-        if(deletedColumn > 0){ // delete 된 컬럼이 존재한다면
+        int deletedColumnPost = boardRepository.delete(postId);
+
+        if(deletedColumnPost > 0){ // delete 된 컬럼이 존재한다면
+            System.out.println(postId + " 게시글을 삭제합니다.");
             return true;
         }
-
+        System.out.println(postId + " 게시글 삭제에 실패했습니다. ");
         return false; // 아무것도 삭제되지 않음.
     }
+
     /*
         삭제 상태로 변경
      */

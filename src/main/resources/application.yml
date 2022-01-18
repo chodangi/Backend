@@ -35,10 +35,9 @@ jwt:
 # multipartFile 경로
 file:
   #Window
-  dir: C:\Users\choi\Desktop\coin-portal\Backend\Coin-portal\image
+  dir: C:\\Users\\choi\\Desktop\\coin-portal\\Backend\\Coin-portal\\image\\
   # Linux
 #  dir: /home/ubuntu/server/image
-
 
 # 카카오 OAuth 연결 정보
 kakao:

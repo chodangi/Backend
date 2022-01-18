@@ -48,3 +48,8 @@
 7. 사진 삭제 수정 및 추가구현하기
 8. 나머진 코드 리팩토링하기
 
+2020.01.18-yuny0623
+1. restful 하게 api경로 수정하기
+2. coin game 구현하기
+3. 사진 삭제 구현 완료하기 ->
+   (문제점 : post에서 attachmentList를 아예 fetch해오지 못함. fetch lazy문제 -> jpa 엔티티 문제 -> 양방향 매핑 수정해야할듯)

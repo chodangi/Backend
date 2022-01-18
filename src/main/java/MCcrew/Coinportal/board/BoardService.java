@@ -3,6 +3,7 @@ package MCcrew.Coinportal.board;
 import MCcrew.Coinportal.Dto.PostDto;
 import MCcrew.Coinportal.domain.Post;
 import MCcrew.Coinportal.photo.Attachment;
+import MCcrew.Coinportal.photo.AttachmentRepository;
 import MCcrew.Coinportal.photo.AttachmentService;
 import MCcrew.Coinportal.user.UserRepository;
 import MCcrew.Coinportal.user.UserService;
@@ -28,21 +29,23 @@ public class BoardService {   // 게시판 관련 핵심 로직 구현
     private final UserService userService;
     private final UserRepository userRepository;
     private final AttachmentService attachmentService;
+    private final AttachmentRepository attachmentRepository;
 
     @Value("${file.dir}/")
     private String fileDirPath;
 
-    public BoardService(BoardRepository boardRepository, BoardRepository2 boardRepository2, UserService userService, UserRepository userRepository, AttachmentService attachmentService) {
+    public BoardService(BoardRepository boardRepository, BoardRepository2 boardRepository2, UserService userService, UserRepository userRepository, AttachmentService attachmentService, AttachmentRepository attachmentRepository) {
         this.boardRepository = boardRepository;
         this.boardRepository2 = boardRepository2;
         this.userService = userService;
         this.userRepository = userRepository;
         this.attachmentService = attachmentService;
+        this.attachmentRepository = attachmentRepository;
     }
 
     /*
-                    키워드로 게시글 검색
-                 */
+                        키워드로 게시글 검색
+                     */
     @Transactional
     public List<Post> searchPostsByKeyword(String keyword) {
         //List<Post> postList = boardRepository.findByContentContaining(keyword); // query 직접 작성
@@ -184,31 +187,29 @@ public class BoardService {   // 게시판 관련 핵심 로직 구현
     */
     public boolean deletePost(Long postId) {
         Post findPost = boardRepository.findById(postId);
-        List<Attachment> attachmentList = findPost.getAttachedFiles();
-        System.out.println("attachmentList.size() : " + attachmentList.size());
+        List<Attachment> attachmentList = attachmentRepository.findByPost_Id(postId);
         boolean deleted = false;
-
         for(int i = 0; i < attachmentList.size(); i++){
-            System.out.println("deleting " + attachmentList.get(i).getOriginFilename());
+            System.out.println("deleting " + attachmentList.get(i).getStoreFilename());
             deleted = deleteFile(attachmentList.get(i).getStoreFilename());
+            attachmentRepository.deleteById(attachmentList.get(i).getId());
         }
         if(!deleted){
-            System.out.println("삭제 되지 못함.");
             return false;
         }
-
-        int deletedColumnPost = boardRepository.delete(postId);
-
-        if(deletedColumnPost > 0){ // delete 된 컬럼이 존재한다면
+        int deletedPost = boardRepository.delete(postId);
+        if(deletedPost > 0){ // delete 된 컬럼이 존재한다면
             System.out.println(postId + " 게시글을 삭제합니다.");
+
             return true;
+        }else{
+            System.out.println("게시글 삭제에 실패했습니다. ");
+            return false;
         }
-        System.out.println(postId + " 게시글 삭제에 실패했습니다. ");
-        return false; // 아무것도 삭제되지 않음.
     }
 
     /*
-        삭제 상태로 변경
+        삭제 상태로 변경 - deprecated
      */
     public boolean status2Delete(Long postId, Long userId) {
         Post findPost = boardRepository.findById(postId);
@@ -293,7 +294,6 @@ public class BoardService {   // 게시판 관련 핵심 로직 구현
         사진 업로드하기
      */
     public Post post(PostDto postDto, Long userIdx) throws IOException {
-        List<Attachment> attachments = attachmentService.saveAttachments(postDto.getAttachedFiles());
         Date date = new Date();
 
         Post post = new Post();
@@ -311,8 +311,10 @@ public class BoardService {   // 게시판 관련 핵심 로직 구현
         post.setCreatedAt(date);
         post.setUpdatedAt(date);
         post.setStatus('A');
-        post.setAttachedFiles(attachments);
 
-        return boardRepository.save(post);
+        Post savedPost = boardRepository.save(post);
+        List<Attachment> attachments = attachmentService.saveAttachments(postDto.getAttachedFiles(), savedPost.getId());
+        savedPost.setAttachedFiles(attachments);
+        return boardRepository.save(savedPost);
     }
 }

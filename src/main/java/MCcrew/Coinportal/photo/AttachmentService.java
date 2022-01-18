@@ -21,8 +21,8 @@ public class AttachmentService {
         this.fileStore = fileStore;
     }
 
-    public List<Attachment> saveAttachments(List<MultipartFile> multipartFileList) throws IOException {
-        List<Attachment> imageFiles = fileStore.storeFiles(multipartFileList);
+    public List<Attachment> saveAttachments(List<MultipartFile> multipartFileList, Long postId) throws IOException {
+        List<Attachment> imageFiles = fileStore.storeFiles(multipartFileList, postId);
         return imageFiles;
     }
 

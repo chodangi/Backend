@@ -53,7 +53,7 @@ public class Post {            // 게시글
 
     // photo
 //    @OneToMany(mappedBy = "post", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    @JsonManagedReference
+    @JsonManagedReference
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Attachment> attachedFiles = new ArrayList<>();
 

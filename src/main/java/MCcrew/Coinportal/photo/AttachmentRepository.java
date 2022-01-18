@@ -10,4 +10,9 @@ public interface AttachmentRepository extends JpaRepository<Attachment, Long> {
     List<Attachment> findAll();
 
     Optional<Attachment> findById(Long id);
+
+    List<Attachment> findByPost_Id(Long postId);
+
+    @Override
+    void deleteById(Long aLong);
 }

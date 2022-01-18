@@ -23,25 +23,16 @@ public class Attachment {
 
 //    @ManyToOne
 //    @JoinColumn(name = "post_id")
-//    @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
+    @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
 
     @Builder
-    public Attachment(Long id, String originFileName, String storePath) {
+    public Attachment(Long id, String originFilename, String storeFilename, Post post) {
         this.id = id;
-        this.originFilename = originFileName;
-        this.storeFilename = storePath;
-    }
-
-    @Override
-    public String toString() {
-        return "Attachment{" +
-                "id=" + id +
-                ", originFilename='" + originFilename + '\'' +
-                ", storeFilename='" + storeFilename + '\'' +
-                ", post=" + post +
-                '}';
+        this.originFilename = originFilename;
+        this.storeFilename = storeFilename;
+        this.post = post;
     }
 }

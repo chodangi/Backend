@@ -541,7 +541,12 @@ class BoardControllerTest {
 
     @Test
     public void attachmentList테스트(){
-        Post findPost = boardRepository.findById(229L);
-        Attachment attach = attachmentRepository.findById(findPost.getAttachedFiles().get(0).getId()).get();
+        Post findPost = boardRepository.findById(2L);
+        Long postId = findPost.getId();
+
+        List<Attachment> attachmentList = attachmentRepository.findByPost_Id(postId);
+        for(Attachment attach: attachmentList){
+            System.out.println(attach.getStoreFilename());
+        }
     }
 }

@@ -1,5 +1,8 @@
 package MCcrew.Coinportal.photo;
 
+import MCcrew.Coinportal.board.BoardRepository;
+import MCcrew.Coinportal.domain.Post;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,22 +16,29 @@ import java.util.UUID;
 @Component
 public class FileStore {
 
+    @Autowired
+    private final BoardRepository boardRepository;
+
+    public FileStore(BoardRepository boardRepository) {
+        this.boardRepository = boardRepository;
+    }
+
     @Value("${file.dir}/")
     private String fileDirPath;
 
     // 전체 파일 저장
-    public List<Attachment> storeFiles(List<MultipartFile> multipartFiles) throws IOException {
+    public List<Attachment> storeFiles(List<MultipartFile> multipartFiles, Long postId) throws IOException {
         List<Attachment> attachments = new ArrayList<>();
         for (MultipartFile multipartFile : multipartFiles) {
             if (!multipartFile.isEmpty()) {
-                attachments.add(storeFile(multipartFile));
+                attachments.add(storeFile(multipartFile, postId));
             }
         }
         return attachments;
     }
 
     // 파일 저장 로직
-    public Attachment storeFile(MultipartFile multipartFile) throws IOException {
+    public Attachment storeFile(MultipartFile multipartFile, Long postId) throws IOException {
         if (multipartFile.isEmpty()) {
             return null;
         }
@@ -39,10 +49,12 @@ public class FileStore {
         System.out.println("storeFile Method - storeFilename: " + storeFilename);
         multipartFile.transferTo(new File(createPath(storeFilename)));
 
-        return Attachment.builder()
-                .originFileName(originalFilename)
-                .storePath(storeFilename)
-                .build();
+        Post findPost = boardRepository.findById(postId);
+        Attachment attach = new Attachment();
+        attach.setPost(findPost);
+        attach.setOriginFilename(originalFilename);
+        attach.setStoreFilename(storeFilename);
+        return attach;
     }
     // 파일 경로 구성
     public String createPath(String storeFilename) {

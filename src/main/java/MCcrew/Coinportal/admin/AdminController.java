@@ -32,10 +32,4 @@ public class AdminController {
         this.attachmentService = attachmentService;
         this.userService = userService;
     }
-
-//    @PostMapping("/admin/login")
-//    @ResponseBody
-//    public AdminLoginController(@Request){
-//
-//    }
 }

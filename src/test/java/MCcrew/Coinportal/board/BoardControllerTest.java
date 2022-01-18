@@ -3,6 +3,7 @@ package MCcrew.Coinportal.board;
 import MCcrew.Coinportal.Dto.CommentDto;
 import MCcrew.Coinportal.Dto.PostDto;
 import MCcrew.Coinportal.Dto.UserDto;
+import MCcrew.Coinportal.Dto.UserRankingDto;
 import MCcrew.Coinportal.cointemper.CoinTemperService;
 import MCcrew.Coinportal.comment.CommentController;
 import MCcrew.Coinportal.comment.CommentRepository;
@@ -518,7 +519,7 @@ class BoardControllerTest {
             User newUser = new User();
             newUser.setEmail("test" + i + "@gmail.com");
             newUser.setUserNickname("test" + i);
-            newUser.setPoint(0);
+            newUser.setPoint(i);
             newUser.setDark(true);
             newUser.setOnAlarm(true);
             newUser.setStatus('A');
@@ -547,6 +548,14 @@ class BoardControllerTest {
         List<Attachment> attachmentList = attachmentRepository.findByPost_Id(postId);
         for(Attachment attach: attachmentList){
             System.out.println(attach.getStoreFilename());
+        }
+    }
+
+    @Test
+    public void user랭킹테스트(){
+        List<UserRankingDto> userRankingDtoList = userService.getUserRanking();
+        for(UserRankingDto userRankingDto : userRankingDtoList){
+            System.out.println(userRankingDto.getNickname() + " : "  + userRankingDto.getPoint());
         }
     }
 }

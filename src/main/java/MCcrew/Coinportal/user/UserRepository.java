@@ -94,6 +94,9 @@ public class UserRepository {
         }
     }
 
+    /*
+        userId로 삭제
+     */
     public int deleteById(Long userId) {
         String sql = "delete from User u where u.id = :userId";
         Query query = em.createQuery(sql).setParameter("userId", userId);

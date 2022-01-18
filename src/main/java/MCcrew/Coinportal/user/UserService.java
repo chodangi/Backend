@@ -2,27 +2,29 @@ package MCcrew.Coinportal.user;
 
 import MCcrew.Coinportal.Dto.PostDto;
 import MCcrew.Coinportal.Dto.UserDto;
+import MCcrew.Coinportal.Dto.UserRankingDto;
 import MCcrew.Coinportal.domain.Post;
 import MCcrew.Coinportal.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class UserService {  // 유저 프로필 핵심 로직 구현
 
     private final UserRepository userRepository;
+    private final UserRepository2 userRepository2;
 
-    @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, UserRepository2 userRepository2) {
         this.userRepository = userRepository;
+        this.userRepository2 = userRepository2;
     }
 
     /*
-        유저 한명 조회
-     */
+            유저 한명 조회
+         */
     public User getUserById(Long id){
         return userRepository.findById(id);
     }
@@ -57,5 +59,17 @@ public class UserService {  // 유저 프로필 핵심 로직 구현
         else{
             return false;
         }
+    }
+
+    /*
+        유저 랭킹 반환
+     */
+    public List<UserRankingDto> getUserRanking() {
+        List<User> findUserList = userRepository2.findAll(Sort.by(Sort.Direction.DESC, "point"));
+        List<UserRankingDto> userRankingDtoList = new ArrayList<>();
+        for(User user: findUserList){
+            userRankingDtoList.add(new UserRankingDto(user.getUserNickname(), user.getPoint()));
+        }
+        return userRankingDtoList;
     }
 }

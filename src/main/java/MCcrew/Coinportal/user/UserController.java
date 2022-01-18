@@ -1,6 +1,7 @@
 package MCcrew.Coinportal.user;
 
 import MCcrew.Coinportal.Dto.UserDto;
+import MCcrew.Coinportal.Dto.UserRankingDto;
 import MCcrew.Coinportal.board.BoardService;
 import MCcrew.Coinportal.comment.CommentService;
 import MCcrew.Coinportal.domain.Comment;
@@ -133,5 +134,14 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
         }else{
             return userService.deleteUser(userId);
         }
+    }
+
+    /*
+        유저 랭킹
+     */
+    @GetMapping("/user/ranking")
+    @ResponseBody
+    public List<UserRankingDto> getUserRankingController(){
+        return userService.getUserRanking();
     }
 }

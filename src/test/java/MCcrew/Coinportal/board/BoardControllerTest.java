@@ -114,7 +114,7 @@ class BoardControllerTest {
         userDto.setUserNickname("test777");
         userDto.setDark(false);
         userDto.setOnAlarm(false);
-        User returnUser = userService.updateUser(userDto, "test123");
+        User returnUser = userService.updateUser(userDto);
 
         // when
         System.out.println("========================findAll====================");

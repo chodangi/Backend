@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.util.List;
 
 @Repository
 @Transactional
@@ -48,5 +49,13 @@ public class CommentRepository {
         String sql = "delete from Comment c where c.id = :commentId";
         Query query = em.createQuery(sql).setParameter("commentId", commentId);
         return query.executeUpdate(); // return number of deleted column
+    }
+
+    /*
+        userId로 댓글 조회
+     */
+    public List<Comment> findByUserId(Long userId){
+        String sql = "select c from Comment c where c.userId = :userId";
+        return em.createQuery(sql, Comment.class).setParameter("userId", userId).getResultList();
     }
 }

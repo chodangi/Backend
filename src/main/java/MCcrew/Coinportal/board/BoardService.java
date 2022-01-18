@@ -317,4 +317,11 @@ public class BoardService {   // 게시판 관련 핵심 로직 구현
         savedPost.setAttachedFiles(attachments);
         return boardRepository.save(savedPost);
     }
+
+    /*
+        내가 작성한 게시글 반환
+     */
+    public List<Post> getMyPost(Long userId) {
+        return boardRepository.findByUserId(userId);
+    }
 }

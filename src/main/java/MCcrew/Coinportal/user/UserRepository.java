@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -91,5 +92,11 @@ public class UserRepository {
             e.printStackTrace();
             return new User();
         }
+    }
+
+    public int deleteById(Long userId) {
+        String sql = "delete from User u where u.id = :userId";
+        Query query = em.createQuery(sql).setParameter("userId", userId);
+        return query.executeUpdate(); // return number of deleted column
     }
 }

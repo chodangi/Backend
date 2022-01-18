@@ -80,4 +80,12 @@ public class BoardRepository{
         Query query = em.createQuery(sql).setParameter("postId", postId);
         return query.executeUpdate(); // return number of deleted column
     }
+
+    /*
+        내가 작성한 게시글 반환
+     */
+    public List<Post> findByUserId(Long userId) {
+        String sql = "select p from Post p where p.userId = :userId";
+        return em.createQuery(sql, Post.class).setParameter("userId", userId).getResultList();
+    }
 }

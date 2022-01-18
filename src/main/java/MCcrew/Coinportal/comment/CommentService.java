@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class CommentService {
@@ -121,4 +122,10 @@ public class CommentService {
         return findComment.getReportCnt();
     }
 
+    /*
+        내가 작성한 댓글 조회
+     */
+    public List<Comment> getMyComment(Long userId){
+        return commentRepository.findByUserId(userId);
+    }
 }

@@ -21,17 +21,18 @@ public class UserService {  // 유저 프로필 핵심 로직 구현
     }
 
     /*
-        유저 엔티티 한개 반환
+        유저 한명 조회
      */
-    public User getUserEntity(Long id){
+    public User getUserById(Long id){
         return userRepository.findById(id);
     }
 
     /*
         유저 정보 변경
      */
-    public User updateUser(UserDto userDto, String originalNickname){
-        User findUser = userRepository.findByNickname(originalNickname);
+    public User updateUser(UserDto userDto){
+        // User findUser = userRepository.findByNickname(originalNickname);
+        User findUser = userRepository.findById(userDto.getUserId());
         findUser.setUserNickname(userDto.getUserNickname());
         findUser.setDark(userDto.isDark());
         findUser.setOnAlarm(userDto.isOnAlarm());
@@ -43,5 +44,18 @@ public class UserService {  // 유저 프로필 핵심 로직 구현
      */
     public List<User> getAllUser() {
         return userRepository.findAll();
+    }
+
+    /*
+        회원 탈퇴
+     */
+    public boolean deleteUser(Long userId){
+        int deletedUser = userRepository.deleteById(userId);
+        if(deletedUser > 0){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }

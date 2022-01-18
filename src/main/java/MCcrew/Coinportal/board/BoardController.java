@@ -1,6 +1,7 @@
 package MCcrew.Coinportal.board;
 
 import MCcrew.Coinportal.Dto.PostDto;
+import MCcrew.Coinportal.domain.Notice;
 import MCcrew.Coinportal.domain.Post;
 import MCcrew.Coinportal.login.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -181,5 +182,14 @@ public class BoardController {  // 게시판 관련 컨트롤러
         }else{
             return boardService.deletePost(postId);
         }
+    }
+
+    /*
+        모든 공지글 가져오기
+     */
+    @GetMapping("/community/notice")
+    @ResponseBody
+    public List<Notice> getNoticeController(){
+        return boardService.getNotice();
     }
 }

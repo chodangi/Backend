@@ -1,6 +1,9 @@
 package MCcrew.Coinportal.board;
 
 import MCcrew.Coinportal.Dto.PostDto;
+import MCcrew.Coinportal.admin.AdminRepository;
+import MCcrew.Coinportal.admin.AdminService;
+import MCcrew.Coinportal.domain.Notice;
 import MCcrew.Coinportal.domain.Post;
 import MCcrew.Coinportal.photo.Attachment;
 import MCcrew.Coinportal.photo.AttachmentRepository;
@@ -30,22 +33,24 @@ public class BoardService {   // 게시판 관련 핵심 로직 구현
     private final UserRepository userRepository;
     private final AttachmentService attachmentService;
     private final AttachmentRepository attachmentRepository;
+    private final AdminRepository adminRepository;
 
     @Value("${file.dir}/")
     private String fileDirPath;
 
-    public BoardService(BoardRepository boardRepository, BoardRepository2 boardRepository2, UserService userService, UserRepository userRepository, AttachmentService attachmentService, AttachmentRepository attachmentRepository) {
+    public BoardService(BoardRepository boardRepository, BoardRepository2 boardRepository2, UserService userService, UserRepository userRepository, AttachmentService attachmentService, AttachmentRepository attachmentRepository, AdminRepository adminRepository) {
         this.boardRepository = boardRepository;
         this.boardRepository2 = boardRepository2;
         this.userService = userService;
         this.userRepository = userRepository;
         this.attachmentService = attachmentService;
         this.attachmentRepository = attachmentRepository;
+        this.adminRepository = adminRepository;
     }
 
     /*
-                        키워드로 게시글 검색
-                     */
+                                키워드로 게시글 검색
+                             */
     @Transactional
     public List<Post> searchPostsByKeyword(String keyword) {
         //List<Post> postList = boardRepository.findByContentContaining(keyword); // query 직접 작성
@@ -323,5 +328,12 @@ public class BoardService {   // 게시판 관련 핵심 로직 구현
      */
     public List<Post> getMyPost(Long userId) {
         return boardRepository.findByUserId(userId);
+    }
+
+    /*
+        전체 공지글 가져오기
+     */
+    public List<Notice> getNotice() {
+        return adminRepository.findAll();
     }
 }

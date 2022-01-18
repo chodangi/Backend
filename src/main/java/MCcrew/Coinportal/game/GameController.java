@@ -46,7 +46,7 @@ public class GameController {  // 게임 관련 api 컨트롤러
         코인 상승 하락 예측하기
      */
     @PostMapping("/game/predict")
-    public boolean predictCoinController(@RequestBody BetHistoryDto betHistoryDto){
+    public boolean predictCoinController(@RequestBody BetHistoryDto betHistoryDto, @RequestHeader String jwt){
         return true;
     }
 }

@@ -51,8 +51,15 @@
 2020.01.18-yuny0623
 1. restful 하게 api경로 수정하기
 2. coin game 구현하기
-3. 사진 삭제 구현 완료하기 ->
+3. 사진 삭제 구현 완료하기 -> (초기 구현 완료 -> 이후에 리팩토링 진행하기)
    (문제점 : post에서 attachmentList를 아예 fetch해오지 못함. fetch lazy문제 -> jpa 엔티티 문제 -> 양방향 매핑 수정해야할듯)
+4. 기획팀 요구사항 - 배너 수정, 유저 소속 리스트, 신고된 게시물 확인, 관리자 아이디로는 모든 게시물을 수정 및 삭제, 공지글 제작하는 권한 요구
 
 리팩토링사항:
-1. postDto에서 postId 필드는 게시글 수정때문에 유지함. -> 없애고 게시글 수정시에 postId를 requestParam으로 전달하고 body에는 수정사항 전달하게끔 수정하기
+1. postDto에서 postId 필드를 게시글 수정때문에 유지함. ->불필요함. 없애고 게시글 수정시에 postId를 requestParam으로 전달하고 body에는 수정사항 전달하게끔 수정하기
+2. 사진 삭제 api 코드 오류 검증하기
+
+개발 참고 사항:
+1. 코인 거래소 api 변경시 참고 - https://iri-kang.tistory.com/3
+2. 코인 차트 정보 가져오기 - 참고 api: https://www.blockchain.com/api/charts_api
+3. 빗썸에서 코인 차트 정보 가져오기 - 참고: https://apidocs.bithumb.com/docs/candlestick

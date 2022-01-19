@@ -12,6 +12,5 @@ import java.util.TimerTask;
 public class CoinPortalApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(CoinPortalApplication.class, args);
-		GameService.gameTimer(); // 게임 타이머 실행
 	}
 }

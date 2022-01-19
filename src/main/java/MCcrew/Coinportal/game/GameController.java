@@ -3,6 +3,7 @@ package MCcrew.Coinportal.game;
 import MCcrew.Coinportal.Dto.BetHistoryDto;
 import MCcrew.Coinportal.domain.BetHistory;
 import MCcrew.Coinportal.login.JwtService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,7 +34,7 @@ public class GameController {  // 게임 관련 api 컨트롤러
         */
     @GetMapping("/game/coinPrice")
     @ResponseBody
-    public String coinInfo(@RequestParam("symbol") String coinSymbol){
+    public String coinInfo(@RequestParam("symbol") String coinSymbol) throws JsonProcessingException {
         return gameService.getPriceFromBithumb(coinSymbol);
     }
 
@@ -102,11 +103,20 @@ public class GameController {  // 게임 관련 api 컨트롤러
     }
 
     /*
+        현재 코인 훈수 보기
+     */
+    @GetMapping("/game/coinprediction")
+    @ResponseBody
+    public BetHistoryDto getRandomCoinPredictionController(){
+        return gameService.getRandomCoinPrediction();
+    }
+
+    /*
         타이머 작동 테스트
      */
-    @GetMapping("/timer")
-    @ResponseBody
-    public boolean timerTest(){
-        return gameService.gameTimer();
-    }
+//    @GetMapping("/timer")
+//    @ResponseBody
+//    public boolean timerTest(){
+//        return gameService.gameTimer();
+//    }
 }

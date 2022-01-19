@@ -74,3 +74,4 @@
 1. 코인 거래소 api 변경시 참고 - https://iri-kang.tistory.com/3
 2. 코인 차트 정보 가져오기 - 참고 api: https://www.blockchain.com/api/charts_api
 3. 빗썸에서 코인 차트 정보 가져오기 - 참고: https://apidocs.bithumb.com/docs/candlestick
+4. json 관련 오류 혹은 충돌 발생시 build.gradle에 있는 2022.01.19에 추가된 json 제거

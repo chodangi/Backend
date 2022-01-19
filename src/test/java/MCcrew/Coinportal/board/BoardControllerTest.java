@@ -18,6 +18,7 @@ import MCcrew.Coinportal.photo.Attachment;
 import MCcrew.Coinportal.photo.AttachmentRepository;
 import MCcrew.Coinportal.user.UserRepository;
 import MCcrew.Coinportal.user.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -240,7 +241,7 @@ class BoardControllerTest {
     }
 
     @Test
-    public void 코인api호출테스트(){
+    public void 코인api호출테스트() throws JsonProcessingException {
         String result1 = gameService.getPriceFromBithumb("BTC/KRW");
         System.out.println("result = " + result1);
         String result2 = gameService.getPriceFromBithumb("ETH/KRW");
@@ -559,8 +560,19 @@ class BoardControllerTest {
         }
     }
 
+//    @Test
+//    public void 타이머테스트(){
+//        gameService.gameTimer();
+//    }
+
     @Test
-    public void 타이머테스트(){
-        gameService.gameTimer();
+    public void 거래소api테스트(){
+
+    }
+
+    @Test
+    public void api테스트() throws JsonProcessingException {
+        String price=  gameService.getPriceFromBithumb("BTC/KRW");
+        System.out.println(price);
     }
 }

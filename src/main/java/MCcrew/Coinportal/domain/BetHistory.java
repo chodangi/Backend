@@ -22,11 +22,15 @@ public class BetHistory {   // 코인 맞추기 게임 기록
     @Column(name = "bethistory_id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;   // 게임 참여자
+//    @ManyToOne
+//    @JoinColumn(name = "user_id")
+    private Long userId;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date today;
+    private Date predictedAt;
+    private boolean BTC;
+    private boolean ETH;
+    private boolean XRP;
+
     private double avgRate; // 점수 평균
 }

@@ -558,4 +558,9 @@ class BoardControllerTest {
             System.out.println(userRankingDto.getNickname() + " : "  + userRankingDto.getPoint());
         }
     }
+
+    @Test
+    public void 타이머테스트(){
+        gameService.gameTimer();
+    }
 }

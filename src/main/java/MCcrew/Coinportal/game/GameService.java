@@ -1,5 +1,10 @@
 package MCcrew.Coinportal.game;
 
+import MCcrew.Coinportal.Dto.BetHistoryDto;
+import MCcrew.Coinportal.domain.BetHistory;
+import MCcrew.Coinportal.domain.User;
+import MCcrew.Coinportal.user.UserRepository;
+import MCcrew.Coinportal.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -15,23 +20,24 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class GameService {
 
     private final GameRepository gameRepository;
+    private final UserRepository userRepository;
 
     private final Random randomGen = new Random();
 
-    @Autowired
-    public GameService(GameRepository gameRepository) {
+    public GameService(GameRepository gameRepository, UserRepository userRepository) {
         this.gameRepository = gameRepository;
+        this.userRepository = userRepository;
     }
 
     /*
-        빗썸에서 코인 현재가격 가져오기
-     */
+                빗썸에서 코인 현재가격 가져오기
+             */
     public String getPriceFromBithumb(String coinSymbol){
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -73,13 +79,60 @@ public class GameService {
     }
 
     /*
-        코인 훈수
+        코인 궁예하기
      */
-//    public boolean coinPredictByRandom(){
-//        boolean BTC = randomGen.nextBoolean();
-//        boolean ETH = randomGen.nextBoolean();
-//        boolean XRP = randomGen.nextBoolean();
-//
-//    }
+    public BetHistory predict(BetHistoryDto betHistoryDto, Long userId) {
+        Date date = new Date();
+        BetHistory betHistory = new BetHistory();
+
+        betHistory.setUserId(userId);
+        betHistory.setPredictedAt(date);
+        betHistory.setBTC(betHistoryDto.isBTC());
+        betHistory.setETH(betHistoryDto.isETH());
+        betHistory.setXRP(betHistoryDto.isXRP());
+        return gameRepository.save(betHistory);
+    }
+
+    /*
+        코인 훈수 따라가기
+     */
+    public BetHistory predictRandom(Long userId) {
+        Date date = new Date();
+        boolean BTC = randomGen.nextBoolean();
+        boolean ETH = randomGen.nextBoolean();
+        boolean XRP = randomGen.nextBoolean();
+
+        BetHistory betHistory = new BetHistory();
+        betHistory.setUserId(userId);
+        betHistory.setPredictedAt(date);
+        betHistory.setBTC(BTC);
+        betHistory.setETH(ETH);
+        betHistory.setXRP(XRP);
+        return gameRepository.save(betHistory);
+    }
+
+    /*
+        게임 타이머
+     */
+    public static boolean gameTimer(){
+        System.out.println("starting timer");
+        Timer m = new Timer();
+        TimerTask task = new TimerTask(){
+            @Override
+            public void run() {
+                System.out.println("test");
+            }
+        };
+        System.out.println("execute timer");
+        m.schedule(task, 5000, 2000);
+        return true;
+    }
+
+    /*
+        내 전적 보기
+     */
+    public List<BetHistory> getMyBetHistory(Long userId) {
+        return gameRepository.findById(userId);
+    }
 }
 

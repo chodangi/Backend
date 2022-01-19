@@ -28,7 +28,7 @@ public class AdminController {
     private final AdminService adminService;
 
     @Value("${admin.pwd}")
-    private String pwd;
+    private String pwd; // 관리자 password
 
     public AdminController(BoardService boardService, CoinTemperService coinTemperService, CommentService commentService, GameService gameService, LoginService loginService, AttachmentService attachmentService, UserService userService, AdminService adminService) {
         this.boardService = boardService;
@@ -120,7 +120,7 @@ public class AdminController {
     }
 
     /*
-        관리자 공지글 작성
+        공지글 작성
      */
     @PostMapping("/admin/notice/create")
     @ResponseBody

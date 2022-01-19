@@ -28,5 +28,7 @@ public class User {
     // A:active, D:deleted, R:reported
     @Column(length = 2)
     private char status;
+
+    // private double avgRate; // 점수 평균
 }
 

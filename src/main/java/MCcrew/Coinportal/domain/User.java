@@ -29,6 +29,7 @@ public class User {
     @Column(length = 2)
     private char status;
 
+
     // private double avgRate; // 점수 평균
 }
 

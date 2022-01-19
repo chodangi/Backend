@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TemporalType;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -32,5 +34,10 @@ public class GameRepository {
     public List<BetHistory> findById(Long userId) {
        String sql = "select b from BetHistory b where b.userId = :userId";
        return em.createQuery(sql, BetHistory.class).setParameter("userId", userId).getResultList();
+    }
+
+    public List<BetHistory> findAllByDate(Date tempDate) {
+        String sql = "select b from BetHistory b where b.predictedAt > :tempDate";
+        return em.createQuery(sql, BetHistory.class).setParameter("tempDate", tempDate, TemporalType.TIMESTAMP).getResultList();
     }
 }

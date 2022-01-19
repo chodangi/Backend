@@ -134,6 +134,7 @@ public class AdminController {
     @PostMapping("/admin/notice/update")
     @ResponseBody
     public Notice updateNoticeController(@RequestBody NoticeDto noticeDto, @RequestParam Long noticeId){
+
         return adminService.updateNotice(noticeDto, noticeId);
     }
 

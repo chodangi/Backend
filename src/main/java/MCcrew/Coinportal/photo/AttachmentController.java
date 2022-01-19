@@ -67,6 +67,7 @@ public class AttachmentController {
     public Resource processImg(@PathVariable String filename) throws MalformedURLException {
         return new UrlResource("file:" + fileStore.createPath(filename));
     }
+
     /*
         이미지 다운로드
      */

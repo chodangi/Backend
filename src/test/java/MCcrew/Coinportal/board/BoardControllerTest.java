@@ -8,9 +8,11 @@ import MCcrew.Coinportal.cointemper.CoinTemperService;
 import MCcrew.Coinportal.comment.CommentController;
 import MCcrew.Coinportal.comment.CommentRepository;
 import MCcrew.Coinportal.comment.CommentService;
+import MCcrew.Coinportal.domain.BetHistory;
 import MCcrew.Coinportal.domain.Comment;
 import MCcrew.Coinportal.domain.Post;
 import MCcrew.Coinportal.domain.User;
+import MCcrew.Coinportal.game.GameRepository;
 import MCcrew.Coinportal.game.GameService;
 import MCcrew.Coinportal.login.JwtService;
 import MCcrew.Coinportal.login.LoginService;
@@ -28,6 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.io.UnsupportedEncodingException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +54,7 @@ class BoardControllerTest {
     @Autowired private LoginService loginService;
     @Autowired private JwtService jwtService;
     @Autowired private AttachmentRepository attachmentRepository;
+    @Autowired private GameRepository gameRepository;
     @Autowired private EntityManager em;
 
     @Test
@@ -574,5 +579,40 @@ class BoardControllerTest {
     public void api테스트() throws JsonProcessingException {
         String price=  gameService.getPriceFromBithumb("BTC/KRW");
         System.out.println(price);
+    }
+    @Test
+    @Commit
+    public void BetHistory테스트데이터삽입(){
+        for(int i = 0; i< 50; i++) {
+            Date date = new Date();
+            BetHistory betHistory = new BetHistory();
+
+            double priceBTC = Double.valueOf(gameService.getPriceFromBithumb("BTC/KRW"));
+            double priceETH = Double.valueOf(gameService.getPriceFromBithumb("ETH/KRW"));
+            double priceXRP = Double.valueOf(gameService.getPriceFromBithumb("XRP/KRW"));
+
+            betHistory.setUserId(65L);
+            betHistory.setPredictedAt(date);
+
+            betHistory.setBTC(true);
+            betHistory.setETH(true);
+            betHistory.setXRP(true);
+
+            betHistory.setBtcPriceNow(priceBTC);
+            betHistory.setEthPriceNow(priceETH);
+            betHistory.setXrpPriceNow(priceXRP);
+
+            gameRepository.save(betHistory);
+        }
+    }
+
+    @Test
+    public void 코인게임점수판별시시간순정렬테스트(){
+        Date tempDate = new Date();
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd a HH:mm:ss");
+//        String date = simpleDateFormat.format(tempDate);
+
+        Timestamp timestamp = Timestamp.valueOf(tempDate.toString());
+        System.out.println(timestamp);
     }
 }

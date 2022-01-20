@@ -29,7 +29,9 @@ public class User {
     @Column(length = 2)
     private char status;
 
-
-    // private double avgRate; // 점수 평균
+    // coin game
+    private int previousWins; // 이전 승리 횟수
+    private int totalPlay;    // 전체 플레이 횟수
+    private double winsRate;  // 승률
 }
 

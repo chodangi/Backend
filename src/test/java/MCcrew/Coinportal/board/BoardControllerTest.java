@@ -32,6 +32,7 @@ import javax.persistence.EntityManager;
 import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -609,10 +610,8 @@ class BoardControllerTest {
     @Test
     public void 코인게임점수판별시시간순정렬테스트(){
         Date tempDate = new Date();
-//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd a HH:mm:ss");
-//        String date = simpleDateFormat.format(tempDate);
-
-        Timestamp timestamp = Timestamp.valueOf(tempDate.toString());
-        System.out.println(timestamp);
+        LocalDateTime localDateTime = LocalDateTime.now();
+        System.out.println(tempDate);
+        System.out.println(localDateTime);
     }
 }

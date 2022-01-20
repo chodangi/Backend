@@ -34,20 +34,21 @@ public class GameService {
 
     private final GameRepository gameRepository;
     private final UserRepository userRepository;
-
+    private List<Long> playerList = new ArrayList<>();  // 플레이에 참여한 유저
     private final Random randomGen = new Random();
 
-
-    private int botWins = 0;            // 훈수 승리 횟수
+    private int botPreviousWins = 0;    // 훈수 이전 승리 횟수
     private int botTotalPlay = 0;       // 훈수 전체 플레이 횟수
+    private int botPoint = 0;           // 훈수 점수
     private double botWinRate = 0.0;    // 훈수 승률
-    private double botBtcPrice = 0;        // 훈수 당시 btc 가격
-    private double botEthPrice = 0;        // 훈수 당시 eth 가격
-    private double botXrpPrice = 0;        // 훈수 당시 xrp 가격
 
-    private boolean BTC = false;
-    private boolean ETH = false;
-    private boolean XRP = false;
+    private double botBtcPriceTemp = 0;        // 훈수 당시 btc 가격
+    private double botEthPriceTemp = 0;        // 훈수 당시 eth 가격
+    private double botXrpPriceTemp = 0;        // 훈수 당시 xrp 가격
+
+    private boolean botBTC = false;
+    private boolean botETH = false;
+    private boolean botXRP = false;
 
     @Autowired
     public GameService(GameRepository gameRepository, UserRepository userRepository) {
@@ -58,23 +59,29 @@ public class GameService {
     /*
         코인 게임 코어 로직
      */
-    boolean tempBTC;
-    boolean tempETH;
-    boolean tempXRP;
-
     Date tempDate;
-    // (승리/전체플레이)*100 = 승률%
-    public boolean gameTimer(){
+    /*
+       승률 계산: (승리/전체플레이)*100 = 승률%
+    */
+    public double calWinRate(int previousWins, int totalPlay, int wins){
+        return (double) (((previousWins + wins) / (totalPlay)) * 100);
+    }
+
+    public boolean gameTimer() {
         System.out.println("creating timer...");
         Timer m = new Timer();
-        TimerTask task = new TimerTask(){
+
+        TimerTask task = new TimerTask() {
             @Override
             public void run() {
+                double priceBTC = 0.0;
+                double priceETH = 0.0;
+                double priceXRP = 0.0;
                 try {
-                    double priceBTC = Double.valueOf(getPriceFromBithumb("BTC/KRW"));
-                    double priceETH = Double.valueOf(getPriceFromBithumb("ETH/KRW"));
-                    double priceXRP = Double.valueOf(getPriceFromBithumb("XRP/KRW"));
-                }catch(Exception e){
+                    priceBTC = Double.valueOf(getPriceFromBithumb("BTC/KRW"));
+                    priceETH = Double.valueOf(getPriceFromBithumb("ETH/KRW"));
+                    priceXRP = Double.valueOf(getPriceFromBithumb("XRP/KRW"));
+                } catch (Exception e) {
                     e.printStackTrace();
                     System.out.println("error calling coin price api in timer.");
                     m.cancel();
@@ -83,41 +90,102 @@ public class GameService {
                 /*
                     훈수 승률 계산
                  */
+                int wins = 0;
+                if (botBtcPriceTemp >= priceBTC) {
+                    if(botBTC == true){
+                        ++wins;
+                    }
+                }else{
+                    if(botBTC == false){
+                        ++wins;
+                    }
+                }
+                if (botEthPriceTemp >= priceETH) {
+                    if(botETH == true){
+                        ++wins;
+                    }
+                }
+                else{
+                    if(botETH == false){
+                        ++wins;
+                    }
+                }
+                if (botXrpPriceTemp >= priceXRP) {
+                    if(botXRP == true){
+                        ++wins;
+                    }
+                }else{
+                    if(botXRP == false){
+                        ++wins;
+                    }
+                }
+                botPoint = (int) botPoint + wins * 100;
+                botTotalPlay += 1;
+                botPreviousWins += wins;
+                botWinRate = calWinRate(botPreviousWins, botTotalPlay, wins);
 
                 /*
                     유저들 승률 계산
                  */
                 List<BetHistory> findBetHistory = gameRepository.findAllByDate(tempDate);
+                wins = 0;
+                for(BetHistory betHistory: findBetHistory){
+                    User findUser = userRepository.findById(betHistory.getId());
 
+                    if (betHistory.getBtcPriceNow() >= priceBTC) {
+                        if(betHistory.isBTC() == true){
+                            ++wins;
+                        }
+                    }else{
+                        if(betHistory.isBTC() == false){
+                            ++wins;
+                        }
+                    }
+                    if (betHistory.getEthPriceNow() >= priceETH) {
+                        if(betHistory.isETH() == true){
+                            ++wins;
+                        }
+                    }
+                    else{
+                        if(betHistory.isETH() == false){
+                            ++wins;
+                        }
+                    }
+                    if (betHistory.getXrpPriceNow() >= priceXRP) {
+                        if(betHistory.isXRP() == true){
+                            ++wins;
+                        }
+                    }else{
+                        if(betHistory.isXRP() == false){
+                            ++wins;
+                        }
+                    }
+                    findUser.setPoint(findUser.getPoint() + ((int) (100*wins)));
+                    findUser.setWinsRate(calWinRate(findUser.getPreviousWins(), findUser.getTotalPlay(), wins));
+                    findUser.setPreviousWins(findUser.getPreviousWins() + wins);
+                    findUser.setTotalPlay(findUser.getTotalPlay() + 1);
+                    userRepository.save(findUser);
+                }
 
-                /*
-                    새로운 랜덤 훈수 생성
-                 */
-
-                // chaging random prediction
-                BTC = randomGen.nextBoolean();
-                ETH = randomGen.nextBoolean();
-                XRP = randomGen.nextBoolean();
-                tempBTC = BTC;
-                tempETH = ETH;
-                tempXRP = XRP;
+                // changing random prediction
+                botBTC = randomGen.nextBoolean();
+                botETH = randomGen.nextBoolean();
+                botXRP = randomGen.nextBoolean();
+                botBtcPriceTemp = Double.valueOf(getPriceFromBithumb("BTC/KRW"));
+                botEthPriceTemp = Double.valueOf(getPriceFromBithumb("ETH/KRW"));
+                botXrpPriceTemp = Double.valueOf(getPriceFromBithumb("XRP/KRW"));
+                playerList.clear(); // 플레이한 유저 리스트 초기화
             }
         };
 
         System.out.println("executing timer...");
-        m.schedule(task, 5000, 1000*60*60*8); // 5초 이후 실행 - 8시간 주기로 실행
+        m.schedule(task, 5000, 1000 * 60 * 60 * 8); // 5초 이후 실행 - 8시간 주기로 실행
         return true;
-    }
-    /*
-        승률 계산
-     */
-    public double calWinRate(){
-        return 1.1;
     }
 
     /*
-                빗썸에서 코인 현재가격 가져오기
-             */
+       빗썸에서 코인 현재가격 가져오기
+    */
     public String getPriceFromBithumb(String coinSymbol){
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -172,6 +240,11 @@ public class GameService {
         코인 궁예하기
      */
     public BetHistory predict(BetHistoryDto betHistoryDto, Long userId) {
+        if(playerList.contains(userId)) // 이미 플레이한 유저라면 이용 불가능
+            return new BetHistory();
+
+        playerList.add(userId);
+
         Date date = new Date();
         BetHistory betHistory = new BetHistory();
 
@@ -197,6 +270,11 @@ public class GameService {
         코인 훈수 따라가기
      */
     public BetHistory predictRandom(Long userId) {
+        if(playerList.contains(userId)) // 이미 플레이한 유저라면 이용 불가능
+            return new BetHistory();
+
+        playerList.add(userId);
+
         Date date = new Date();
         BetHistory betHistory = new BetHistory();
 
@@ -207,9 +285,9 @@ public class GameService {
         betHistory.setUserId(userId);
         betHistory.setPredictedAt(date);
 
-        betHistory.setBTC(this.BTC);
-        betHistory.setETH(this.ETH);
-        betHistory.setXRP(this.XRP);
+        betHistory.setBTC(this.botBTC);
+        betHistory.setETH(this.botETH);
+        betHistory.setXRP(this.botXRP);
 
         betHistory.setBtcPriceNow(priceBTC);
         betHistory.setEthPriceNow(priceETH);
@@ -230,9 +308,9 @@ public class GameService {
      */
     public BetHistoryDto getRandomCoinPrediction() {
         BetHistoryDto betHistoryDto = new BetHistoryDto();
-        betHistoryDto.setBTC(this.BTC);
-        betHistoryDto.setETH(this.ETH);
-        betHistoryDto.setXRP(this.XRP);
+        betHistoryDto.setBTC(this.botBTC);
+        betHistoryDto.setETH(this.botETH);
+        betHistoryDto.setXRP(this.botXRP);
         return betHistoryDto;
     }
 }

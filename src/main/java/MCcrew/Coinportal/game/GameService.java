@@ -1,6 +1,7 @@
 package MCcrew.Coinportal.game;
 
 import MCcrew.Coinportal.Dto.BetHistoryDto;
+import MCcrew.Coinportal.Dto.UserRankingDto;
 import MCcrew.Coinportal.domain.BetHistory;
 import MCcrew.Coinportal.domain.User;
 import MCcrew.Coinportal.user.UserRepository;
@@ -28,12 +29,15 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class GameService {
 
     private final GameRepository gameRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
+
     private List<Long> playerList = new ArrayList<>();  // 플레이에 참여한 유저
     private final Random randomGen = new Random();
 
@@ -50,15 +54,15 @@ public class GameService {
     private boolean botETH = false;
     private boolean botXRP = false;
 
-    @Autowired
-    public GameService(GameRepository gameRepository, UserRepository userRepository) {
+    public GameService(GameRepository gameRepository, UserRepository userRepository, UserService userService) {
         this.gameRepository = gameRepository;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     /*
-        코인 게임 코어 로직
-     */
+            코인 게임 코어 로직
+         */
     Date tempDate;
     /*
        승률 계산: (승리/전체플레이)*100 = 승률%
@@ -127,7 +131,9 @@ public class GameService {
                 /*
                     유저들 승률 계산
                  */
-                List<BetHistory> findBetHistory = gameRepository.findAllByDate(tempDate);
+                List<BetHistory> findBetHistory = gameRepository.findAll();
+                findBetHistory = findBetHistory.stream().filter(b -> b.isEvaluated() == false).collect(Collectors.toList());
+
                 wins = 0;
                 for(BetHistory betHistory: findBetHistory){
                     User findUser = userRepository.findById(betHistory.getId());
@@ -175,6 +181,10 @@ public class GameService {
                 botEthPriceTemp = Double.valueOf(getPriceFromBithumb("ETH/KRW"));
                 botXrpPriceTemp = Double.valueOf(getPriceFromBithumb("XRP/KRW"));
                 playerList.clear(); // 플레이한 유저 리스트 초기화
+                for(BetHistory betHistory: findBetHistory){
+                    betHistory.setEvaluated(true);
+                    gameRepository.save(betHistory);
+                }
             }
         };
 
@@ -263,6 +273,8 @@ public class GameService {
         betHistory.setEthPriceNow(priceETH);
         betHistory.setXrpPriceNow(priceXRP);
 
+        betHistory.setEvaluated(false);
+
         return gameRepository.save(betHistory);
     }
 
@@ -293,6 +305,8 @@ public class GameService {
         betHistory.setEthPriceNow(priceETH);
         betHistory.setXrpPriceNow(priceXRP);
 
+        betHistory.setEvaluated(false);
+
         return gameRepository.save(betHistory);
     }
 
@@ -312,6 +326,18 @@ public class GameService {
         betHistoryDto.setETH(this.botETH);
         betHistoryDto.setXRP(this.botXRP);
         return betHistoryDto;
+    }
+
+    /*
+        랭킹 가져오기 + 코인봇 점수 추가해서 리턴
+     */
+    public List<UserRankingDto> getGamePointRanking() {
+        List<UserRankingDto> userRankingDtoList = userService.getUserRanking();
+        UserRankingDto botUser = new UserRankingDto();
+        botUser.setNickname("coinBot");
+        botUser.setPoint(botPoint);
+        userRankingDtoList.add(0, botUser);
+        return userRankingDtoList;
     }
 }
 

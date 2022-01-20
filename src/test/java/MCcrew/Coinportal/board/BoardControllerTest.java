@@ -614,4 +614,12 @@ class BoardControllerTest {
         System.out.println(tempDate);
         System.out.println(localDateTime);
     }
+
+    @Test
+    public void 초기값테스트(){
+        List<User> findUserList = userRepository.findAll();
+        for(User user: findUserList){
+            System.out.println(user.getPreviousWins());
+        }
+    }
 }

@@ -135,13 +135,4 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
             return userService.deleteUser(userId);
         }
     }
-
-    /*
-        유저 랭킹
-     */
-    @GetMapping("/user/ranking")
-    @ResponseBody
-    public List<UserRankingDto> getUserRankingController(){
-        return userService.getUserRanking();
-    }
 }

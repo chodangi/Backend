@@ -36,5 +36,7 @@ public class BetHistory {   // 코인 맞추기 게임 기록
     private double ethPriceNow;
     private double xrpPriceNow;
 
+    private boolean evaluated;  // 점수 환산 여부
+
     // private double avgRate; // 점수 평균
 }

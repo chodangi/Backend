@@ -40,4 +40,9 @@ public class GameRepository {
         String sql = "select b from BetHistory b where b.predictedAt > :tempDate";
         return em.createQuery(sql, BetHistory.class).setParameter("tempDate", tempDate, TemporalType.TIMESTAMP).getResultList();
     }
+
+    public List<BetHistory> findAll(){
+        String sql = "select b from BetHistory b";
+        return em.createQuery(sql, BetHistory.class).getResultList();
+    }
 }

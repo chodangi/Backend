@@ -1,6 +1,7 @@
 package MCcrew.Coinportal.game;
 
 import MCcrew.Coinportal.Dto.BetHistoryDto;
+import MCcrew.Coinportal.Dto.UserRankingDto;
 import MCcrew.Coinportal.domain.BetHistory;
 import MCcrew.Coinportal.login.JwtService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -119,4 +120,13 @@ public class GameController {  // 게임 관련 api 컨트롤러
 //    public boolean timerTest(){
 //        return gameService.gameTimer();
 //    }
+
+    /*
+        유저 랭킹
+     */
+    @GetMapping("/game/ranking")
+    @ResponseBody
+    public List<UserRankingDto> getUserRankingController(){
+        return gameService.getGamePointRanking();
+    }
 }

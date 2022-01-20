@@ -320,14 +320,6 @@
 //        System.out.println("userEmail = " + userEmail);
 //    }
 //
-//    @Test
-//    public void jwt인증이후유저로그인테스트(){
-//        String code = "Br41LeY3GBU2YLLDu4xv2Y8SQHzqxXyBJArTwcX6LYGw33jkN-0U9Fb8nKbxpsi9slT56QopyWAAAAF-HqDvdw";
-//        String accessToken = loginService.getAccessToken(code);
-//        HashMap<String, String> userInfo = loginService.getUserInfo(accessToken);
-//        String userName = (String) userInfo.get("nickname");
-//        String email = (String) userInfo.get("email");
-//    }
 //
 //
 //    @Test

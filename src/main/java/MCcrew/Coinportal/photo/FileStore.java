@@ -23,7 +23,7 @@ public class FileStore {
         this.boardRepository = boardRepository;
     }
 
-    @Value("${file.dir}/")
+    @Value("${file.dir}")
     private String fileDirPath;
 
     // 전체 파일 저장

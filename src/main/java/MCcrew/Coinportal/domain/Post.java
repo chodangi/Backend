@@ -18,18 +18,13 @@ import java.util.List;
 @Table(name="post")
 public class Post {            // 게시글
     @Id @GeneratedValue
-    //@Column(name = "post_id")
     private Long id;            // 디비생성 pk
     private Long userId;        // 게시글 작성자 id
-    //-----------------------------------------------------------
+
     @OneToMany(mappedBy = "post", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<Comment> comments = new ArrayList<>();
 
-//    @OneToMany(fetch = FetchType.EAGER )
-//    @JoinColumn(name = "post_id_ref")
-//    private List<Comment> comments = new ArrayList<>();
-    // -----------------------------------------------------------
     @Column(length= 15)
     private String userNickname; // 작성자 닉네임
     private String boardName;    // 게시판 종류 (ex: 자유게시판)
@@ -51,8 +46,6 @@ public class Post {            // 게시글
     @Column(length = 2)
     private char status;       // 상태
 
-    // photo
-//    @OneToMany(mappedBy = "post", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Attachment> attachedFiles = new ArrayList<>();

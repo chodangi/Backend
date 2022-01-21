@@ -1,30 +1,30 @@
 spring:
   datasource:
-#    url: jdbc:h2:tcp://localhost/~/coinportal
-#    driver-class-name: org.h2.Driver
-#    username: sa
-#    password:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://cortal-db-1.c7mfu0whlsaf.ap-northeast-2.rds.amazonaws.com:3306/temp?autoReconnetc=true
-    username: admin
-    password: zhxjf123
+    url: jdbc:h2:tcp://localhost/~/coinportal
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://cortal-db-1.c7mfu0whlsaf.ap-northeast-2.rds.amazonaws.com:3306/temp?autoReconnetc=true
+#    username: admin
+#    password: zhxjf123
 # local test
-#  jpa:
-#    hibernate:
-#      #ddl-auto: none
-#      ddl-auto: none
-#    properties:
-#      hibernate:
-#        # show_sql: true
-#        format_sql: true
-# server test
   jpa:
-    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-    open-in-view: false
-    show-sql: true
     hibernate:
-      format_sql: true
-      ddl-auto: create
+      #ddl-auto: none
+      ddl-auto: none
+    properties:
+      hibernate:
+        # show_sql: true
+        format_sql: true
+# server test
+#  jpa:
+#    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+#    open-in-view: false
+#    show-sql: true
+#    hibernate:
+#      format_sql: true
+#      ddl-auto: create
 
 logging.level:
   org.hibernate.SQL: debug
@@ -37,9 +37,9 @@ jwt:
 # multipartFile 경로
 file:
   #Window
-  #dir: C:\\Users\\choi\\Desktop\\coin-portal\\Backend\\Coin-portal\\image\\
+  dir: C:\\Users\\choi\\Desktop\\coin-portal\\Backend\\Coin-portal\\image\\
   # Linux
-  dir: /home/ubuntu/server/image
+#  dir: /home/ubuntu/server/image
 
 # 카카오 OAuth 연결 정보
 kakao:

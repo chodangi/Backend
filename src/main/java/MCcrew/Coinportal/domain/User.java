@@ -33,5 +33,6 @@ public class User {
     private int previousWins; // 이전 승리 횟수
     private int totalPlay;    // 전체 플레이 횟수
     private double winsRate;  // 승률
+
 }
 

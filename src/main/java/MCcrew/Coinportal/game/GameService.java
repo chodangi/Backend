@@ -34,25 +34,25 @@ import java.util.stream.Collectors;
 @Service
 public class GameService {
 
-    private final GameRepository gameRepository;
-    private final UserRepository userRepository;
-    private final UserService userService;
+    private static GameRepository gameRepository;
+    private static UserRepository userRepository;
+    private static UserService userService;
 
-    private List<Long> playerList = new ArrayList<>();  // 플레이에 참여한 유저
-    private final Random randomGen = new Random();
+    private static List<Long> playerList = new ArrayList<>();  // 플레이에 참여한 유저
+    private static  Random randomGen = new Random();
 
-    private int botPreviousWins = 0;    // 훈수 이전 승리 횟수
-    private int botTotalPlay = 0;       // 훈수 전체 플레이 횟수
-    private int botPoint = 0;           // 훈수 점수
-    private double botWinRate = 0.0;    // 훈수 승률
+    private static int botPreviousWins = 0;    // 훈수 이전 승리 횟수
+    private static int botTotalPlay = 0;       // 훈수 전체 플레이 횟수
+    private static int botPoint = 0;           // 훈수 점수
+    private static double botWinRate = 0.0;    // 훈수 승률
 
-    private double botBtcPriceTemp = 0;        // 훈수 당시 btc 가격
-    private double botEthPriceTemp = 0;        // 훈수 당시 eth 가격
-    private double botXrpPriceTemp = 0;        // 훈수 당시 xrp 가격
+    private static double botBtcPriceTemp = 0;        // 훈수 당시 btc 가격
+    private static double botEthPriceTemp = 0;        // 훈수 당시 eth 가격
+    private static double botXrpPriceTemp = 0;        // 훈수 당시 xrp 가격
 
-    private boolean botBTC = false;
-    private boolean botETH = false;
-    private boolean botXRP = false;
+    private static boolean botBTC = false;
+    private static boolean botETH = false;
+    private static boolean botXRP = false;
 
     public GameService(GameRepository gameRepository, UserRepository userRepository, UserService userService) {
         this.gameRepository = gameRepository;
@@ -61,17 +61,15 @@ public class GameService {
     }
 
     /*
-            코인 게임 코어 로직
-         */
-    Date tempDate;
-    /*
        승률 계산: (승리/전체플레이)*100 = 승률%
     */
-    public double calWinRate(int previousWins, int totalPlay, int wins){
+    public static double calWinRate(int previousWins, int totalPlay, int wins){
         return (double) (((previousWins + wins) / (totalPlay)) * 100);
     }
-
-    public boolean gameTimer() {
+    /*
+            코인 게임 코어 로직
+         */
+    public static boolean gameTimer() {
         System.out.println("creating timer...");
         Timer m = new Timer();
 
@@ -196,7 +194,7 @@ public class GameService {
     /*
        빗썸에서 코인 현재가격 가져오기
     */
-    public String getPriceFromBithumb(String coinSymbol){
+    public static String getPriceFromBithumb(String coinSymbol){
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);

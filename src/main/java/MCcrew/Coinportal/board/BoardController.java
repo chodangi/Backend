@@ -3,30 +3,35 @@ package MCcrew.Coinportal.board;
 import MCcrew.Coinportal.Dto.PostDto;
 import MCcrew.Coinportal.domain.Notice;
 import MCcrew.Coinportal.domain.Post;
+import MCcrew.Coinportal.domain.Preference;
 import MCcrew.Coinportal.login.JwtService;
+import MCcrew.Coinportal.preference.PreferenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class BoardController {  // 게시판 관련 컨트롤러
 
     private final BoardService boardService;
     private final JwtService jwtService;
+    private final PreferenceService preferenceService;
 
-    @Autowired
-    public BoardController(BoardService boardService, JwtService jwtService) {
+    public BoardController(BoardService boardService, JwtService jwtService, PreferenceService preferenceService) {
         this.boardService = boardService;
         this.jwtService = jwtService;
+        this.preferenceService = preferenceService;
     }
 
     /*
-        게시글 키워드로 검색
-     */
+            게시글 키워드로 검색
+         */
     @GetMapping("/community/search")
     @ResponseBody
     public List<Post> searchByKeywordController(@RequestParam("keyword") String keyword){
@@ -90,9 +95,24 @@ public class BoardController {  // 게시판 관련 컨트롤러
      */
     @GetMapping("/community/single-post")
     @ResponseBody
-    public Post getContentController(@RequestParam("postId") Long postId){
-        boardService.viewPost(postId); // 조회수 1 증가
-        return boardService.getSinglePost(postId);
+    public Map<Post, Preference> getContentController(@RequestParam("postId") Long postId, @RequestHeader String jwt) throws UnsupportedEncodingException {
+        HashMap hashMap = new HashMap();
+        if(jwt == null){
+            boardService.viewPost(postId); // 조회수 1 증가
+            hashMap.put(boardService.getSinglePost(postId), new Preference());
+            return hashMap;
+        }else{
+            Long userId = jwtService.getUserIdByJwt(jwt);
+            if(userId == 0L){
+                boardService.viewPost(postId); // 조회수 1 증가
+                hashMap.put(boardService.getSinglePost(postId), new Preference());
+                return hashMap;
+            }else{
+                boardService.viewPost(postId); // 조회수 1 증가
+                hashMap.put(boardService.getSinglePost(postId), preferenceService.getMyLike(postId, userId));
+                return hashMap;
+            }
+        }
     }
 
     /*

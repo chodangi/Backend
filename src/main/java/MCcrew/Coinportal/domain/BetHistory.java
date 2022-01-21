@@ -22,8 +22,6 @@ public class BetHistory {   // 코인 맞추기 게임 기록
     @Column(name = "bethistory_id")
     private Long id;
 
-//    @ManyToOne
-//    @JoinColumn(name = "user_id")
     private Long userId;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -38,5 +36,4 @@ public class BetHistory {   // 코인 맞추기 게임 기록
 
     private boolean evaluated;  // 점수 환산 여부
 
-    // private double avgRate; // 점수 평균
 }

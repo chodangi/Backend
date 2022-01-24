@@ -4,6 +4,8 @@ import MCcrew.Coinportal.domain.Dto.BetHistoryDto;
 import MCcrew.Coinportal.domain.Dto.UserRankingDto;
 import MCcrew.Coinportal.domain.BetHistory;
 import MCcrew.Coinportal.login.JwtService;
+import MCcrew.Coinportal.util.Message;
+import MCcrew.Coinportal.util.StatusEnum;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -37,8 +39,12 @@ public class GameController {  // 게임 관련 api 컨트롤러
             리플: XRP/KRW
         */
     @GetMapping("/coin-price/{symbol}")
-    public String coinInfo(@PathVariable String symbol) throws JsonProcessingException {
-        return gameService.getPriceFromBithumb(symbol);
+    public Message coinInfo(@PathVariable String symbol){
+        String result =  gameService.getPriceFromBithumb(symbol);
+        if(result.equals("null")){
+            return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", result);
+        }
+        return new Message(StatusEnum.OK, "OK", result);
     }
 
     /*
@@ -49,23 +55,30 @@ public class GameController {  // 게임 관련 api 컨트롤러
         XRP_KRW
      */
     @GetMapping("/coin-chart/{symbol}")
-    public String coinChart(@PathVariable String symbol){
-        return gameService.getChartFromBithumb(symbol);
+    public Message coinChart(@PathVariable String symbol){
+        String result = "";
+        try {
+            result = gameService.getChartFromBithumb(symbol);
+        }catch(Exception e){
+            return new Message(StatusEnum.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", result);
+        }
+        return new Message(StatusEnum.OK, "OK", result);
     }
 
     /*
         코인 궁예하기
      */
     @PostMapping("/play")
-    public BetHistory predictCoinController(@RequestBody BetHistoryDto betHistoryDto, @RequestHeader String jwt) throws UnsupportedEncodingException {
+    public Message predictCoinController(@RequestBody BetHistoryDto betHistoryDto, @RequestHeader String jwt){
         if(jwt == null){
-            return new BetHistory();
+            return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", new BetHistory());
         }
         Long userId = jwtService.getUserIdByJwt(jwt);
         if(userId == 0L){
-            return new BetHistory();
+            return new Message(StatusEnum.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", new BetHistory());
         }else{
-            return gameService.predict(betHistoryDto, userId);
+            BetHistory betHistory = gameService.predict(betHistoryDto, userId);
+            return new Message(StatusEnum.OK, "OK", betHistory);
         }
     }
 
@@ -73,15 +86,16 @@ public class GameController {  // 게임 관련 api 컨트롤러
         훈수 예측 따라가기
      */
     @PostMapping("/random")
-    public BetHistory predictCoinRandomController(@RequestHeader String jwt) throws UnsupportedEncodingException {
+    public Message predictCoinRandomController(@RequestHeader String jwt){
         if(jwt == null){
-            return new BetHistory();
+            return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", new BetHistory());
         }
         Long userId = jwtService.getUserIdByJwt(jwt);
         if(userId == 0L){
-            return new BetHistory();
+            return new Message(StatusEnum.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", new BetHistory());
         }else{
-            return gameService.predictRandom(userId);
+            BetHistory betHistory = gameService.predictRandom(userId);
+            return new Message(StatusEnum.OK, "OK", betHistory);
         }
     }
 
@@ -89,15 +103,16 @@ public class GameController {  // 게임 관련 api 컨트롤러
         내 전적 보기
      */
     @GetMapping("/my-history")
-    public List<BetHistory> getMyBetHistoryController(@RequestHeader String jwt) throws UnsupportedEncodingException {
+    public Message getMyBetHistoryController(@RequestHeader String jwt){
         if(jwt == null){
-            return new ArrayList<>();
+            return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", new ArrayList<>());
         }
         Long userId = jwtService.getUserIdByJwt(jwt);
         if(userId == 0L){
-            return new ArrayList<>();
+            return new Message(StatusEnum.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", new ArrayList<>());
         }else{
-            return gameService.getMyBetHistory(userId);
+            List<BetHistory> betHistoryList = gameService.getMyBetHistory(userId);
+            return new Message(StatusEnum.OK, "OK", betHistoryList);
         }
     }
 
@@ -105,15 +120,17 @@ public class GameController {  // 게임 관련 api 컨트롤러
         현재 코인 훈수 보기
      */
     @GetMapping("/coin-prediction")
-    public BetHistoryDto getRandomCoinPredictionController(){
-        return gameService.getRandomCoinPrediction();
+    public Message getRandomCoinPredictionController(){
+        BetHistoryDto betHistoryDto =  gameService.getRandomCoinPrediction();
+        return new Message(StatusEnum.OK, "OK", betHistoryDto);
     }
 
     /*
         유저 랭킹
      */
     @GetMapping("/ranking")
-    public List<UserRankingDto> getUserRankingController(){
-        return gameService.getGamePointRanking();
+    public Message getUserRankingController(){
+        List<UserRankingDto> resultList = gameService.getGamePointRanking();
+        return new Message(StatusEnum.OK, "OK", resultList);
     }
 }

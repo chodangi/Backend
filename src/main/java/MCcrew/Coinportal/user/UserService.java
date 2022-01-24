@@ -6,6 +6,7 @@ import MCcrew.Coinportal.domain.User;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.NoResultException;
 import java.util.*;
 
 @Service
@@ -30,7 +31,6 @@ public class UserService {  // 유저 프로필 핵심 로직 구현
         유저 정보 변경
      */
     public User updateUser(UserDto userDto){
-        // User findUser = userRepository.findByNickname(originalNickname);
         User findUser = userRepository.findById(userDto.getUserId());
         findUser.setUserNickname(userDto.getUserNickname());
         findUser.setDark(userDto.isDark());
@@ -41,7 +41,7 @@ public class UserService {  // 유저 프로필 핵심 로직 구현
     /*
         전체 유저 반환
      */
-    public List<User> getAllUser() {
+    public List<User> getAllUser() throws NoResultException {
         return userRepository.findAll();
     }
 

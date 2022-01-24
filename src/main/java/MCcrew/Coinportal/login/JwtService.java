@@ -86,12 +86,16 @@ public class JwtService {
     /*
         jwt 를 통해 사용자 user 반환
      */
-    public Long getUserIdByJwt(String jwt) throws UnsupportedEncodingException {
+    public Long getUserIdByJwt(String jwt){
         boolean valid = validateJwt(jwt);
+        String email = "";
         if(valid) {
             System.out.println("유효한 jwt 입니다. jwt:" + jwt);
-
-            String email = getUserEmail(jwt);
+            try {
+                email = getUserEmail(jwt);
+            }catch(UnsupportedEncodingException e){
+                return 0L;
+            }
             String nickname = this.getNicknameFromEmail(email);
             System.out.println("founded nickname and email = " + email + "/" + nickname);
             try {

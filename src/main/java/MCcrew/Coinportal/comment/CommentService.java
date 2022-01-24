@@ -49,15 +49,14 @@ public class CommentService {
         newComment.setCreatedAt(date);
         newComment.setUpdateAt(date);
         newComment.setStatus('A');
-        findPost.getComments().add(newComment); // post에 댓글 넣어주기
-        // return boardRepository.save(findPost);
+        findPost.getComments().add(newComment);
         return commentRepository.save(newComment);
     }
 
     /*
         댓글 수정
      */
-    public Comment updateComment(CommentDto commentDto, String jwt) throws UnsupportedEncodingException {
+    public Comment updateComment(CommentDto commentDto, String jwt){
         Comment findComment = commentRepository.findById(commentDto.getCommentId());
         Date date = new Date(); // 수정 시간
         Long userId = jwtService.getUserIdByJwt(jwt);
@@ -81,7 +80,7 @@ public class CommentService {
     /*
         삭제 상태로 변경
      */
-    public boolean status2Delete(Long commentId, String jwt) throws UnsupportedEncodingException {
+    public boolean status2Delete(Long commentId, String jwt){
         Long userId = jwtService.getUserIdByJwt(jwt);
         if(userId == 0L){
             return false;

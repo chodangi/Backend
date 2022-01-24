@@ -56,7 +56,7 @@ public class UserRepository {
     /*
         유저 엔티티 전체 반환
      */
-    public List<User> findAll() {
+    public List<User> findAll() throws NoResultException{
         return em.createQuery("select u from User u", User.class)
                 .getResultList(); // 전체 유저 목록 가져오기
     }

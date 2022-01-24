@@ -2,13 +2,13 @@ package MCcrew.Coinportal.preference;
 
 import MCcrew.Coinportal.domain.Preference;
 import MCcrew.Coinportal.login.JwtService;
+import MCcrew.Coinportal.util.Message;
+import MCcrew.Coinportal.util.StatusEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,15 +31,19 @@ public class PreferenceController {
         게시글 좋아요 클릭
     */
     @PostMapping("/post-like/{post-id}")
-    public Preference likeController(@PathVariable Long postId, @RequestHeader String jwt) throws UnsupportedEncodingException {
+    public Message likeController(@PathVariable("post-id") Long postId, @RequestHeader String jwt)  {
         if(jwt == null){
-            return new Preference();
+            return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", new Preference());
         }
         Long userId = jwtService.getUserIdByJwt(jwt);
         if(userId == 0L){
-            return new Preference();
+            return new Message(StatusEnum.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", new Preference());
         }else{
-            return preferenceService.clickLikes(postId, userId);
+            Preference preference = preferenceService.clickLikes(postId, userId);
+            if(preference.getUserId() == null){
+                return new Message(StatusEnum.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", preference);
+            }
+            return new Message(StatusEnum.OK, "OK", preference);
         }
     }
 
@@ -47,15 +51,19 @@ public class PreferenceController {
         게시글 싫어요 클릭
      */
     @PostMapping("/post-dislike/{post-id}")
-    public Preference dislikeController(@PathVariable Long postId, @RequestHeader String jwt) throws UnsupportedEncodingException {
+    public Message dislikeController(@PathVariable("post-id") Long postId, @RequestHeader String jwt){
         if(jwt == null){
-            return new Preference();
+            return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", new Preference());
         }
         Long userId = jwtService.getUserIdByJwt(jwt);
         if(userId == 0L){
-            return new Preference();
+            return new Message(StatusEnum.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", new Preference());
         }else{
-            return preferenceService.clickDislikes(postId, userId);
+            Preference preference = preferenceService.clickDislikes(postId, userId);
+            if(preference.getUserId() == null){
+                return new Message(StatusEnum.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", preference);
+            }
+            return new Message(StatusEnum.OK, "OK", preference);
         }
     }
 
@@ -63,15 +71,17 @@ public class PreferenceController {
         내가 누른 좋아요 모두 보기
      */
     @GetMapping("/my-like")
-    public List<Preference> myLikeController(@RequestHeader String jwt) throws UnsupportedEncodingException {
+    public Message myLikeController(@RequestHeader String jwt){
         if(jwt == null){
-            return new ArrayList<>();
+            return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", new ArrayList<>());
         }
         Long userId = jwtService.getUserIdByJwt(jwt);
         if(userId == 0L){
-            return new ArrayList<>();
+            return new Message(StatusEnum.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", new ArrayList<>());
+
         }else{
-            return preferenceService.getMyLikeAll(userId);
+            List<Preference> preferenceList = preferenceService.getMyLikeAll(userId);
+            return new Message(StatusEnum.OK, "OK" , preferenceList);
         }
     }
 }

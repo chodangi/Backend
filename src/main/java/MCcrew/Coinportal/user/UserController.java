@@ -7,11 +7,15 @@ import MCcrew.Coinportal.domain.Comment;
 import MCcrew.Coinportal.domain.Post;
 import MCcrew.Coinportal.domain.User;
 import MCcrew.Coinportal.login.JwtService;
+import MCcrew.Coinportal.util.Message;
+import MCcrew.Coinportal.util.StatusEnum;
+import jdk.jshell.Snippet;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.NoResultException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,23 +43,30 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
                 모든 유저 반환
              */
     @GetMapping("/users")
-    public List<User> getAllUserController(){
-        return userService.getAllUser();
+    public Message getAllUserController(){
+        List<User> result = null;
+        try {
+            result = userService.getAllUser();
+            return new Message(StatusEnum.OK, "OK", result);
+        }catch(NoResultException e){
+            return new Message(StatusEnum.NOT_FOUND, "NOT_FOUND", result);
+        }
     }
 
     /*
         내가 작성한 게시글 반환
      */
     @GetMapping("/my-post")
-    public List<Post> getMyPostController(@RequestHeader String jwt) throws UnsupportedEncodingException {
+    public Message getMyPostController(@RequestHeader String jwt) {
         if(jwt == null){
-            return new ArrayList<>();
+            return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", false);
         }
         Long userId = jwtService.getUserIdByJwt(jwt);
         if(userId == 0L){
-            return new ArrayList<>();
+            return new Message(StatusEnum.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", false);
         }else{
-            return boardService.getMyPost(userId);
+            List<Post> result = boardService.getMyPost(userId);
+            return new Message(StatusEnum.OK, "OK", result);
         }
     }
 
@@ -63,15 +74,16 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
         내가 작성한 댓글 반환
      */
     @GetMapping("/my-comment")
-    public List<Comment> getMyCommentController(@RequestHeader String jwt) throws UnsupportedEncodingException {
+    public Message getMyCommentController(@RequestHeader String jwt){
         if(jwt == null){
-            return new ArrayList<>();
+            return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", false);
         }
         Long userId = jwtService.getUserIdByJwt(jwt);
         if(userId == 0L){
-            return new ArrayList<>();
+            return new Message(StatusEnum.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", false);
         }else{
-            return commentService.getMyComment(userId);
+            List<Comment> commentList =  commentService.getMyComment(userId);
+            return new Message(StatusEnum.OK ,"OK", commentList);
         }
     }
 
@@ -79,15 +91,16 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
         내 설정값 반환
      */
     @GetMapping("/my-settings")
-    public User getMySettingController(@RequestHeader String jwt ) throws UnsupportedEncodingException {
+    public Message getMySettingController(@RequestHeader String jwt ) {
         if(jwt == null){
-            return new User();
+            return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", false);
         }
         Long userId = jwtService.getUserIdByJwt(jwt);
         if(userId == 0L){
-            return new User();
+            return new Message(StatusEnum.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", false);
         }else{
-            return userService.getUserById(userId);
+            User user =  userService.getUserById(userId);
+            return new Message(StatusEnum.OK ,"OK", user);
         }
     }
 
@@ -95,15 +108,16 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
         설정 변경 - 닉네임 변경도 해당 api 에서 수행
      */
     @PostMapping("/my-settings")
-    public User updateMySettingController(@RequestBody UserDto userDto, @RequestHeader String jwt ) throws UnsupportedEncodingException {
+    public Message updateMySettingController(@RequestBody UserDto userDto, @RequestHeader String jwt ){
         if(jwt == null){
-            return new User();
+            return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", false);
         }
         Long userId = jwtService.getUserIdByJwt(jwt);
         if(userId == 0L){
-            return new User();
+            return new Message(StatusEnum.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", false);
         }else{
-            return userService.updateUser(userDto);
+            User user = userService.updateUser(userDto);
+            return new Message(StatusEnum.OK ,"OK", user);
         }
     }
 
@@ -111,15 +125,16 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
         회원 탈퇴
      */
     @DeleteMapping("/user")
-    public boolean deleteUserController(@RequestHeader String jwt) throws UnsupportedEncodingException {
+    public Message deleteUserController(@RequestHeader String jwt) {
         if(jwt == null){
-            return false;
+            return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", false);
         }
         Long userId = jwtService.getUserIdByJwt(jwt);
         if(userId == 0L){
-            return false;
+            return new Message(StatusEnum.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", false);
         }else{
-            return userService.deleteUser(userId);
+            boolean result =  userService.deleteUser(userId);
+            return new Message(StatusEnum.OK ,"OK", result);
         }
     }
 }

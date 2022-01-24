@@ -52,9 +52,9 @@ public class BoardService {   // 게시판 관련 핵심 로직 구현
                              */
     @Transactional
     public List<Post> searchPostsByKeyword(String keyword) {
-        //List<Post> postList = boardRepository.findByContentContaining(keyword); // query 직접 작성
         List<Post> postList = boardRepository2.findByContentContaining(keyword); // spring Data 사용
-        if(postList.isEmpty()) return new ArrayList<>();
+        if(postList.isEmpty())
+            return new ArrayList<>();
         return postList;
     }
     /*
@@ -62,7 +62,6 @@ public class BoardService {   // 게시판 관련 핵심 로직 구현
      */
     @Transactional
     public List<Post> searchPostsByNickname(String nickname) {
-        //List<Post> postList = boardRepository.findByContentContaining(keyword); // query 직접 작성
         List<Post> postList = boardRepository2.findByUserNicknameContaining(nickname); // spring Data 사용
         if(postList.isEmpty()) return new ArrayList<>();
         return postList;
@@ -72,9 +71,9 @@ public class BoardService {   // 게시판 관련 핵심 로직 구현
     */
     @Transactional
     public List<Post> searchPostsByPopularity() {
-        //List<Post> postList = boardRepository.findByPopularity();
         List<Post> postList = boardRepository2.findAll(Sort.by(Sort.Direction.DESC, "upCnt"));
-        if(postList.isEmpty()) return new ArrayList<>();
+        if(postList.isEmpty())
+            return new ArrayList<>();
         return postList;
     }
 
@@ -85,7 +84,11 @@ public class BoardService {   // 게시판 관련 핵심 로직 구현
 
     // 전체 게시글 조회
     public List<Post> getAllPost(){
-        return boardRepository.findAll();
+        try {
+            return boardRepository.findAll();
+        }catch(NoResultException e){
+            return new ArrayList<>();
+        }
     }
 
     /*
@@ -110,6 +113,7 @@ public class BoardService {   // 게시판 관련 핵심 로직 구현
         newPost.setStatus('A');
         return boardRepository.save(newPost);
     }
+
     /*
         선택한 게시글 수정
      */
@@ -150,7 +154,7 @@ public class BoardService {   // 게시판 관련 핵심 로직 구현
     /*
         선택한 게시글 신고
      */
-    public int reportPost(Long postId) {
+    public int reportPost(Long postId) throws Exception{
         Post findPost = boardRepository.findById(postId);
         findPost.setReportCnt(findPost.getReportCnt() + 1);
         return findPost.getReportCnt();

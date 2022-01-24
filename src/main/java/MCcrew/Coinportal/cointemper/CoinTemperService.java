@@ -30,7 +30,7 @@ public class CoinTemperService {
     /*
             현재 코인 체감 온도 반환
          */
-    public List<Double> getCoinTemper(){
+    public List<Double> getCoinTemper() throws Exception{
         List<Double> coinList = new ArrayList<>();
         coinList.add(coinTemperBTC.doubleValue());
         coinList.add(coinTemperETH.doubleValue());

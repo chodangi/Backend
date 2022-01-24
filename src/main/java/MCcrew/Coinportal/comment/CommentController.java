@@ -2,6 +2,8 @@ package MCcrew.Coinportal.comment;
 
 import MCcrew.Coinportal.domain.Dto.CommentDto;
 import MCcrew.Coinportal.domain.Comment;
+import MCcrew.Coinportal.util.Message;
+import MCcrew.Coinportal.util.StatusEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +16,6 @@ import java.io.UnsupportedEncodingException;
 public class CommentController {
     private final CommentService commentService;
 
-    // 로깅
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -25,10 +26,11 @@ public class CommentController {
     /*
          댓글 달기
      */
-    @PostMapping("/")
+    @PostMapping("/comment")
     @ResponseBody
-    public Comment commentCreateController(@RequestBody CommentDto commentDto){
-        return commentService.createComment(commentDto);
+    public Message commentCreateController(@RequestBody CommentDto commentDto){
+        Comment comment =  commentService.createComment(commentDto);
+        return new Message(StatusEnum.OK, "OK", comment);
     }
 
     /*
@@ -36,8 +38,12 @@ public class CommentController {
      */
     @PutMapping("/comment")
     @ResponseBody
-    public Comment commentUpdateController(@RequestBody CommentDto commentDto, @RequestHeader String jwt) throws UnsupportedEncodingException {
-        return commentService.updateComment(commentDto, jwt);
+    public Message commentUpdateController(@RequestBody CommentDto commentDto, @RequestHeader String jwt){
+        Comment comment =  commentService.updateComment(commentDto, jwt);
+        if(comment.getId() == null){
+            return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", comment);
+        }
+        return new Message(StatusEnum.OK, "OK", comment);
     }
 
     /*
@@ -45,8 +51,9 @@ public class CommentController {
      */
     @PutMapping("/comment/{commentId}}")
     @ResponseBody
-    public boolean commentStatus2DeleteController(@PathVariable Long commentId, @RequestHeader String jwt) throws UnsupportedEncodingException {
-        return commentService.status2Delete(commentId, jwt);
+    public Message commentStatus2DeleteController(@PathVariable Long commentId, @RequestHeader String jwt){
+         commentService.status2Delete(commentId, jwt);
+         return new Message(StatusEnum.OK, "OK", true);
     }
 
     /*
@@ -54,7 +61,8 @@ public class CommentController {
      */
     @PostMapping("/comment/{commentId}")
     @ResponseBody
-    public int reportController(@PathVariable Long commentId){
-        return commentService.reportComment(commentId);
+    public Message reportController(@PathVariable Long commentId){
+        int result = commentService.reportComment(commentId);
+        return new Message(StatusEnum.OK, "OK", result);
     }
 }

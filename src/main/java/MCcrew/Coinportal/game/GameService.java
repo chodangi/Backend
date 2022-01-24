@@ -195,12 +195,12 @@ public class GameService {
         // closing_price 만 얻도록 파싱
         String closing_price = "";
         try{
-        JSONObject jsonObject = new JSONObject(response.getBody().toString());
-        JSONObject data = jsonObject.getJSONObject("data");
-        closing_price = (String) data.get("closing_price");
+            JSONObject jsonObject = new JSONObject(response.getBody().toString());
+            JSONObject data = jsonObject.getJSONObject("data");
+            closing_price = (String) data.get("closing_price");
         }catch(Exception e){
             e.printStackTrace();
-            return "Exception while parsing json Ojbject";
+            return "null";
         }
         return closing_price;
     }
@@ -209,7 +209,7 @@ public class GameService {
         <반환값 포맷>
         기준시간 - 시가 - 종가 - 고가 - 저가 - 거래량
      */
-    public String getChartFromBithumb(String coinSymbol) {
+    public String getChartFromBithumb(String coinSymbol) throws Exception{
         String intervals = "1h";  // 한시간으로 설정
 
         RestTemplate restTemplate = new RestTemplate();

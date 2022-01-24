@@ -20,6 +20,8 @@ public class LoginController {
     private final LoginService loginService;
     private final JwtService jwtService;
 
+    private final String reqURL = "https://kauth.kakao.com/oauth/logout";
+
     // 로깅
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -80,7 +82,6 @@ public class LoginController {
      */
     @GetMapping(value="/logout")
     public void logoutController() throws Exception {
-        String reqURL = "https://kauth.kakao.com/oauth/logout";
         URL url = new URL(reqURL);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 

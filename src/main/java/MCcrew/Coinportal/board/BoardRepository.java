@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class BoardRepository{
     /*
         모든 게시물 조회 
      */
-    public List<Post> findAll() {
+    public List<Post> findAll() throws NoResultException {
         String sql = "select p from Post p";
         return em.createQuery(sql, Post.class).getResultList(); // 전체 글 목록 가져오기
     }

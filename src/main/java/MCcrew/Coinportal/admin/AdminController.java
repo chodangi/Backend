@@ -10,12 +10,15 @@ import MCcrew.Coinportal.login.LoginService;
 import MCcrew.Coinportal.photo.AttachmentService;
 import MCcrew.Coinportal.user.UserService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping("/admin")
 public class AdminController {
 
     private final BoardService boardService;
@@ -48,82 +51,33 @@ public class AdminController {
             return false;
         }
     }
-
-//    /*
-//        유저 체크
-//     */
-//    @GetMapping("/admin/1")
-//    @ResponseBody
-//    public boolean allUserController(@RequestBody Long pwd){
-//
-//    }
-//
-//    /*
-//        신고된 게시물 체크
-//     */
-//    @GetMapping("/admin/1")
-//    @ResponseBody
-//    public boolean allUserController(@RequestBody Long pwd){
-//
-//    }
-//
-//    /*
-//        게시물 수정 및 삭제
-//     */
-//    @GetMapping("/admin/1")
-//    @ResponseBody
-//    public boolean allUserController(@RequestBody Long pwd){
-//
-//    }
-//
-//    /*
-//        공지글 제작
-//     */
-//    @GetMapping("/admin/1")
-//    @ResponseBody
-//    public boolean allUserController(@RequestBody Long pwd){
-//
-//    }
-//    /*
-//        배너 수정
-//     */
-//    @GetMapping("/admin/1")
-//    @ResponseBody
-//    public boolean allUserController(@RequestBody Long pwd){
-//
-//    }
-//    /*
-//        모든 게시물 확인
-//     */
-//    @GetMapping("/admin/1")
-//    @ResponseBody
-//    public boolean allUserController(@RequestBody Long pwd){
-//
-//    }
-//
-//    /*
-//        모든 댓글 확인
-//     */
-//    @GetMapping("/admin/1")
-//    @ResponseBody
-//    public boolean allUserController(@RequestBody Long pwd){
-//
-//    }
+    /*
+        추가 구현 사항
+        1. 유저 체크
+        2. 신고된 게시물 체크
+        3. 게시물 수정 및 삭제
+        4. 공지글 제작
+        5. 배너 수정
+        6. 모든 게시물 확인
+        7. 모든 댓글 확인
+     */
 
     /*
         모든 공지글 가져오기
      */
-    @GetMapping("/admin/notice/all")
-    @ResponseBody
-    public List<Notice> getNoticeController(){
-        return boardService.getNotice();
+    @GetMapping("/notices")
+    public ResponseEntity<List<Notice>> getNoticeController(){
+        List<Notice> resultList = boardService.getNotice();
+        if(resultList.isEmpty()){
+            return new ResponseEntity<>(resultList, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(resultList, HttpStatus.OK);
     }
 
     /*
         공지글 작성
      */
-    @PostMapping("/admin/notice/create")
-    @ResponseBody
+    @PostMapping("/notice")
     public Notice createNoticeController(@RequestBody NoticeDto noticeDto){
         return adminService.createNotice(noticeDto);
     }
@@ -131,19 +85,16 @@ public class AdminController {
     /*
         공지글 수정
      */
-    @PostMapping("/admin/notice/update")
-    @ResponseBody
-    public Notice updateNoticeController(@RequestBody NoticeDto noticeDto, @RequestParam Long noticeId){
-
+    @PutMapping("/notice/{noticeId}")
+    public Notice updateNoticeController(@RequestBody NoticeDto noticeDto, @PathVariable Long noticeId){
         return adminService.updateNotice(noticeDto, noticeId);
     }
 
     /*
         공지글 삭제
      */
-    @PostMapping("/admin/notice/delete")
-    @ResponseBody
-    public boolean deleteNoticeController(@RequestBody Long noticeId){
+    @DeleteMapping("/notice")
+    public boolean deleteNoticeController(@PathVariable Long noticeId){
         return adminService.deleteNotice(noticeId);
     }
 }

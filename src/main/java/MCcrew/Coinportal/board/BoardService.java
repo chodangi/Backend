@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.NoResultException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -334,6 +335,11 @@ public class BoardService {   // 게시판 관련 핵심 로직 구현
         전체 공지글 가져오기
      */
     public List<Notice> getNotice() {
-        return adminRepository.findAll();
+        try{
+            return adminRepository.findAll();
+        }catch(NoResultException e){
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 }

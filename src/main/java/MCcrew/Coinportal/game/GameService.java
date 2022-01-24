@@ -187,7 +187,7 @@ public class GameService {
         };
 
         System.out.println("executing timer...");
-        m.schedule(task, 5000, 1000 * 60 * 60 * 8); // 5초 이후 실행 - 8시간 주기로 실행
+        m.schedule(task, 5000, 1000 * 60 * 60 * 1); // 5초 이후 실행 - 1시간 주기로 실행
         return true;
     }
 

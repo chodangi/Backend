@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TemporalType;
 import java.util.Date;
 import java.util.List;
@@ -41,7 +42,7 @@ public class GameRepository {
         return em.createQuery(sql, BetHistory.class).setParameter("tempDate", tempDate, TemporalType.TIMESTAMP).getResultList();
     }
 
-    public List<BetHistory> findAll(){
+    public List<BetHistory> findAll() throws NoResultException {
         String sql = "select b from BetHistory b";
         return em.createQuery(sql, BetHistory.class).getResultList();
     }

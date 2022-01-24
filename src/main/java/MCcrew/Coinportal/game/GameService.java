@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.persistence.NoResultException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -113,11 +114,20 @@ public class GameService {
                 /*
                     유저들 승률 계산
                  */
-                List<BetHistory> findBetHistory = gameRepository.findAll();
+                List<BetHistory> findBetHistory = new ArrayList<>();
+                boolean resultExist = true;
+
+                try {
+                     findBetHistory = gameRepository.findAll();
+                }catch(NoResultException e) {
+                    resultExist = false;
+                }
                 findBetHistory = findBetHistory.stream().filter(b -> b.isEvaluated() == false).collect(Collectors.toList());
 
                 wins = 0;
                 for(BetHistory betHistory: findBetHistory){
+                    if(resultExist == false)
+                        break;
                     User findUser = userRepository.findById(betHistory.getId());
 
                     if (betHistory.getBtcPriceNow() >= priceBTC) {
@@ -163,7 +173,11 @@ public class GameService {
                 botEthPriceTemp = Double.valueOf(getPriceFromBithumb("ETH/KRW"));
                 botXrpPriceTemp = Double.valueOf(getPriceFromBithumb("XRP/KRW"));
                 playerList.clear(); // 플레이한 유저 리스트 초기화
+
                 for(BetHistory betHistory: findBetHistory){
+                    if(resultExist == false)
+                        break;
+
                     betHistory.setEvaluated(true);
                     gameRepository.save(betHistory);
                 }

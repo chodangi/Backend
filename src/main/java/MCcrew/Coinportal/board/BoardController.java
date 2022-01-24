@@ -6,23 +6,15 @@ import MCcrew.Coinportal.domain.Post;
 import MCcrew.Coinportal.domain.Preference;
 import MCcrew.Coinportal.login.JwtService;
 import MCcrew.Coinportal.preference.PreferenceService;
-import MCcrew.Coinportal.util.ErrorResponse;
 import MCcrew.Coinportal.util.Message;
 import MCcrew.Coinportal.util.StatusEnum;
-import jdk.jshell.Snippet;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController("/community")
@@ -44,7 +36,7 @@ public class BoardController {  // 게시판 관련 컨트롤러
     /*
             게시글 키워드로 검색
          */
-    @GetMapping("/{keyword}")
+    @GetMapping("/post/{keyword}")
     public Message searchByKeywordController(@PathVariable String keyword){
         List<Post> postList = boardService.searchPostsByKeyword(keyword);
         if(postList.size() == 0){
@@ -56,7 +48,7 @@ public class BoardController {  // 게시판 관련 컨트롤러
     /*
         게시글 사용자 닉네임으로 검색
      */
-    @GetMapping("/{nickname}")
+    @GetMapping("/post/{nickname}")
     public Message searchByNicknameController(@PathVariable String nickname){
         List<Post> postList = boardService.searchPostsByNickname(nickname);
         if(postList.size() == 0){

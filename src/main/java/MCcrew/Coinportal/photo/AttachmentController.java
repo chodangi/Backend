@@ -36,19 +36,9 @@ public class AttachmentController {
     }
 
     /*
-        테스트 컨트롤러
-     */
-    @PostMapping("/test")
-    @ResponseBody
-    public String doPostTest(@ModelAttribute PostDto postDto){
-        return postDto.toString();
-    }
-
-    /*
         게시글과 이미지 포스팅하기
      */
     @PostMapping("/post-image")
-    @ResponseBody
     public Post doPost(@ModelAttribute PostDto postDto, @RequestHeader String jwt) throws IOException {
         Long userIdx = 0L;
         try{ // 유저 인증
@@ -66,7 +56,6 @@ public class AttachmentController {
     /*
         이미지 로드
      */
-    @ResponseBody
     @GetMapping("/{filename}")
     public Resource processImg(@PathVariable String filename) throws MalformedURLException {
         return new UrlResource("file:" + fileStore.createPath(filename));
@@ -75,7 +64,7 @@ public class AttachmentController {
     /*
         이미지 다운로드
      */
-    @GetMapping("/attaches/{filename}")
+    @GetMapping("/download/{filename}")
     public ResponseEntity<Resource> processAttaches(@PathVariable String filename, @RequestParam String originName) throws MalformedURLException {
         UrlResource urlResource = new UrlResource("file:" + fileStore.createPath(filename));
 

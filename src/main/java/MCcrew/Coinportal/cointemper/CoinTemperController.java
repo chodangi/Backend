@@ -13,7 +13,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @Slf4j
-@RestController("/coin")
+@RestController("/temper")
 public class CoinTemperController {
 
     private final CoinTemperService coinTemperService;
@@ -31,7 +31,7 @@ public class CoinTemperController {
     /*
         현재 코인 체감 온도
      */
-    @GetMapping("/temper")
+    @GetMapping("/coin-temper")
     public List<Double> coinTemper(){
         return coinTemperService.getCoinTemper();
     }
@@ -40,8 +40,8 @@ public class CoinTemperController {
         코인 매수
         symbol = BTC or ETH or XRP
      */
-    @GetMapping("/temper/buy")
-    public double coinBuy(@RequestParam String symbol, @RequestHeader String jwt) throws UnsupportedEncodingException {
+    @GetMapping("/up/{symbol}")
+    public double coinBuy(@PathVariable String symbol, @RequestHeader String jwt) throws UnsupportedEncodingException {
         Long userId = jwtService.getUserIdByJwt(jwt); // 회원만 이용가능
         if(userId == 0L){
             return -1L; // 글 삭제되지 않음.
@@ -53,8 +53,8 @@ public class CoinTemperController {
             코인 매도
             symbol = BTC or ETH or XRP
     */
-    @GetMapping("/temper/sell")
-    public double coinSell(@RequestParam String symbol, @RequestHeader String jwt) throws UnsupportedEncodingException {
+    @GetMapping("/down/{symbol}")
+    public double coinSell(@PathVariable String symbol, @RequestHeader String jwt) throws UnsupportedEncodingException {
         Long userId = jwtService.getUserIdByJwt(jwt); // 회원만 이용가능
         if(userId == 0L){
             return -1L; // 글 삭제되지 않음.
@@ -67,8 +67,8 @@ public class CoinTemperController {
         코인 체감 온도 댓글달기
         symbol = BTC or ETH or XRP
      */
-    @PostMapping("/coin/temper/comment")
-    public CoinComment createCommentController(@RequestBody CoinCommentDto coinCommentDto, @RequestParam String symbol, @RequestHeader String jwt) throws UnsupportedEncodingException {
+    @PostMapping("/{symbol}/comment")
+    public CoinComment createCommentController(@PathVariable String symbol, @RequestBody CoinCommentDto coinCommentDto, @RequestHeader String jwt) throws UnsupportedEncodingException {
         Long userIdx = jwtService.getUserIdByJwt(jwt);
         if(userIdx == 0L){
             return new CoinComment();
@@ -81,15 +81,15 @@ public class CoinTemperController {
         코인 체감 온도 댓글 반환
         symbol = BTC or ETH or XRP
      */
-    @GetMapping("/temper/commentList")
-    public List<CoinComment> getCommentController(@RequestParam String symbol){
+    @GetMapping("/{symbol}/comments")
+    public List<CoinComment> getCommentController(@PathVariable String symbol){
         return coinTemperService.getCommentList(symbol);
     }
 
     /*
         수정
      */
-    @PostMapping("/temper/update")
+    @PostMapping("/comment")
     public CoinComment updateCommentController(@RequestBody CoinCommentDto coinCommentDto, @RequestHeader String jwt) throws UnsupportedEncodingException {
         if(jwt != null){ //회원의 글이라면
             Long userId = jwtService.getUserIdByJwt(jwt);
@@ -104,7 +104,7 @@ public class CoinTemperController {
     /*
         삭제
      */
-    @PostMapping("/temper/delete")
+    @DeleteMapping("/comment")
     public boolean deleteCommentController(@RequestBody CoinCommentDto coinCommentDto, @RequestHeader String jwt ) throws UnsupportedEncodingException {
         if(jwt != null){ //회원의 글이라면
             Long userId = jwtService.getUserIdByJwt(jwt);
@@ -119,7 +119,7 @@ public class CoinTemperController {
     /*
         신고
     */
-    @PostMapping("/temper/report")
+    @PostMapping("/comment-report")
     public int reportCommentController(@RequestParam Long commentId){
         return coinTemperService.reportCoinComment(commentId); // 신고수 반환
     }
@@ -127,7 +127,7 @@ public class CoinTemperController {
     /*
         좋아요
      */
-    @PostMapping("/temper/like")
+    @PostMapping("/comment-like")
     public int likeCommentController(@RequestParam Long commentId){
         return coinTemperService.likeCoinComment(commentId);
     }
@@ -135,7 +135,7 @@ public class CoinTemperController {
     /*
         싫어요
      */
-    @PostMapping("/temper/dislike")
+    @PostMapping("/comment-dislike")
     public int dislikeCommentController(@RequestParam Long commentId){
         return coinTemperService.dislikeCoinComment(commentId);
     }

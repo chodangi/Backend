@@ -28,10 +28,10 @@ public class PreferenceController {
     }
 
     /*
-        좋아요 클릭
+        게시글 좋아요 클릭
     */
-    @PostMapping("/like")
-    public Preference likeController(@RequestParam Long postId, @RequestHeader String jwt) throws UnsupportedEncodingException {
+    @PostMapping("/post-like/{post-id}")
+    public Preference likeController(@PathVariable Long postId, @RequestHeader String jwt) throws UnsupportedEncodingException {
         if(jwt == null){
             return new Preference();
         }
@@ -44,10 +44,10 @@ public class PreferenceController {
     }
 
     /*
-        싫어요 클릭
+        게시글 싫어요 클릭
      */
-    @PostMapping("/dislike")
-    public Preference dislikeController(@RequestParam Long postId, @RequestHeader String jwt) throws UnsupportedEncodingException {
+    @PostMapping("/post-dislike/{post-id}")
+    public Preference dislikeController(@PathVariable Long postId, @RequestHeader String jwt) throws UnsupportedEncodingException {
         if(jwt == null){
             return new Preference();
         }
@@ -62,7 +62,7 @@ public class PreferenceController {
     /*
         내가 누른 좋아요 모두 보기
      */
-    @GetMapping("/myLike")
+    @GetMapping("/my-like")
     public List<Preference> myLikeController(@RequestHeader String jwt) throws UnsupportedEncodingException {
         if(jwt == null){
             return new ArrayList<>();

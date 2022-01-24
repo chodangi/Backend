@@ -36,9 +36,9 @@ public class GameController {  // 게임 관련 api 컨트롤러
             이더: ETH/KRW
             리플: XRP/KRW
         */
-    @GetMapping("/coinPrice")
-    public String coinInfo(@RequestParam("symbol") String coinSymbol) throws JsonProcessingException {
-        return gameService.getPriceFromBithumb(coinSymbol);
+    @GetMapping("/coin-price/{symbol}")
+    public String coinInfo(@PathVariable String symbol) throws JsonProcessingException {
+        return gameService.getPriceFromBithumb(symbol);
     }
 
     /*
@@ -48,15 +48,15 @@ public class GameController {  // 게임 관련 api 컨트롤러
         ETH_KRW
         XRP_KRW
      */
-    @GetMapping("/coinChart")
-    public String coinChart(@RequestParam("symbol") String coinSymbol){
-        return gameService.getChartFromBithumb(coinSymbol);
+    @GetMapping("/coin-chart/{symbol}")
+    public String coinChart(@PathVariable String symbol){
+        return gameService.getChartFromBithumb(symbol);
     }
 
     /*
         코인 궁예하기
      */
-    @PostMapping("/predict")
+    @PostMapping("/play")
     public BetHistory predictCoinController(@RequestBody BetHistoryDto betHistoryDto, @RequestHeader String jwt) throws UnsupportedEncodingException {
         if(jwt == null){
             return new BetHistory();
@@ -72,7 +72,7 @@ public class GameController {  // 게임 관련 api 컨트롤러
     /*
         훈수 예측 따라가기
      */
-    @PostMapping("/predict/random")
+    @PostMapping("/random")
     public BetHistory predictCoinRandomController(@RequestHeader String jwt) throws UnsupportedEncodingException {
         if(jwt == null){
             return new BetHistory();
@@ -88,7 +88,7 @@ public class GameController {  // 게임 관련 api 컨트롤러
     /*
         내 전적 보기
      */
-    @GetMapping("/myhistory")
+    @GetMapping("/my-history")
     public List<BetHistory> getMyBetHistoryController(@RequestHeader String jwt) throws UnsupportedEncodingException {
         if(jwt == null){
             return new ArrayList<>();
@@ -104,19 +104,10 @@ public class GameController {  // 게임 관련 api 컨트롤러
     /*
         현재 코인 훈수 보기
      */
-    @GetMapping("/coinprediction")
+    @GetMapping("/coin-prediction")
     public BetHistoryDto getRandomCoinPredictionController(){
         return gameService.getRandomCoinPrediction();
     }
-
-    /*
-        타이머 작동 테스트
-     */
-//    @GetMapping("/timer")
-//    @ResponseBody
-//    public boolean timerTest(){
-//        return gameService.gameTimer();
-//    }
 
     /*
         유저 랭킹

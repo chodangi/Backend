@@ -38,8 +38,8 @@ public class BoardController {  // 게시판 관련 컨트롤러
     /*
             게시글 키워드로 검색
          */
-    @GetMapping("/search")
-    public List<Post> searchByKeywordController(@RequestParam("keyword") String keyword){
+    @GetMapping("/{keyword}")
+    public List<Post> searchByKeywordController(@PathVariable String keyword){
         List<Post> postList = boardService.searchPostsByKeyword(keyword);
         return postList;
     }
@@ -47,8 +47,8 @@ public class BoardController {  // 게시판 관련 컨트롤러
     /*
         게시글 사용자 닉네임으로 검색
      */
-    @GetMapping("/search/nickname")
-    public List<Post> searchByNicknameController(@RequestParam("nickname") String nickname){
+    @GetMapping("/{nickname}")
+    public List<Post> searchByNicknameController(@PathVariable String nickname){
         List<Post> postList = boardService.searchPostsByNickname(nickname);
         return postList;
      }
@@ -56,7 +56,7 @@ public class BoardController {  // 게시판 관련 컨트롤러
      /*
         실시간 인기글 리스트 검색
       */
-    @GetMapping("/search/popular")
+    @GetMapping("/up-count")
     public List<Post> searchByPopularityController(){
         List<Post> postList = boardService.searchPostsByPopularity();
         return postList;
@@ -65,8 +65,8 @@ public class BoardController {  // 게시판 관련 컨트롤러
     /*
         게시글 페이징 구현
      */
-    @GetMapping("/page")
-    public List<Object> listController(@RequestParam(value="boardName") String boardName, @RequestParam(value = "page", defaultValue = "1") int page){
+    @GetMapping("/{board-name}/{page}")
+    public List<Object> listController(@PathVariable("board-name") String boardName, @PathVariable("page") int page){
         System.out.println("searching post about" + boardName + " with page " + page);
         List<Post> postList = boardService.getPostlist(boardName, page);
         int[] pageList = boardService.getPageList(boardName, page);
@@ -76,26 +76,11 @@ public class BoardController {  // 게시판 관련 컨트롤러
         return pagingInfo;
     }
 
-    /**
-     *  게시글 등록
-     *  deprecated - AttachmentController의 post메소드로 바뀔 예정
-     **/
-    @PostMapping("/new-post")
-    public boolean createContentByUser(@RequestBody PostDto postDto, @RequestHeader String jwt) throws UnsupportedEncodingException {
-        Long userId = jwtService.getUserIdByJwt(jwt);
-        if(userId == 0L){
-            return false; // 글 게시할 수 없음.
-        }else{
-            boardService.createPostByUser(postDto);
-            return true;
-        }
-    }
-
     /*
         단일 게시글 조회
      */
-    @GetMapping("/single-post")
-    public Map<Post, Preference> getContentController(@RequestParam("postId") Long postId, @RequestHeader String jwt) throws UnsupportedEncodingException {
+    @GetMapping("/post/{post-id}")
+    public Map<Post, Preference> getContentController(@PathVariable("post-id") Long postId, @RequestHeader String jwt) throws UnsupportedEncodingException {
         HashMap hashMap = new HashMap();
         if(jwt == null){
             boardService.viewPost(postId); // 조회수 1 증가
@@ -118,7 +103,7 @@ public class BoardController {  // 게시판 관련 컨트롤러
     /*
         전체 게시글 조회
      */
-    @GetMapping("/multiple-post")
+    @GetMapping("/posts")
     public List<Post> getAllContentsController(){
         return boardService.getAllPost();
     }
@@ -126,7 +111,7 @@ public class BoardController {  // 게시판 관련 컨트롤러
     /*
         선택한 게시글 수정
      */
-    @PostMapping("/post")
+    @PutMapping("/post")
     public boolean updateController(@RequestBody PostDto postDto, @RequestHeader String jwt) throws UnsupportedEncodingException {
         Long userId = jwtService.getUserIdByJwt(jwt);
         if(userId == 0L){
@@ -140,20 +125,6 @@ public class BoardController {  // 게시판 관련 컨트롤러
             }
         }
     }
-    /*
-        선택한 게시글 좋아요
-     */
-    @PostMapping("/post/like")
-    public int likeController(@RequestParam("postId") Long postId){
-        return boardService.likePost(postId);
-    }
-    /*
-        선택한 게시글 싫어요
-     */
-    @PostMapping("/post/dislike")
-    public int dislikeController(@RequestParam("postId") Long postId){
-        return boardService.dislikePost(postId);
-    }
 
     /*
        선택한 게시글 신고
@@ -166,8 +137,8 @@ public class BoardController {  // 게시판 관련 컨트롤러
     /*
         삭제 상태로 변경
      */
-    @PostMapping("/post/status2Delete")
-    public boolean deleteController(@RequestParam("postId") Long postId, @RequestHeader String jwt) throws UnsupportedEncodingException {
+    @PostMapping("/post/status/{post-id}")
+    public boolean deleteController(@PathVariable("post-id") Long postId, @RequestHeader String jwt) throws UnsupportedEncodingException {
         Long userId = jwtService.getUserIdByJwt(jwt);
         if(userId == 0L){
             return false;
@@ -179,8 +150,8 @@ public class BoardController {  // 게시판 관련 컨트롤러
     /*
         선택한 게시글 디비에서 삭제
      */
-    @PostMapping("/post/delete")
-    public boolean deleteContent(@RequestParam("postId") Long postId, @RequestHeader String jwt) throws UnsupportedEncodingException {
+    @DeleteMapping("/post/{post-id}")
+    public boolean deleteContent(@PathVariable("post-id") Long postId, @RequestHeader String jwt) throws UnsupportedEncodingException {
         Long userId = 0L;
         try{
             userId = jwtService.getUserIdByJwt(jwt);
@@ -200,7 +171,7 @@ public class BoardController {  // 게시판 관련 컨트롤러
     /*
         모든 공지글 가져오기
      */
-    @GetMapping("/notice")
+    @GetMapping("/notices")
     public List<Notice> getNoticeController(){
         return boardService.getNotice();
     }

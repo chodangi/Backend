@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@RestController("/user")
+@RestController("/profile")
 public class UserController {   // 유저 프로필 관련 컨트롤러
 
     private final UserService userService;
@@ -38,7 +38,7 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
     /*
                 모든 유저 반환
              */
-    @GetMapping("/all")
+    @GetMapping("/users")
     public List<User> getAllUserController(){
         return userService.getAllUser();
     }
@@ -46,7 +46,7 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
     /*
         내가 작성한 게시글 반환
      */
-    @GetMapping("mypost")
+    @GetMapping("/my-post")
     public List<Post> getMyPostController(@RequestHeader String jwt) throws UnsupportedEncodingException {
         if(jwt == null){
             return new ArrayList<>();
@@ -62,7 +62,7 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
     /*
         내가 작성한 댓글 반환
      */
-    @GetMapping("/mycomment")
+    @GetMapping("/my-comment")
     public List<Comment> getMyCommentController(@RequestHeader String jwt) throws UnsupportedEncodingException {
         if(jwt == null){
             return new ArrayList<>();
@@ -78,7 +78,7 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
     /*
         내 설정값 반환
      */
-    @GetMapping("/mysetting")
+    @GetMapping("/my-settings")
     public User getMySettingController(@RequestHeader String jwt ) throws UnsupportedEncodingException {
         if(jwt == null){
             return new User();
@@ -94,7 +94,7 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
     /*
         설정 변경 - 닉네임 변경도 해당 api 에서 수행
      */
-    @PostMapping("/updatemysetting")
+    @PostMapping("/my-settings")
     public User updateMySettingController(@RequestBody UserDto userDto, @RequestHeader String jwt ) throws UnsupportedEncodingException {
         if(jwt == null){
             return new User();
@@ -110,7 +110,7 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
     /*
         회원 탈퇴
      */
-    @PostMapping("/delete")
+    @DeleteMapping("/user")
     public boolean deleteUserController(@RequestHeader String jwt) throws UnsupportedEncodingException {
         if(jwt == null){
             return false;

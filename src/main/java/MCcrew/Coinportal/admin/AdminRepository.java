@@ -12,7 +12,6 @@ import java.util.List;
 @Repository
 public class AdminRepository {
 
-    @Autowired
     private final EntityManager em;
 
     public AdminRepository(EntityManager em) {

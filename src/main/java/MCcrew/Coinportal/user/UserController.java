@@ -1,30 +1,32 @@
 package MCcrew.Coinportal.user;
 
-import MCcrew.Coinportal.Dto.UserDto;
-import MCcrew.Coinportal.Dto.UserRankingDto;
+import MCcrew.Coinportal.domain.Dto.UserDto;
 import MCcrew.Coinportal.board.BoardService;
 import MCcrew.Coinportal.comment.CommentService;
 import MCcrew.Coinportal.domain.Comment;
 import MCcrew.Coinportal.domain.Post;
 import MCcrew.Coinportal.domain.User;
 import MCcrew.Coinportal.login.JwtService;
-import MCcrew.Coinportal.login.LoginController;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-@Controller
+@Slf4j
+@RestController("/user")
 public class UserController {   // 유저 프로필 관련 컨트롤러
 
     private final UserService userService;
     private final JwtService jwtService;
     private final CommentService commentService;
     private final BoardService boardService;
+
+    // 로깅
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public UserController(UserService userService, JwtService jwtService, CommentService commentService, BoardService boardService) {
         this.userService = userService;
@@ -36,8 +38,7 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
     /*
                 모든 유저 반환
              */
-    @GetMapping("/user/all")
-    @ResponseBody
+    @GetMapping("/all")
     public List<User> getAllUserController(){
         return userService.getAllUser();
     }
@@ -45,8 +46,7 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
     /*
         내가 작성한 게시글 반환
      */
-    @GetMapping("/user/mypost")
-    @ResponseBody
+    @GetMapping("mypost")
     public List<Post> getMyPostController(@RequestHeader String jwt) throws UnsupportedEncodingException {
         if(jwt == null){
             return new ArrayList<>();
@@ -62,8 +62,7 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
     /*
         내가 작성한 댓글 반환
      */
-    @GetMapping("/user/mycomment")
-    @ResponseBody
+    @GetMapping("/mycomment")
     public List<Comment> getMyCommentController(@RequestHeader String jwt) throws UnsupportedEncodingException {
         if(jwt == null){
             return new ArrayList<>();
@@ -76,20 +75,10 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
         }
     }
 
-//    /*
-//        내가 좋아요 표시한 게시글 반환
-//     */
-//    @GetMapping("/user/mylikepost")
-//    @ResponseBody
-//    public List<Post> getMyLikePostController(){
-//
-//    }
-
     /*
         내 설정값 반환
      */
-    @GetMapping("/user/mysetting")
-    @ResponseBody
+    @GetMapping("/mysetting")
     public User getMySettingController(@RequestHeader String jwt ) throws UnsupportedEncodingException {
         if(jwt == null){
             return new User();
@@ -105,8 +94,7 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
     /*
         설정 변경 - 닉네임 변경도 해당 api 에서 수행
      */
-    @PostMapping("/user/updatemysetting")
-    @ResponseBody
+    @PostMapping("/updatemysetting")
     public User updateMySettingController(@RequestBody UserDto userDto, @RequestHeader String jwt ) throws UnsupportedEncodingException {
         if(jwt == null){
             return new User();
@@ -122,8 +110,7 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
     /*
         회원 탈퇴
      */
-    @PostMapping("/user/delete")
-    @ResponseBody
+    @PostMapping("/delete")
     public boolean deleteUserController(@RequestHeader String jwt) throws UnsupportedEncodingException {
         if(jwt == null){
             return false;

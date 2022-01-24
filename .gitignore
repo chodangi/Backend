@@ -16,9 +16,12 @@ build/
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
+
 # yml 파일 제외하기
 *.yml
-
+application.yml
+# log 파일 제외하기
+spring.log
 # jpg 테스트 파일 제외하기
 *.jpg
 

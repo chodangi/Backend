@@ -1,17 +1,21 @@
 package MCcrew.Coinportal.comment;
 
-import MCcrew.Coinportal.Dto.CommentDto;
+import MCcrew.Coinportal.domain.Dto.CommentDto;
 import MCcrew.Coinportal.domain.Comment;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 
-@Controller
+@Slf4j
 public class CommentController {
     private final CommentService commentService;
+
+    // 로깅
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public CommentController(CommentService commentService) {
@@ -21,7 +25,7 @@ public class CommentController {
     /*
          댓글 달기
      */
-    @PostMapping("/community/post/comment")
+    @PostMapping("/")
     @ResponseBody
     public Comment commentCreateController(@RequestBody CommentDto commentDto){
         return commentService.createComment(commentDto);
@@ -30,7 +34,7 @@ public class CommentController {
     /*
         댓글 수정
      */
-    @PostMapping("/community/post/comment/update")
+    @PutMapping("/comment")
     @ResponseBody
     public Comment commentUpdateController(@RequestBody CommentDto commentDto, @RequestHeader String jwt) throws UnsupportedEncodingException {
         return commentService.updateComment(commentDto, jwt);
@@ -39,18 +43,18 @@ public class CommentController {
     /*
         삭제 상태로 변경
      */
-    @PostMapping("/community/post/comment/status2Delete")
+    @PutMapping("/comment/{commentId}}")
     @ResponseBody
-    public boolean commentStatus2DeleteController(@RequestParam("commentId") Long commentId, @RequestHeader String jwt) throws UnsupportedEncodingException {
+    public boolean commentStatus2DeleteController(@PathVariable Long commentId, @RequestHeader String jwt) throws UnsupportedEncodingException {
         return commentService.status2Delete(commentId, jwt);
     }
 
     /*
         댓글 신고
      */
-    @PostMapping("/community/post/comment/report")
+    @PostMapping("/comment/{commentId}")
     @ResponseBody
-    public int reportController(@RequestParam("commentId") Long commentId){
+    public int reportController(@PathVariable Long commentId){
         return commentService.reportComment(commentId);
     }
 }

@@ -1,6 +1,9 @@
 package MCcrew.Coinportal.login;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -10,12 +13,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-//import java.util.HashMap;
 
+@Slf4j
 @Controller
 public class LoginController {
     private final LoginService loginService;
     private final JwtService jwtService;
+
+    // 로깅
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Value("${kakao.oauth.client_id}")
     private String client_id;
@@ -23,9 +29,6 @@ public class LoginController {
     private String redirect_uri;
     @Value("${kakao.oauth.logout_redirect_uri}")
     private String logout_redirect_uri;
-
-//    @Getter
-//    private static HashMap<String, String> hashMap = new HashMap<>(); // 사용자 로그인 상태를 유지
 
     @Autowired
     public LoginController(LoginService loginService, JwtService jwtService) {
@@ -49,6 +52,7 @@ public class LoginController {
                 + "&redirect_uri="
                 + redirect_uri;
     }
+
     @GetMapping("/tokakao/logout")
     public String tokakaoLogoutController(){
         return "redirect:https://kauth.kakao.com/oauth/logout"

@@ -1,11 +1,8 @@
 package MCcrew.Coinportal.user;
 
-import MCcrew.Coinportal.Dto.PostDto;
-import MCcrew.Coinportal.Dto.UserDto;
-import MCcrew.Coinportal.Dto.UserRankingDto;
-import MCcrew.Coinportal.domain.Post;
+import MCcrew.Coinportal.domain.Dto.UserDto;
+import MCcrew.Coinportal.domain.Dto.UserRankingDto;
 import MCcrew.Coinportal.domain.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 

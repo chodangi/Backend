@@ -1,11 +1,7 @@
 package MCcrew.Coinportal.cointemper;
 
-import MCcrew.Coinportal.Dto.CoinCommentDto;
-import MCcrew.Coinportal.Dto.CommentDto;
+import MCcrew.Coinportal.domain.Dto.CoinCommentDto;
 import MCcrew.Coinportal.domain.CoinComment;
-import MCcrew.Coinportal.domain.Comment;
-import MCcrew.Coinportal.domain.Post;
-import lombok.Getter;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

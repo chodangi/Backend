@@ -1,8 +1,6 @@
 package MCcrew.Coinportal.cointemper;
 
-import MCcrew.Coinportal.Dto.CoinCommentDto;
 import MCcrew.Coinportal.domain.CoinComment;
-import MCcrew.Coinportal.domain.Post;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 

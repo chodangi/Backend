@@ -1,8 +1,7 @@
 package MCcrew.Coinportal.board;
 
-import MCcrew.Coinportal.Dto.PostDto;
+import MCcrew.Coinportal.domain.Dto.PostDto;
 import MCcrew.Coinportal.admin.AdminRepository;
-import MCcrew.Coinportal.admin.AdminService;
 import MCcrew.Coinportal.domain.Notice;
 import MCcrew.Coinportal.domain.Post;
 import MCcrew.Coinportal.photo.Attachment;
@@ -23,7 +22,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class BoardService {   // 게시판 관련 핵심 로직 구현

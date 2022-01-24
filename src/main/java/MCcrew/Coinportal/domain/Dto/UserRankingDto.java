@@ -1,4 +1,4 @@
-package MCcrew.Coinportal.Dto;
+package MCcrew.Coinportal.domain.Dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

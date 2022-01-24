@@ -1,23 +1,26 @@
 package MCcrew.Coinportal.cointemper;
 
-import MCcrew.Coinportal.Dto.CoinCommentDto;
-import MCcrew.Coinportal.Dto.CommentDto;
+import MCcrew.Coinportal.domain.Dto.CoinCommentDto;
 import MCcrew.Coinportal.domain.CoinComment;
-import MCcrew.Coinportal.domain.Comment;
 import MCcrew.Coinportal.login.JwtService;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
 import java.util.List;
 
-@Controller
+@Slf4j
+@RestController("/coin")
 public class CoinTemperController {
 
     private final CoinTemperService coinTemperService;
     private final JwtService jwtService;
+
+    // 로깅
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public CoinTemperController(CoinTemperService coinTemperService, JwtService jwtService) {
@@ -28,8 +31,7 @@ public class CoinTemperController {
     /*
         현재 코인 체감 온도
      */
-    @GetMapping("/coin/temper")
-    @ResponseBody
+    @GetMapping("/temper")
     public List<Double> coinTemper(){
         return coinTemperService.getCoinTemper();
     }
@@ -38,8 +40,7 @@ public class CoinTemperController {
         코인 매수
         symbol = BTC or ETH or XRP
      */
-    @GetMapping("/coin/temper/buy")
-    @ResponseBody
+    @GetMapping("/temper/buy")
     public double coinBuy(@RequestParam String symbol, @RequestHeader String jwt) throws UnsupportedEncodingException {
         Long userId = jwtService.getUserIdByJwt(jwt); // 회원만 이용가능
         if(userId == 0L){
@@ -52,8 +53,7 @@ public class CoinTemperController {
             코인 매도
             symbol = BTC or ETH or XRP
     */
-    @GetMapping("/coin/temper/sell")
-    @ResponseBody
+    @GetMapping("/temper/sell")
     public double coinSell(@RequestParam String symbol, @RequestHeader String jwt) throws UnsupportedEncodingException {
         Long userId = jwtService.getUserIdByJwt(jwt); // 회원만 이용가능
         if(userId == 0L){
@@ -81,8 +81,7 @@ public class CoinTemperController {
         코인 체감 온도 댓글 반환
         symbol = BTC or ETH or XRP
      */
-    @GetMapping("/coin/temper/commentList")
-    @ResponseBody
+    @GetMapping("/temper/commentList")
     public List<CoinComment> getCommentController(@RequestParam String symbol){
         return coinTemperService.getCommentList(symbol);
     }
@@ -90,8 +89,7 @@ public class CoinTemperController {
     /*
         수정
      */
-    @PostMapping("/coin/temper/update")
-    @ResponseBody
+    @PostMapping("/temper/update")
     public CoinComment updateCommentController(@RequestBody CoinCommentDto coinCommentDto, @RequestHeader String jwt) throws UnsupportedEncodingException {
         if(jwt != null){ //회원의 글이라면
             Long userId = jwtService.getUserIdByJwt(jwt);
@@ -106,8 +104,7 @@ public class CoinTemperController {
     /*
         삭제
      */
-    @PostMapping("/coin/temper/delete")
-    @ResponseBody
+    @PostMapping("/temper/delete")
     public boolean deleteCommentController(@RequestBody CoinCommentDto coinCommentDto, @RequestHeader String jwt ) throws UnsupportedEncodingException {
         if(jwt != null){ //회원의 글이라면
             Long userId = jwtService.getUserIdByJwt(jwt);
@@ -122,8 +119,7 @@ public class CoinTemperController {
     /*
         신고
     */
-    @PostMapping("/coin/temper/report")
-    @ResponseBody
+    @PostMapping("/temper/report")
     public int reportCommentController(@RequestParam Long commentId){
         return coinTemperService.reportCoinComment(commentId); // 신고수 반환
     }
@@ -131,8 +127,7 @@ public class CoinTemperController {
     /*
         좋아요
      */
-    @PostMapping("/coin/temper/like")
-    @ResponseBody
+    @PostMapping("/temper/like")
     public int likeCommentController(@RequestParam Long commentId){
         return coinTemperService.likeCoinComment(commentId);
     }
@@ -140,8 +135,7 @@ public class CoinTemperController {
     /*
         싫어요
      */
-    @PostMapping("/coin/temper/dislike")
-    @ResponseBody
+    @PostMapping("/temper/dislike")
     public int dislikeCommentController(@RequestParam Long commentId){
         return coinTemperService.dislikeCoinComment(commentId);
     }

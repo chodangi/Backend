@@ -1,6 +1,6 @@
 package MCcrew.Coinportal.comment;
 
-import MCcrew.Coinportal.Dto.CommentDto;
+import MCcrew.Coinportal.domain.Dto.CommentDto;
 import MCcrew.Coinportal.board.BoardRepository;
 import MCcrew.Coinportal.domain.Comment;
 import MCcrew.Coinportal.domain.Post;

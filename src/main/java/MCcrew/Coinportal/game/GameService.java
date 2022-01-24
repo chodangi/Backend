@@ -1,33 +1,17 @@
 package MCcrew.Coinportal.game;
 
-import MCcrew.Coinportal.Dto.BetHistoryDto;
-import MCcrew.Coinportal.Dto.UserRankingDto;
+import MCcrew.Coinportal.domain.Dto.BetHistoryDto;
+import MCcrew.Coinportal.domain.Dto.UserRankingDto;
 import MCcrew.Coinportal.domain.BetHistory;
 import MCcrew.Coinportal.domain.User;
 import MCcrew.Coinportal.user.UserRepository;
 import MCcrew.Coinportal.user.UserService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import lombok.NoArgsConstructor;
-import org.apache.tomcat.util.json.JSONParser;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 

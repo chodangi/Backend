@@ -1,8 +1,7 @@
 package MCcrew.Coinportal.admin;
 
-import MCcrew.Coinportal.Dto.NoticeDto;
+import MCcrew.Coinportal.domain.Dto.NoticeDto;
 import MCcrew.Coinportal.domain.Notice;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;

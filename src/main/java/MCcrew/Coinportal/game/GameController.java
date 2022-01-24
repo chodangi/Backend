@@ -1,25 +1,28 @@
 package MCcrew.Coinportal.game;
 
-import MCcrew.Coinportal.Dto.BetHistoryDto;
-import MCcrew.Coinportal.Dto.UserRankingDto;
+import MCcrew.Coinportal.domain.Dto.BetHistoryDto;
+import MCcrew.Coinportal.domain.Dto.UserRankingDto;
 import MCcrew.Coinportal.domain.BetHistory;
 import MCcrew.Coinportal.login.JwtService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Controller
+@Slf4j
+@RestController("/game")
 public class GameController {  // 게임 관련 api 컨트롤러
 
     private final GameService gameService;
     private final JwtService jwtService;
 
+    // 로깅
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public GameController(GameService gameService, JwtService jwtService) {
         this.gameService = gameService;
@@ -33,8 +36,7 @@ public class GameController {  // 게임 관련 api 컨트롤러
             이더: ETH/KRW
             리플: XRP/KRW
         */
-    @GetMapping("/game/coinPrice")
-    @ResponseBody
+    @GetMapping("/coinPrice")
     public String coinInfo(@RequestParam("symbol") String coinSymbol) throws JsonProcessingException {
         return gameService.getPriceFromBithumb(coinSymbol);
     }
@@ -46,8 +48,7 @@ public class GameController {  // 게임 관련 api 컨트롤러
         ETH_KRW
         XRP_KRW
      */
-    @GetMapping("/game/coinChart")
-    @ResponseBody
+    @GetMapping("/coinChart")
     public String coinChart(@RequestParam("symbol") String coinSymbol){
         return gameService.getChartFromBithumb(coinSymbol);
     }
@@ -55,8 +56,7 @@ public class GameController {  // 게임 관련 api 컨트롤러
     /*
         코인 궁예하기
      */
-    @PostMapping("/game/predict")
-    @ResponseBody
+    @PostMapping("/predict")
     public BetHistory predictCoinController(@RequestBody BetHistoryDto betHistoryDto, @RequestHeader String jwt) throws UnsupportedEncodingException {
         if(jwt == null){
             return new BetHistory();
@@ -72,8 +72,7 @@ public class GameController {  // 게임 관련 api 컨트롤러
     /*
         훈수 예측 따라가기
      */
-    @PostMapping("/game/predict/random")
-    @ResponseBody
+    @PostMapping("/predict/random")
     public BetHistory predictCoinRandomController(@RequestHeader String jwt) throws UnsupportedEncodingException {
         if(jwt == null){
             return new BetHistory();
@@ -89,8 +88,7 @@ public class GameController {  // 게임 관련 api 컨트롤러
     /*
         내 전적 보기
      */
-    @GetMapping("/game/myhistory")
-    @ResponseBody
+    @GetMapping("/myhistory")
     public List<BetHistory> getMyBetHistoryController(@RequestHeader String jwt) throws UnsupportedEncodingException {
         if(jwt == null){
             return new ArrayList<>();
@@ -106,8 +104,7 @@ public class GameController {  // 게임 관련 api 컨트롤러
     /*
         현재 코인 훈수 보기
      */
-    @GetMapping("/game/coinprediction")
-    @ResponseBody
+    @GetMapping("/coinprediction")
     public BetHistoryDto getRandomCoinPredictionController(){
         return gameService.getRandomCoinPrediction();
     }
@@ -124,8 +121,7 @@ public class GameController {  // 게임 관련 api 컨트롤러
     /*
         유저 랭킹
      */
-    @GetMapping("/game/ranking")
-    @ResponseBody
+    @GetMapping("/ranking")
     public List<UserRankingDto> getUserRankingController(){
         return gameService.getGamePointRanking();
     }

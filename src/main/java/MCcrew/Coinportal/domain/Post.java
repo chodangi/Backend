@@ -1,12 +1,10 @@
 package MCcrew.Coinportal.domain;
 
-import MCcrew.Coinportal.Dto.CommentDto;
 import MCcrew.Coinportal.photo.Attachment;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

@@ -86,7 +86,7 @@
 1. logger 추가해보기 -> log4j2
 2. s3 가능?
 3. 예외처리코드 추가 ResponseEntity
-4. restful 하게 경로 수정
+4. restful 하게 경로 수정 (완료)
 
 리팩토링사항:
 1. postDto  에서 postId 필드를 게시글 수정때문에 유지함. ->불필요함. 없애고 게시글 수정시에 postId를 requestParam으로 전달하고 body에는 수정사항 전달하게끔 수정하기

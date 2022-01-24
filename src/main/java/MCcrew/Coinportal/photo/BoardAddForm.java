@@ -1,10 +1,10 @@
 package MCcrew.Coinportal.photo;
+import MCcrew.Coinportal.domain.Dto.BoardPostDto;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -45,9 +45,6 @@ public class BoardAddForm {
     }
 
     private List<MultipartFile> getAttachmentTypeList() {
-//        List<MultipartFile> attachments = new ArrayList<>();
-//        attachments = imageFiles;
-//        return attachments;
         return this.imageFiles;
     }
 }

@@ -1,10 +1,10 @@
 package MCcrew.Coinportal.board;
 
+import MCcrew.Coinportal.domain.Attachment;
 import MCcrew.Coinportal.domain.Dto.PostDto;
 import MCcrew.Coinportal.admin.AdminRepository;
 import MCcrew.Coinportal.domain.Notice;
 import MCcrew.Coinportal.domain.Post;
-import MCcrew.Coinportal.photo.Attachment;
 import MCcrew.Coinportal.photo.AttachmentRepository;
 import MCcrew.Coinportal.photo.AttachmentService;
 import MCcrew.Coinportal.user.UserRepository;

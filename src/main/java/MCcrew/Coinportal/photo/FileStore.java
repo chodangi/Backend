@@ -1,6 +1,7 @@
 package MCcrew.Coinportal.photo;
 
 import MCcrew.Coinportal.board.BoardRepository;
+import MCcrew.Coinportal.domain.Attachment;
 import MCcrew.Coinportal.domain.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

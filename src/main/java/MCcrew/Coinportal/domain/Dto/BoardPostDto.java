@@ -1,4 +1,4 @@
-package MCcrew.Coinportal.photo;
+package MCcrew.Coinportal.domain.Dto;
 
 import MCcrew.Coinportal.domain.Post;
 import lombok.Builder;

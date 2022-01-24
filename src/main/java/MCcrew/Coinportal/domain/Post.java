@@ -1,6 +1,5 @@
 package MCcrew.Coinportal.domain;
 
-import MCcrew.Coinportal.photo.Attachment;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 

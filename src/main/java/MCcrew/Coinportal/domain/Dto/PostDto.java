@@ -1,6 +1,5 @@
 package MCcrew.Coinportal.domain.Dto;
 
-import MCcrew.Coinportal.photo.Attachment;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;

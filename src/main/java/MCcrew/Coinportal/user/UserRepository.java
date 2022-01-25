@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 import java.util.List;
 import java.util.stream.Stream;
@@ -74,6 +75,10 @@ public class UserRepository {
             result = new User();
             System.out.println("사용자 이메일로 정보 조회 중 예외발생 - NoResultException");
             e.printStackTrace();
+        }catch(NonUniqueResultException e){
+            result = em.createQuery("select u from User u where u.email = :email", User.class)
+                    .setParameter("email", email)
+                    .getResultList().get(0);
         }
         return result;
     }

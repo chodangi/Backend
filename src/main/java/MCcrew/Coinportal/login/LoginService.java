@@ -10,6 +10,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -25,6 +26,8 @@ public class LoginService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final LoginRepository loginRepository;
+
+    String redirect_uri = "http://13.209.180.179/login";
 
     @Autowired
     public LoginService(UserRepository userRepository, JwtService jwtService, LoginRepository loginRepository) {
@@ -51,7 +54,7 @@ public class LoginService {
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
             sb.append("&client_id=bbac0c1542268d22cd795e3d398071f5");
-            sb.append("&redirect_uri=http://13.209.180.179/login");
+            sb.append("&redirect_uri="+redirect_uri);
             sb.append("&code=" + authorize_code);
             bw.write(sb.toString());
             bw.flush();

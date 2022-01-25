@@ -43,7 +43,6 @@ public class LoginController {
 
     @GetMapping("/tokakao")
     public String tokakaoController(){
-        System.out.println("-------------------------------------- tokakao -> kakao aouth 진행합니다. --------------------------------------");
         return "redirect:https://kauth.kakao.com/oauth/authorize"
                 + "?client_id="
                 + client_id
@@ -66,12 +65,11 @@ public class LoginController {
      */
     @GetMapping(value = "/login")
     public String loginController(@RequestParam("code") String code, RedirectAttributes re) throws UnsupportedEncodingException {
-            System.out.println("-------------------------------------- loginController -> 진행합니다. getJwt실행 --------------------------------------");
             String jwt = loginService.getJwt(code);
             re.addAttribute("jwt", jwt);
             System.out.println("generated jwt = " + jwt);
             System.out.println("loginController to redirect:/");
-            return "redirect:/";
+            return "redirect:/main-page";
     }
 
     /*

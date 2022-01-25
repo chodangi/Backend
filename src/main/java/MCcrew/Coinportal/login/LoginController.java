@@ -20,8 +20,8 @@ public class LoginController {
     private final JwtService jwtService;
     private final String reqURL = "https://kauth.kakao.com/oauth/logout";
 
-    // 로깅
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Value("${kakao.oauth.client_id}")
     private String client_id;
     @Value("${kakao.oauth.redirect_uri}")
@@ -69,8 +69,6 @@ public class LoginController {
     public String loginController(@RequestParam("code") String code, RedirectAttributes re) throws UnsupportedEncodingException {
             String jwt = loginService.getJwt(code);
             re.addAttribute("jwt", jwt);
-            System.out.println("generated jwt = " + jwt);
-            System.out.println("loginController to redirect:/");
             return "redirect:/main-page";
     }
 
@@ -93,6 +91,6 @@ public class LoginController {
         bw.flush();
         //    결과 코드가 200이라면 성공
         int responseCode = conn.getResponseCode();
-        System.out.println("responseCode : " + responseCode);
+        logger.info("logoutController responseCode " + responseCode );
     }
 }

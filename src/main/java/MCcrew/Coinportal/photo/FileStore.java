@@ -3,6 +3,9 @@ package MCcrew.Coinportal.photo;
 import MCcrew.Coinportal.board.BoardRepository;
 import MCcrew.Coinportal.domain.Attachment;
 import MCcrew.Coinportal.domain.Post;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -14,11 +17,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Component
 public class FileStore {
 
     @Autowired
     private final BoardRepository boardRepository;
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public FileStore(BoardRepository boardRepository) {
         this.boardRepository = boardRepository;
@@ -46,8 +52,10 @@ public class FileStore {
 
         String originalFilename = multipartFile.getOriginalFilename();
         String storeFilename = createStoreFilename(originalFilename);
-        System.out.println("storeFile Method - originalFilename: " + originalFilename);
-        System.out.println("storeFile Method - storeFilename: " + storeFilename);
+
+        logger.info("storeFile - originalFilename: " + originalFilename);
+        logger.info("storeFile - storeFilename: " + storeFilename);
+
         multipartFile.transferTo(new File(createPath(storeFilename)));
 
         Post findPost = boardRepository.findById(postId);
@@ -67,7 +75,7 @@ public class FileStore {
         String uuid = UUID.randomUUID().toString();
         String ext = extractExt(originalFilename);
         String storeFilename = uuid + ext;
-        System.out.println("createStoreFilename Method - storeFilename: " + storeFilename);
+        logger.info("createStoreFilename Method - storeFilename: " + storeFilename);
         return storeFilename;
     }
 

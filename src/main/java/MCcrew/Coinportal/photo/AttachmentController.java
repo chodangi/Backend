@@ -44,12 +44,10 @@ public class AttachmentController {
         Long userIdx = 0L;
         try{ // 유저 인증
             userIdx = jwtService.getUserIdByJwt(jwt);
-            System.out.println("dopost: 유저인증:" +userIdx);
         }catch(Exception e){
             e.printStackTrace();
             return new Post();
         }
-        System.out.println("userIdx : " + userIdx);
         Post post = boardService.post(postDto, userIdx);
         return post;
     }

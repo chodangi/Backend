@@ -9,6 +9,9 @@ import MCcrew.Coinportal.photo.AttachmentRepository;
 import MCcrew.Coinportal.photo.AttachmentService;
 import MCcrew.Coinportal.user.UserRepository;
 import MCcrew.Coinportal.user.UserService;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Slf4j
 @Service
 public class BoardService {
 
@@ -33,6 +37,10 @@ public class BoardService {
     private final AttachmentService attachmentService;
     private final AttachmentRepository attachmentRepository;
     private final AdminRepository adminRepository;
+
+    // 로깅
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
 
     @Value("${file.dir}")
     private String fileDirPath;
@@ -176,17 +184,14 @@ public class BoardService {
         try {
             File file = new File(fileDirPath + fileName);
             if (file.delete()) { // 파일 삭제에 성공하면 true, 실패하면 false
-                System.out.println("delete successfully");
+                logger.info("delete successfully");
                 return true;
             } else {
-                System.out.println("cannot delete");
                 return false;
             }
         }catch(Exception e){
-            System.out.println("Exception while deleting " + fileName);
             e.printStackTrace();
         }
-        System.out.println("method error");
         return false;
     }
 
@@ -198,7 +203,7 @@ public class BoardService {
         List<Attachment> attachmentList = attachmentRepository.findByPost_Id(postId);
         boolean deleted = false;
         for(int i = 0; i < attachmentList.size(); i++){
-            System.out.println("deleting " + attachmentList.get(i).getStoreFilename());
+            logger.info("deleting " + attachmentList.get(i).getStoreFilename());
             deleted = deleteFile(attachmentList.get(i).getStoreFilename());
             attachmentRepository.deleteById(attachmentList.get(i).getId());
         }
@@ -207,11 +212,10 @@ public class BoardService {
         }
         int deletedPost = boardRepository.delete(postId);
         if(deletedPost > 0){ // delete 된 컬럼이 존재한다면
-            System.out.println(postId + " 게시글을 삭제합니다.");
-
+            logger.info("게시물을 삭제합니다.");
             return true;
         }else{
-            System.out.println("게시글 삭제에 실패했습니다. ");
+            logger.info("게시물 삭제에 실패했습니다.");
             return false;
         }
     }
@@ -231,7 +235,7 @@ public class BoardService {
     }
 
     private static final int BLOCK_PAGE_NUM_COUNT = 5; // 블럭에 존재하는 페이지 번호 수
-    private static final int PAGE_POST_COUNT = 4; // 한 페이지에 존재하는 게시글 수
+    private static final int PAGE_POST_COUNT = 4;       // 한 페이지에 존재하는 게시글 수
 
     /*
         페이징된 게시글 리스트
@@ -266,23 +270,21 @@ public class BoardService {
         int[] pageList = new int[BLOCK_PAGE_NUM_COUNT]; // 5
 
         // 총 게시글 갯수
-        //Double postsTotalCount = Double.valueOf(this.getBoardCount());
         Double postsTotalCount = Double.valueOf(this.getBoardCountByBoardName(boardName));
-        System.out.println("총 게시글 갯수 : " + postsTotalCount);
+        logger.info("getPageList: total post count: " + postsTotalCount);
 
         // 총 게시글 기준으로 계산한 마지막 페이지 번호 계산 (올림으로 계산)
         Integer totalLastPageNum = (int)(Math.ceil((postsTotalCount / PAGE_POST_COUNT)));  // postsTotalCount/4
-        System.out.println("총 게시글 기준으로 계산한 마지막 페이지 번호 : " + totalLastPageNum);
+        logger.info("last page num: " + totalLastPageNum);
 
         // 현재 페이지를 기준으로 블럭의 마지막 페이지 번호 계산
         Integer blockLastPageNum = (totalLastPageNum > curPageNum + BLOCK_PAGE_NUM_COUNT) // 13 > 2 + 5
                 ? curPageNum + BLOCK_PAGE_NUM_COUNT // curPageNum + 5 -> 7
                 : totalLastPageNum;                 // totalLastPageNum -> 13
-        System.out.println("현재 페이지를 기준으로 블럭의 마지막 페이지 번호 : " + blockLastPageNum); // 7
-
+        logger.info("last num of block: " + blockLastPageNum);
         // 페이지 시작 번호 조정
         curPageNum = (curPageNum <= 3) ? 1 : curPageNum - 2;
-        System.out.println("페이지 시작 번호 : " + curPageNum); // 1
+        logger.info("page start num: ", curPageNum);
 
         // 페이지 번호 할당
         try{
@@ -294,7 +296,7 @@ public class BoardService {
         }catch(Exception e){
             e.printStackTrace();
         }
-        System.out.println("페이지 번호 할당 : " + pageList.toString());
+        logger.info("page allocation num:"+ pageList.toString());
         return pageList;
     }
 

@@ -79,7 +79,7 @@ public class BoardController {  // 게시판 관련 컨트롤러
     @GetMapping("/community/{board-name}/{page}")
     @ResponseBody
     public Message listController(@PathVariable("board-name") String boardName, @PathVariable("page") int page){
-        System.out.println("searching post about" + boardName + " with page " + page);
+        logger.info("searching post about" + boardName + " with page " + page);
         List<Post> postList = boardService.getPostlist(boardName, page);
         if(postList.size() == 0){
             return new Message(StatusEnum.NOT_FOUND, "NOT_FOUND", postList);

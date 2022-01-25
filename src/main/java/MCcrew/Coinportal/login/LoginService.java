@@ -9,6 +9,9 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,12 +23,15 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 
+@Slf4j
 @Service
 public class LoginService {
 
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final LoginRepository loginRepository;
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Value("${kakao.oauth.client_id}")
     String client_id;
@@ -66,7 +72,7 @@ public class LoginService {
 
             //    결과 코드가 200이라면 성공
             int responseCode = conn.getResponseCode();
-            System.out.println("responseCode : " + responseCode);
+            logger.info("getAccessTocken: " + responseCode);
 
             //    요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -76,7 +82,6 @@ public class LoginService {
             while ((line = br.readLine()) != null) {
                 result += line;
             }
-            System.out.println("response body : " + result);
 
             //    Gson 라이브러리에 포함된 클래스로 JSON파싱 객체 생성
             JsonParser parser = new JsonParser();
@@ -84,9 +89,6 @@ public class LoginService {
 
             access_Token = element.getAsJsonObject().get("access_token").getAsString();
             refresh_Token = element.getAsJsonObject().get("refresh_token").getAsString();
-
-            System.out.println("access_token : " + access_Token);
-            System.out.println("refresh_token : " + refresh_Token);
 
             br.close();
             bw.close();
@@ -98,7 +100,6 @@ public class LoginService {
     }
 
     public HashMap<String, String> getUserInfo (String access_Token) {
-        //    요청하는 클라이언트마다 가진 정보가 다를 수 있기에 HashMap타입으로 선언
         HashMap<String, String> userInfo = new HashMap<>();
         try {
             URL url = new URL(user_info_URL);
@@ -109,7 +110,7 @@ public class LoginService {
             conn.setRequestProperty("Authorization", "Bearer " + access_Token);
 
             int responseCode = conn.getResponseCode();
-            System.out.println("responseCode : " + responseCode);
+            logger.info("getUserInfo responsecode: " + responseCode);
 
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
@@ -119,7 +120,6 @@ public class LoginService {
             while ((line = br.readLine()) != null) {
                 result += line;
             }
-            System.out.println("response body : " + result);
 
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(result);
@@ -149,7 +149,7 @@ public class LoginService {
             //conn.setRequestProperty("Authorization", "Bearer " + access_Token);
 
             int responseCode = conn.getResponseCode();
-            System.out.println("responseCode : " + responseCode);
+            logger.info("kakaoLogout responseCode: " + responseCode);
 
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
@@ -159,7 +159,6 @@ public class LoginService {
             while ((line = br.readLine()) != null) {
                 result += line;
             }
-            System.out.println(result);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -168,13 +167,10 @@ public class LoginService {
 
     public String getJwt(String code) throws UnsupportedEncodingException {
         String jwt = "";
-        System.out.println("code : " + code);
 
         String access_Token = getAccessToken(code);
-        System.out.println("access_Token : " + access_Token);
 
         HashMap<String, String> userInfo = getUserInfo(access_Token);
-        System.out.println("login Controller : " + userInfo);
 
         // 새로 추가된 코드 jwt 작성
         String name = userInfo.get("nickname");
@@ -192,9 +188,9 @@ public class LoginService {
             user.setStatus('A');
             userRepository.save(user);
 
-            System.out.println("new User added. name = " + name + ", email = " + email + jwt);
+            logger.info("회원을 추가합니다. " + name +"/"+ email);
         }else{ // 존재하는 회원이라면
-            System.out.println("already in member. get past jwt. ");
+            logger.info("getJwt 이미 존재하는 회원입니다. ");
             System.out.println("jwt : " + jwt);
         }
         return jwt;

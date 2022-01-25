@@ -51,6 +51,7 @@ public class AdminController {
     }
 
     public boolean pwdCheck(Long pwd){
+        logger.info("pwdCheck");
         if(pwd.equals(this.pwd)){
             return true;
         }else{

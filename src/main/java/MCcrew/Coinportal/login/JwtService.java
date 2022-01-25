@@ -6,6 +6,9 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -13,8 +16,11 @@ import org.springframework.stereotype.Service;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
+@Slf4j
 @Service
 public class JwtService {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final UserRepository userRepository;
     @Value("${jwt.hash.key}")
@@ -90,14 +96,12 @@ public class JwtService {
         boolean valid = validateJwt(jwt);
         String email = "";
         if(valid) {
-            System.out.println("유효한 jwt 입니다. jwt:" + jwt);
             try {
                 email = getUserEmail(jwt);
             }catch(UnsupportedEncodingException e){
                 return 0L;
             }
             String nickname = this.getNicknameFromEmail(email);
-            System.out.println("founded nickname and email = " + email + "/" + nickname);
             try {
                 User findUser = userRepository.findByNameAndEmail(nickname, email);
                 return findUser.getId();

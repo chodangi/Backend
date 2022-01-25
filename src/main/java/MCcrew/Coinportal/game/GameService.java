@@ -6,7 +6,10 @@ import MCcrew.Coinportal.domain.BetHistory;
 import MCcrew.Coinportal.domain.User;
 import MCcrew.Coinportal.user.UserRepository;
 import MCcrew.Coinportal.user.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -18,7 +21,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class GameService {
-
     private static GameRepository gameRepository;
     private static UserRepository userRepository;
     private static UserService userService;

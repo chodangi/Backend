@@ -29,10 +29,7 @@ public class LoginService {
 
     @Value("${kakao.oauth.client_id}")
     String client_id;
-    @Value("${kakao.oauth.local_redirect_uri}")
-    String local_redirect_uri;
     String redirect_uri = "http://13.209.180.179/login";
-
 
     String token_reqURL= "https://kauth.kakao.com/oauth/token";
     String user_info_URL = "https://kapi.kakao.com/v2/user/me";

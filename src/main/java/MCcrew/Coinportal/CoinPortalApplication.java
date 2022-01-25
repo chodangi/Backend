@@ -8,6 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class CoinPortalApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(CoinPortalApplication.class, args);
-		GameService.gameTimer(); // 게임 시작
+		// GameService.gameTimer(); // 게임 시작
 	}
 }

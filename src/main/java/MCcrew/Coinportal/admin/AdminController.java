@@ -108,9 +108,6 @@ public class AdminController {
     @GetMapping("/admin/memory")
     @ResponseBody
     public String checkMemoryController(){
-        Runtime.getRuntime().gc();
-        Long totalJVMMemory = Runtime.getRuntime().totalMemory();
-        Long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        return "[usedMemory: " + usedMemory/1000000 + "MB, totalJVMMemory: " + totalJVMMemory/1000000 + "MB]";
+        return adminService.memoryUsage();
     }
 }

@@ -99,7 +99,7 @@ adminController 추가 구현 사항
     5. 배너 수정
     6. 모든 게시물 확인
     7. 모든 댓글 확인
-1. log import
+1. log import (완료)
 2. 계속 리팩토링하기요...
 3. print문 제거하고 log 로 전부 변경하기 (완료)
 4. s3 + security만 적용하면 괜찮아질려나...

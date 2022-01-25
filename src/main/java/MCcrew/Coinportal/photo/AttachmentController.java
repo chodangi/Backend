@@ -39,16 +39,22 @@ public class AttachmentController {
      */
     @PostMapping("/attach/post-image")
     @ResponseBody
-    public Post doPost(@ModelAttribute PostDto postDto, @RequestHeader String jwt) throws IOException {
+    public Post doPost(@ModelAttribute PostDto postDto, @RequestHeader String jwt){
         logger.info("doPost(): 게시글 포스팅하기");
         Long userIdx = 0L;
-        try{ // 유저 인증
+        try{
             userIdx = jwtService.getUserIdByJwt(jwt);
         }catch(Exception e){
-            e.printStackTrace();
+            logger.error("error message: {}", e.getMessage());
             return new Post();
         }
-        Post post = boardService.post(postDto, userIdx);
+        Post post = null ;
+        try {
+            post = boardService.post(postDto, userIdx);
+        }catch(IOException e){
+            logger.error("error message: {}", e.getMessage());
+            post = new Post();
+        }
         return post;
     }
 
@@ -57,9 +63,15 @@ public class AttachmentController {
      */
     @GetMapping("/attach/{filename}")
     @ResponseBody
-    public Resource processImg(@PathVariable String filename) throws MalformedURLException {
+    public Resource processImg(@PathVariable String filename){
         logger.info("processImg(): " + filename+ "이미지 로드하기");
-        return new UrlResource("file:" + fileStore.createPath(filename));
+        UrlResource urlResource = null;
+        try {
+            urlResource = new UrlResource("file:" + fileStore.createPath(filename));
+        }catch(MalformedURLException e){
+            logger.error("error message: {}", e.getMessage());
+        }
+        return urlResource;
     }
 
     /**
@@ -67,10 +79,15 @@ public class AttachmentController {
      */
     @GetMapping("/attach/download/{filename}")
     @ResponseBody
-    public ResponseEntity<Resource> processAttaches(@PathVariable String filename, @RequestParam String originName) throws MalformedURLException {
+    public ResponseEntity<Resource> processAttaches(@PathVariable String filename, @RequestParam String originName){
         logger.info("processAttaches(): " + filename+ "이미지 다운로드 링크");
-        UrlResource urlResource = new UrlResource("file:" + fileStore.createPath(filename));
-
+        UrlResource urlResource = null;
+        try {
+            urlResource = new UrlResource("file:" + fileStore.createPath(filename));
+        }catch(MalformedURLException e){
+            logger.error("error message: {}", e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
         String encodedUploadFileName = UriUtils.encode(originName, StandardCharsets.UTF_8);
         String contentDisposition = "attachment; filename=\"" + encodedUploadFileName + "\"";
 

@@ -11,6 +11,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 @Slf4j
@@ -75,9 +76,14 @@ public class LoginController {
         로그인 컨트롤러
      */
     @GetMapping(value = "/login")
-    public String loginController(@RequestParam("code") String code, RedirectAttributes re) throws UnsupportedEncodingException {
+    public String loginController(@RequestParam("code") String code, RedirectAttributes re){
         logger.info("loginController(): 로그인");
-        String jwt = loginService.getJwt(code);
+        String jwt = "";
+        try{
+            jwt = loginService.getJwt(code);
+        }catch(UnsupportedEncodingException e){
+            logger.error("error message: {}", e.getMessage());
+        }
         re.addAttribute("jwt", jwt);
         return "redirect:/main-page";
     }
@@ -86,21 +92,27 @@ public class LoginController {
         로그아웃 컨트롤러
      */
     @GetMapping(value="/logout")
-    public void logoutController() throws Exception {
+    public void logoutController(){
         logger.info("logoutController(): 로그아웃");
-        URL url = new URL(reqURL);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        try {
+            URL url = new URL(reqURL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-        conn.setRequestMethod("GET");
-        conn.setDoOutput(true);
+            conn.setRequestMethod("GET");
+            conn.setDoOutput(true);
 
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
-        StringBuilder sb = new StringBuilder();
-        sb.append("?client_id=" + client_id);
-        sb.append("&logout_redirect_uri=" + logout_redirect_uri);
-        bw.write(sb.toString());
-        bw.flush();
-        int responseCode = conn.getResponseCode(); // 결과 코드가 200이라면 성공
-        logger.info("logoutController responseCode " + responseCode );
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
+            StringBuilder sb = new StringBuilder();
+            sb.append("?client_id=" + client_id);
+            sb.append("&logout_redirect_uri=" + logout_redirect_uri);
+            bw.write(sb.toString());
+            bw.flush();
+            int responseCode = conn.getResponseCode(); // 결과 코드가 200이라면 성공
+            logger.info("logoutController responseCode " + responseCode);
+        }catch(MalformedURLException e){
+            logger.error("error message: {}", e.getMessage());
+        }catch(IOException e){
+            logger.error("error message: {}", e.getMessage());
+        }
     }
 }

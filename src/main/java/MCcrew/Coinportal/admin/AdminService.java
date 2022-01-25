@@ -69,4 +69,14 @@ public class AdminService {
             return false;
         }
     }
+
+    /**
+      메모리 사용량 체크
+     */
+    public String memoryUsage(){
+        Runtime.getRuntime().gc();
+        Long totalJVMMemory = Runtime.getRuntime().totalMemory();
+        Long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        return "[usedMemory: " + usedMemory/1000000 + "MB, totalJVMMemory: " + totalJVMMemory/1000000 + "MB]";
+    }
 }

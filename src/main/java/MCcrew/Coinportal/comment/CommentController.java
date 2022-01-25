@@ -16,8 +16,6 @@ import java.io.UnsupportedEncodingException;
 public class CommentController {
     private final CommentService commentService;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Autowired
     public CommentController(CommentService commentService) {
         this.commentService = commentService;

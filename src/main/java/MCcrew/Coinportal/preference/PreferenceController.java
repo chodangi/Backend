@@ -7,20 +7,18 @@ import MCcrew.Coinportal.util.StatusEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@RestController("/preference")
+@Controller
 public class PreferenceController {
 
     private final PreferenceService preferenceService;
     private final JwtService jwtService;
-
-    // 로깅
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public PreferenceController(PreferenceService preferenceService, JwtService jwtService) {
         this.preferenceService = preferenceService;
@@ -30,7 +28,8 @@ public class PreferenceController {
     /*
         게시글 좋아요 클릭
     */
-    @PostMapping("/post-like/{post-id}")
+    @PostMapping("/preference/post-like/{post-id}")
+    @ResponseBody
     public Message likeController(@PathVariable("post-id") Long postId, @RequestHeader String jwt)  {
         if(jwt == null){
             return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", new Preference());
@@ -50,7 +49,8 @@ public class PreferenceController {
     /*
         게시글 싫어요 클릭
      */
-    @PostMapping("/post-dislike/{post-id}")
+    @PostMapping("/preference/post-dislike/{post-id}")
+    @ResponseBody
     public Message dislikeController(@PathVariable("post-id") Long postId, @RequestHeader String jwt){
         if(jwt == null){
             return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", new Preference());
@@ -70,7 +70,8 @@ public class PreferenceController {
     /*
         내가 누른 좋아요 모두 보기
      */
-    @GetMapping("/my-like")
+    @GetMapping("/preference/my-like")
+    @ResponseBody
     public Message myLikeController(@RequestHeader String jwt){
         if(jwt == null){
             return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", new ArrayList<>());

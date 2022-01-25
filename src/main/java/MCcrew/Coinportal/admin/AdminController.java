@@ -10,18 +10,16 @@ import MCcrew.Coinportal.login.LoginService;
 import MCcrew.Coinportal.photo.AttachmentService;
 import MCcrew.Coinportal.user.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @Slf4j
-@RestController
-@RequestMapping("/admin")
+@Controller
 public class AdminController {
 
     private final BoardService boardService;
@@ -32,9 +30,6 @@ public class AdminController {
     private final AttachmentService attachmentService;
     private final UserService userService;
     private final AdminService adminService;
-
-    // 로깅
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Value("${admin.pwd}")
     private String pwd; // 관리자 password
@@ -71,7 +66,8 @@ public class AdminController {
     /*
         모든 공지글 가져오기
      */
-    @GetMapping("/notices")
+    @GetMapping("/admin/notices")
+    @ResponseBody
     public ResponseEntity<List<Notice>> getNoticeController(){
         List<Notice> resultList = boardService.getNotice();
         if(resultList.isEmpty()){
@@ -83,7 +79,8 @@ public class AdminController {
     /*
         공지글 작성
      */
-    @PostMapping("/notice")
+    @PostMapping("/admin/notice")
+    @ResponseBody
     public Notice createNoticeController(@RequestBody NoticeDto noticeDto){
         return adminService.createNotice(noticeDto);
     }
@@ -91,7 +88,8 @@ public class AdminController {
     /*
         공지글 수정
      */
-    @PutMapping("/notice/{noticeId}")
+    @PutMapping("/admin/notice/{noticeId}")
+    @ResponseBody
     public Notice updateNoticeController(@RequestBody NoticeDto noticeDto, @PathVariable Long noticeId){
         return adminService.updateNotice(noticeDto, noticeId);
     }
@@ -99,7 +97,8 @@ public class AdminController {
     /*
         공지글 삭제
      */
-    @DeleteMapping("/notice/{noticeId}")
+    @DeleteMapping("/admin/notice/{noticeId}")
+    @ResponseBody
     public boolean deleteNoticeController(@PathVariable Long noticeId){
         return adminService.deleteNotice(noticeId);
     }

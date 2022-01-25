@@ -9,23 +9,19 @@ import MCcrew.Coinportal.preference.PreferenceService;
 import MCcrew.Coinportal.util.Message;
 import MCcrew.Coinportal.util.StatusEnum;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
-@RestController("/community")
+@Controller
 public class BoardController {  // 게시판 관련 컨트롤러
 
     private final BoardService boardService;
     private final JwtService jwtService;
     private final PreferenceService preferenceService;
-
-    // 로깅
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public BoardController(BoardService boardService, JwtService jwtService, PreferenceService preferenceService) {
         this.boardService = boardService;
@@ -36,7 +32,8 @@ public class BoardController {  // 게시판 관련 컨트롤러
     /*
             게시글 키워드로 검색
          */
-    @GetMapping("/post/{keyword}")
+    @GetMapping("/community/post/{keyword}")
+    @ResponseBody
     public Message searchByKeywordController(@PathVariable String keyword){
         List<Post> postList = boardService.searchPostsByKeyword(keyword);
         if(postList.size() == 0){
@@ -48,7 +45,8 @@ public class BoardController {  // 게시판 관련 컨트롤러
     /*
         게시글 사용자 닉네임으로 검색
      */
-    @GetMapping("/post/{nickname}")
+    @GetMapping("/community/post/{nickname}")
+    @ResponseBody
     public Message searchByNicknameController(@PathVariable String nickname){
         List<Post> postList = boardService.searchPostsByNickname(nickname);
         if(postList.size() == 0){
@@ -60,7 +58,8 @@ public class BoardController {  // 게시판 관련 컨트롤러
      /*
         실시간 인기글 리스트 검색
       */
-    @GetMapping("/up-count")
+    @GetMapping("/community/up-count")
+    @ResponseBody
     public Message searchByPopularityController(){
         List<Post> postList = boardService.searchPostsByPopularity();
         if(postList.size() == 0){
@@ -72,7 +71,8 @@ public class BoardController {  // 게시판 관련 컨트롤러
     /*
         게시글 페이징 구현
      */
-    @GetMapping("/{board-name}/{page}")
+    @GetMapping("/community/{board-name}/{page}")
+    @ResponseBody
     public Message listController(@PathVariable("board-name") String boardName, @PathVariable("page") int page){
         System.out.println("searching post about" + boardName + " with page " + page);
         List<Post> postList = boardService.getPostlist(boardName, page);
@@ -89,7 +89,8 @@ public class BoardController {  // 게시판 관련 컨트롤러
     /*
         단일 게시글 조회
      */
-    @GetMapping("/post/{post-id}")
+    @GetMapping("/community/post/{post-id}")
+    @ResponseBody
     public Message getContentController(@PathVariable("post-id") Long postId, @RequestHeader String jwt){
         Long userId = 0L;
         HashMap hashMap = new HashMap();
@@ -114,7 +115,8 @@ public class BoardController {  // 게시판 관련 컨트롤러
     /*
         전체 게시글 조회
      */
-    @GetMapping("/posts")
+    @GetMapping("/community")
+    @ResponseBody
     public Message getAllContentsController(){
         List<Post> postList = boardService.getAllPost();
         if(postList.size() == 0){
@@ -126,7 +128,8 @@ public class BoardController {  // 게시판 관련 컨트롤러
     /*
         선택한 게시글 수정
      */
-    @PutMapping("/post")
+    @PutMapping("/community/post")
+    @ResponseBody
     public Message updateController(@RequestBody PostDto postDto, @RequestHeader String jwt){
         Long userId = 0L;
         userId = jwtService.getUserIdByJwt(jwt);
@@ -145,7 +148,8 @@ public class BoardController {  // 게시판 관련 컨트롤러
     /*
        선택한 게시글 신고
     */
-    @PostMapping("/post/report")
+    @PostMapping("/community/post/report")
+    @ResponseBody
     public Message reportController(@RequestParam("postId") Long postId){
         try{
         int reportCnt = boardService.reportPost(postId);
@@ -158,7 +162,8 @@ public class BoardController {  // 게시판 관련 컨트롤러
     /*
         삭제 상태로 변경
      */
-    @PostMapping("/post/status/{post-id}")
+    @PostMapping("/community/post/status/{post-id}")
+    @ResponseBody
     public Message deleteController(@PathVariable("post-id") Long postId, @RequestHeader String jwt){
         Long userId = 0L;
             userId = jwtService.getUserIdByJwt(jwt);
@@ -172,7 +177,8 @@ public class BoardController {  // 게시판 관련 컨트롤러
     /*
         선택한 게시글 디비에서 삭제
      */
-    @DeleteMapping("/post/{post-id}")
+    @DeleteMapping("/community/post/{post-id}")
+    @ResponseBody
     public Message deleteContent(@PathVariable("post-id") Long postId, @RequestHeader String jwt){
         Long userId = 0L;
             userId = jwtService.getUserIdByJwt(jwt);
@@ -189,7 +195,8 @@ public class BoardController {  // 게시판 관련 컨트롤러
     /*
         모든 공지글 가져오기
      */
-    @GetMapping("/notices")
+    @GetMapping("/community/notices")
+    @ResponseBody
     public Message getNoticeController(){
         List<Notice> notices = boardService.getNotice();
         if(notices.size() == 0){

@@ -13,6 +13,7 @@ import jdk.jshell.Snippet;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.NoResultException;
@@ -21,16 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@RestController("/profile")
+@Controller
 public class UserController {   // 유저 프로필 관련 컨트롤러
 
     private final UserService userService;
     private final JwtService jwtService;
     private final CommentService commentService;
     private final BoardService boardService;
-
-    // 로깅
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public UserController(UserService userService, JwtService jwtService, CommentService commentService, BoardService boardService) {
         this.userService = userService;
@@ -42,7 +40,8 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
     /*
                 모든 유저 반환
              */
-    @GetMapping("/users")
+    @GetMapping("/profile/users")
+    @ResponseBody
     public Message getAllUserController(){
         List<User> result = null;
         try {
@@ -56,7 +55,8 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
     /*
         내가 작성한 게시글 반환
      */
-    @GetMapping("/my-post")
+    @GetMapping("/profile/my-post")
+    @ResponseBody
     public Message getMyPostController(@RequestHeader String jwt) {
         if(jwt == null){
             return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", false);
@@ -73,7 +73,8 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
     /*
         내가 작성한 댓글 반환
      */
-    @GetMapping("/my-comment")
+    @GetMapping("/profile/my-comment")
+    @ResponseBody
     public Message getMyCommentController(@RequestHeader String jwt){
         if(jwt == null){
             return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", false);
@@ -90,7 +91,8 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
     /*
         내 설정값 반환
      */
-    @GetMapping("/my-settings")
+    @GetMapping("/profile/my-settings")
+    @ResponseBody
     public Message getMySettingController(@RequestHeader String jwt ) {
         if(jwt == null){
             return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", false);
@@ -107,7 +109,8 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
     /*
         설정 변경 - 닉네임 변경도 해당 api 에서 수행
      */
-    @PostMapping("/my-settings")
+    @PostMapping("/profile/my-settings")
+    @ResponseBody
     public Message updateMySettingController(@RequestBody UserDto userDto, @RequestHeader String jwt ){
         if(jwt == null){
             return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", false);
@@ -124,7 +127,8 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
     /*
         회원 탈퇴
      */
-    @DeleteMapping("/user")
+    @DeleteMapping("/profile/user")
+    @ResponseBody
     public Message deleteUserController(@RequestHeader String jwt) {
         if(jwt == null){
             return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", false);

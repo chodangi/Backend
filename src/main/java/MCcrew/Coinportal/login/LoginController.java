@@ -19,12 +19,7 @@ import java.net.URL;
 public class LoginController {
     private final LoginService loginService;
     private final JwtService jwtService;
-
     private final String reqURL = "https://kauth.kakao.com/oauth/logout";
-
-    // 로깅
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Value("${kakao.oauth.client_id}")
     private String client_id;
     @Value("${kakao.oauth.redirect_uri}")

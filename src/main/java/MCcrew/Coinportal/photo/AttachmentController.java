@@ -20,14 +20,11 @@ import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 
 @Slf4j
-@RestController("/attach")
+@Controller
 public class AttachmentController {
     private final FileStore fileStore;
     private final JwtService jwtService;
     private final BoardService boardService;
-
-    // 로깅
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public AttachmentController(FileStore fileStore, JwtService jwtService, BoardService boardService) {
         this.fileStore = fileStore;
@@ -38,7 +35,8 @@ public class AttachmentController {
     /*
         게시글과 이미지 포스팅하기
      */
-    @PostMapping("/post-image")
+    @PostMapping("/attach/post-image")
+    @ResponseBody
     public Post doPost(@ModelAttribute PostDto postDto, @RequestHeader String jwt) throws IOException {
         Long userIdx = 0L;
         try{ // 유저 인증
@@ -56,7 +54,8 @@ public class AttachmentController {
     /*
         이미지 로드
      */
-    @GetMapping("/{filename}")
+    @GetMapping("/attach/{filename}")
+    @ResponseBody
     public Resource processImg(@PathVariable String filename) throws MalformedURLException {
         return new UrlResource("file:" + fileStore.createPath(filename));
     }
@@ -64,7 +63,8 @@ public class AttachmentController {
     /*
         이미지 다운로드
      */
-    @GetMapping("/download/{filename}")
+    @GetMapping("/attach/download/{filename}")
+    @ResponseBody
     public ResponseEntity<Resource> processAttaches(@PathVariable String filename, @RequestParam String originName) throws MalformedURLException {
         UrlResource urlResource = new UrlResource("file:" + fileStore.createPath(filename));
 

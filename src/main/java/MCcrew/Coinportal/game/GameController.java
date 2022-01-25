@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
@@ -17,14 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@RestController("/game")
+@Controller
 public class GameController {  // 게임 관련 api 컨트롤러
 
     private final GameService gameService;
     private final JwtService jwtService;
-
-    // 로깅
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public GameController(GameService gameService, JwtService jwtService) {
         this.gameService = gameService;
@@ -38,7 +36,8 @@ public class GameController {  // 게임 관련 api 컨트롤러
             이더: ETH/KRW
             리플: XRP/KRW
         */
-    @GetMapping("/coin-price/{symbol}")
+    @GetMapping("/game/coin-price/{symbol}")
+    @ResponseBody
     public Message coinInfo(@PathVariable String symbol){
         String result =  gameService.getPriceFromBithumb(symbol);
         if(result.equals("null")){
@@ -54,7 +53,8 @@ public class GameController {  // 게임 관련 api 컨트롤러
         ETH_KRW
         XRP_KRW
      */
-    @GetMapping("/coin-chart/{symbol}")
+    @GetMapping("/game/coin-chart/{symbol}")
+    @ResponseBody
     public Message coinChart(@PathVariable String symbol){
         String result = "";
         try {
@@ -68,7 +68,8 @@ public class GameController {  // 게임 관련 api 컨트롤러
     /*
         코인 궁예하기
      */
-    @PostMapping("/play")
+    @PostMapping("/game/play")
+    @ResponseBody
     public Message predictCoinController(@RequestBody BetHistoryDto betHistoryDto, @RequestHeader String jwt){
         if(jwt == null){
             return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", new BetHistory());
@@ -85,7 +86,8 @@ public class GameController {  // 게임 관련 api 컨트롤러
     /*
         훈수 예측 따라가기
      */
-    @PostMapping("/random")
+    @PostMapping("/game/random")
+    @ResponseBody
     public Message predictCoinRandomController(@RequestHeader String jwt){
         if(jwt == null){
             return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", new BetHistory());
@@ -102,7 +104,8 @@ public class GameController {  // 게임 관련 api 컨트롤러
     /*
         내 전적 보기
      */
-    @GetMapping("/my-history")
+    @GetMapping("/game/my-history")
+    @ResponseBody
     public Message getMyBetHistoryController(@RequestHeader String jwt){
         if(jwt == null){
             return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", new ArrayList<>());
@@ -119,7 +122,8 @@ public class GameController {  // 게임 관련 api 컨트롤러
     /*
         현재 코인 훈수 보기
      */
-    @GetMapping("/coin-prediction")
+    @GetMapping("/game/coin-prediction")
+    @ResponseBody
     public Message getRandomCoinPredictionController(){
         BetHistoryDto betHistoryDto =  gameService.getRandomCoinPrediction();
         return new Message(StatusEnum.OK, "OK", betHistoryDto);
@@ -128,7 +132,8 @@ public class GameController {  // 게임 관련 api 컨트롤러
     /*
         유저 랭킹
      */
-    @GetMapping("/ranking")
+    @GetMapping("/game/ranking")
+    @ResponseBody
     public Message getUserRankingController(){
         List<UserRankingDto> resultList = gameService.getGamePointRanking();
         return new Message(StatusEnum.OK, "OK", resultList);

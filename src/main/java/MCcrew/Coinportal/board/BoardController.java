@@ -37,7 +37,7 @@ public class BoardController {  // 게시판 관련 컨트롤러
     /*
             게시글 키워드로 검색
          */
-    @GetMapping("/community/post-by-ketword/{keyword}")
+    @GetMapping("/community/post-by-keyword/{keyword}")
     @ResponseBody
     public Message searchByKeywordController(@PathVariable String keyword){
         List<Post> postList = boardService.searchPostsByKeyword(keyword);

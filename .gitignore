@@ -22,6 +22,7 @@ bin/
 application.yml
 # log 파일 제외하기
 spring.log
+*.log
 # jpg 테스트 파일 제외하기
 *.jpg
 

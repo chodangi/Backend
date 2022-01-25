@@ -37,7 +37,7 @@ public class BoardController {  // 게시판 관련 컨트롤러
     /*
             게시글 키워드로 검색
          */
-    @GetMapping("/community/post/{keyword}")
+    @GetMapping("/community/post-by-ketword/{keyword}")
     @ResponseBody
     public Message searchByKeywordController(@PathVariable String keyword){
         List<Post> postList = boardService.searchPostsByKeyword(keyword);
@@ -50,7 +50,7 @@ public class BoardController {  // 게시판 관련 컨트롤러
     /*
         게시글 사용자 닉네임으로 검색
      */
-    @GetMapping("/community/post/{nickname}")
+    @GetMapping("/community/post-by-nickname/{nickname}")
     @ResponseBody
     public Message searchByNicknameController(@PathVariable String nickname){
         List<Post> postList = boardService.searchPostsByNickname(nickname);

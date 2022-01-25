@@ -9,7 +9,6 @@ import MCcrew.Coinportal.domain.User;
 import MCcrew.Coinportal.login.JwtService;
 import MCcrew.Coinportal.util.Message;
 import MCcrew.Coinportal.util.StatusEnum;
-import jdk.jshell.Snippet;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.NoResultException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -29,6 +26,9 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
     private final JwtService jwtService;
     private final CommentService commentService;
     private final BoardService boardService;
+
+    // 로깅
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public UserController(UserService userService, JwtService jwtService, CommentService commentService, BoardService boardService) {
         this.userService = userService;

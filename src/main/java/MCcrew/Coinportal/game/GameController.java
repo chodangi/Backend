@@ -24,6 +24,9 @@ public class GameController {  // 게임 관련 api 컨트롤러
     private final GameService gameService;
     private final JwtService jwtService;
 
+    // 로깅
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     public GameController(GameService gameService, JwtService jwtService) {
         this.gameService = gameService;
         this.jwtService = jwtService;

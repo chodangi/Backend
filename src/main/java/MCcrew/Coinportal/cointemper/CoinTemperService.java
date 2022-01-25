@@ -20,7 +20,6 @@ public class CoinTemperService {
     private BigDecimal max_val = new BigDecimal("100.0");         // 온도계 최대값
     private BigDecimal diff = new BigDecimal("0.1");
 
-    // 의존성 주입
     private final CoinTemperRepository coinTemperRepository;
 
     public CoinTemperService(CoinTemperRepository coinTemperRepository) {

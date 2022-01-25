@@ -20,6 +20,9 @@ public class PreferenceController {
     private final PreferenceService preferenceService;
     private final JwtService jwtService;
 
+    // 로깅
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     public PreferenceController(PreferenceService preferenceService, JwtService jwtService) {
         this.preferenceService = preferenceService;
         this.jwtService = jwtService;

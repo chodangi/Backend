@@ -26,6 +26,9 @@ public class AttachmentController {
     private final JwtService jwtService;
     private final BoardService boardService;
 
+    // 로깅
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     public AttachmentController(FileStore fileStore, JwtService jwtService, BoardService boardService) {
         this.fileStore = fileStore;
         this.jwtService = jwtService;

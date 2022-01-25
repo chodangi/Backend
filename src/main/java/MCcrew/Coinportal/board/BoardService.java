@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class BoardService {   // 게시판 관련 핵심 로직 구현
+public class BoardService {
 
     private final BoardRepository boardRepository;
     private final BoardRepository2 boardRepository2;
@@ -34,7 +34,7 @@ public class BoardService {   // 게시판 관련 핵심 로직 구현
     private final AttachmentRepository attachmentRepository;
     private final AdminRepository adminRepository;
 
-    @Value("${file.dir}/")
+    @Value("${file.dir}")
     private String fileDirPath;
 
     public BoardService(BoardRepository boardRepository, BoardRepository2 boardRepository2, UserService userService, UserRepository userRepository, AttachmentService attachmentService, AttachmentRepository attachmentRepository, AdminRepository adminRepository) {

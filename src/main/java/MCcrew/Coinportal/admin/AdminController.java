@@ -10,6 +10,8 @@ import MCcrew.Coinportal.login.LoginService;
 import MCcrew.Coinportal.photo.AttachmentService;
 import MCcrew.Coinportal.user.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,9 @@ public class AdminController {
     private final AttachmentService attachmentService;
     private final UserService userService;
     private final AdminService adminService;
+
+    // 로깅
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Value("${admin.pwd}")
     private String pwd; // 관리자 password
@@ -52,16 +57,6 @@ public class AdminController {
             return false;
         }
     }
-    /*
-        추가 구현 사항
-        1. 유저 체크
-        2. 신고된 게시물 체크
-        3. 게시물 수정 및 삭제
-        4. 공지글 제작
-        5. 배너 수정
-        6. 모든 게시물 확인
-        7. 모든 댓글 확인
-     */
 
     /*
         모든 공지글 가져오기

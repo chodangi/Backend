@@ -27,7 +27,16 @@ public class LoginService {
     private final JwtService jwtService;
     private final LoginRepository loginRepository;
 
+    @Value("${kakao.oauth.client_id}")
+    String client_id;
+    @Value("${kakao.oauth.local_redirect_uri}")
+    String local_redirect_uri;
     String redirect_uri = "http://13.209.180.179/login";
+
+
+    String token_reqURL= "https://kauth.kakao.com/oauth/token";
+    String user_info_URL = "https://kapi.kakao.com/v2/user/me";
+    String logout_URL = "https://kauth.kakao.com/oauth/logout";
 
     @Autowired
     public LoginService(UserRepository userRepository, JwtService jwtService, LoginRepository loginRepository) {
@@ -39,10 +48,9 @@ public class LoginService {
     public String getAccessToken (String authorize_code) {
         String access_Token = "";
         String refresh_Token = "";
-        String reqURL = "https://kauth.kakao.com/oauth/token";
 
         try {
-            URL url = new URL(reqURL);
+            URL url = new URL(token_reqURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             //    POST 요청을 위해 기본값이 false인 setDoOutput을 true로
@@ -53,7 +61,7 @@ public class LoginService {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
-            sb.append("&client_id=bbac0c1542268d22cd795e3d398071f5");
+            sb.append("&client_id="+client_id);
             sb.append("&redirect_uri="+redirect_uri);
             sb.append("&code=" + authorize_code);
             bw.write(sb.toString());
@@ -76,8 +84,6 @@ public class LoginService {
             //    Gson 라이브러리에 포함된 클래스로 JSON파싱 객체 생성
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(result);
-//            JsonParser parser = new JsonParser();
-//            JsonElement element = parser.parse(result);
 
             access_Token = element.getAsJsonObject().get("access_token").getAsString();
             refresh_Token = element.getAsJsonObject().get("refresh_token").getAsString();
@@ -97,9 +103,8 @@ public class LoginService {
     public HashMap<String, String> getUserInfo (String access_Token) {
         //    요청하는 클라이언트마다 가진 정보가 다를 수 있기에 HashMap타입으로 선언
         HashMap<String, String> userInfo = new HashMap<>();
-        String reqURL = "https://kapi.kakao.com/v2/user/me";
         try {
-            URL url = new URL(reqURL);
+            URL url = new URL(user_info_URL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
 
@@ -140,9 +145,8 @@ public class LoginService {
     }
 
     public void kakaoLogout(String access_Token) {
-        String reqURL = "https://kauth.kakao.com/oauth/logout";
         try {
-            URL url = new URL(reqURL);
+            URL url = new URL(logout_URL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             //conn.setRequestProperty("Authorization", "Bearer " + access_Token);
@@ -180,7 +184,6 @@ public class LoginService {
         String email = userInfo.get("email");
 
         // 이름과 이메일로 기존 사용자 조회
-        //User findUser = userRepository.findByNameAndEmail(name, email);
         jwt = jwtService.generateJwt(name, email);
         if(userRepository.findByEmail(email).getId() == null){ // 존재하지 않는 회원이라면 새롭게 추가 진행
             User user = new User();

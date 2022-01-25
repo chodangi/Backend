@@ -24,6 +24,9 @@ public class CoinTemperController {
     private final CoinTemperService coinTemperService;
     private final JwtService jwtService;
 
+    // 로깅
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     public CoinTemperController(CoinTemperService coinTemperService, JwtService jwtService) {
         this.coinTemperService = coinTemperService;

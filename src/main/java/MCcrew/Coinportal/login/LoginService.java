@@ -196,7 +196,7 @@ public class LoginService {
         return jwt;
     }
 
-    /*
+    /**
         유저 존재 확인하기
      */
     public String checkUserExistence(Long userId) {
@@ -204,7 +204,7 @@ public class LoginService {
         return findUser.getUserNickname();
     }
 
-    /*
+    /**
         기호를 기준으로 이메일에서 닉네임을 뽑아냄.
     */
     public String getNicknameFromEmail(String email){

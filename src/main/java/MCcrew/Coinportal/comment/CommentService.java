@@ -30,9 +30,9 @@ public class CommentService {
         this.jwtService = jwtService;
     }
 
-    /*
-                댓글 생성
-            */
+    /**
+         댓글 생성
+    */
     public Comment createComment(CommentDto commentDto) {
         Comment newComment = new Comment();
         Date date = new Date();
@@ -53,7 +53,7 @@ public class CommentService {
         return commentRepository.save(newComment);
     }
 
-    /*
+    /**
         댓글 수정
      */
     public Comment updateComment(CommentDto commentDto, String jwt){
@@ -77,7 +77,7 @@ public class CommentService {
         }
     }
 
-    /*
+    /**
         삭제 상태로 변경
      */
     public boolean status2Delete(Long commentId, String jwt){
@@ -99,7 +99,8 @@ public class CommentService {
             }
         }
     }
-    /*
+
+    /**
         디비에서 댓글 삭제
      */
     public boolean deleteComment(Long commentId){
@@ -111,7 +112,7 @@ public class CommentService {
         }
     }
 
-    /*
+    /**
         댓글 신고
      */
     public int reportComment(Long commentId) {
@@ -121,7 +122,7 @@ public class CommentService {
         return findComment.getReportCnt();
     }
 
-    /*
+    /**
         내가 작성한 댓글 조회
      */
     public List<Comment> getMyComment(Long userId){

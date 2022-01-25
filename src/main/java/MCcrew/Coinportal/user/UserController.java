@@ -20,14 +20,13 @@ import java.util.List;
 
 @Slf4j
 @Controller
-public class UserController {   // 유저 프로필 관련 컨트롤러
+public class UserController {
 
     private final UserService userService;
     private final JwtService jwtService;
     private final CommentService commentService;
     private final BoardService boardService;
 
-    // 로깅
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public UserController(UserService userService, JwtService jwtService, CommentService commentService, BoardService boardService) {
@@ -37,12 +36,13 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
         this.boardService = boardService;
     }
 
-    /*
-                모든 유저 반환
-             */
+    /**
+        모든 유저 반환
+    */
     @GetMapping("/profile/users")
     @ResponseBody
     public Message getAllUserController(){
+        logger.info("getAllUserController(): 모든 유저 반환");
         List<User> result = null;
         try {
             result = userService.getAllUser();
@@ -52,12 +52,13 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
         }
     }
 
-    /*
+    /**
         내가 작성한 게시글 반환
      */
     @GetMapping("/profile/my-post")
     @ResponseBody
     public Message getMyPostController(@RequestHeader String jwt) {
+        logger.info("getMyPostController(): 내가 작성한 게시글 반환");
         if(jwt == null){
             return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", false);
         }
@@ -70,12 +71,13 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
         }
     }
 
-    /*
+    /**
         내가 작성한 댓글 반환
      */
     @GetMapping("/profile/my-comment")
     @ResponseBody
     public Message getMyCommentController(@RequestHeader String jwt){
+        logger.info("getMyCommentController(): 내가 작성한 댓글 반환");
         if(jwt == null){
             return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", false);
         }
@@ -88,12 +90,13 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
         }
     }
 
-    /*
+    /**
         내 설정값 반환
      */
     @GetMapping("/profile/my-settings")
     @ResponseBody
     public Message getMySettingController(@RequestHeader String jwt ) {
+        logger.info("getMySettingController(): 내 설정값 반환");
         if(jwt == null){
             return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", false);
         }
@@ -106,12 +109,13 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
         }
     }
 
-    /*
+    /**
         설정 변경 - 닉네임 변경도 해당 api 에서 수행
      */
     @PostMapping("/profile/my-settings")
     @ResponseBody
     public Message updateMySettingController(@RequestBody UserDto userDto, @RequestHeader String jwt ){
+        logger.info("updateMySettingController(): 설정 변경");
         if(jwt == null){
             return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", false);
         }
@@ -124,12 +128,13 @@ public class UserController {   // 유저 프로필 관련 컨트롤러
         }
     }
 
-    /*
+    /**
         회원 탈퇴
      */
     @DeleteMapping("/profile/user")
     @ResponseBody
     public Message deleteUserController(@RequestHeader String jwt) {
+        logger.info("deleteUserController(): 회원 탈퇴");
         if(jwt == null){
             return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", false);
         }

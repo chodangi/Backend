@@ -20,7 +20,6 @@ public class PreferenceController {
     private final PreferenceService preferenceService;
     private final JwtService jwtService;
 
-    // 로깅
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public PreferenceController(PreferenceService preferenceService, JwtService jwtService) {
@@ -28,12 +27,13 @@ public class PreferenceController {
         this.jwtService = jwtService;
     }
 
-    /*
+    /**
         게시글 좋아요 클릭
     */
     @PostMapping("/preference/post-like/{post-id}")
     @ResponseBody
     public Message likeController(@PathVariable("post-id") Long postId, @RequestHeader String jwt)  {
+        logger.info("likeController(): " + postId + "번 게시글 좋아요 클릭");
         if(jwt == null){
             return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", new Preference());
         }
@@ -49,12 +49,13 @@ public class PreferenceController {
         }
     }
 
-    /*
+    /**
         게시글 싫어요 클릭
      */
     @PostMapping("/preference/post-dislike/{post-id}")
     @ResponseBody
     public Message dislikeController(@PathVariable("post-id") Long postId, @RequestHeader String jwt){
+        logger.info("dislikeController(): " + postId + "번 게시글 싫어요 클릭");
         if(jwt == null){
             return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", new Preference());
         }
@@ -70,12 +71,13 @@ public class PreferenceController {
         }
     }
 
-    /*
+    /**
         내가 누른 좋아요 모두 보기
      */
     @GetMapping("/preference/my-like")
     @ResponseBody
     public Message myLikeController(@RequestHeader String jwt){
+        logger.info("myLikeController(): 내가 누른 좋아요 모두 보기");
         if(jwt == null){
             return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", new ArrayList<>());
         }

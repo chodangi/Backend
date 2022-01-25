@@ -10,8 +10,7 @@ import javax.persistence.NoResultException;
 import java.util.*;
 
 @Service
-public class UserService {  // 유저 프로필 핵심 로직 구현
-
+public class UserService {
     private final UserRepository userRepository;
     private final UserRepository2 userRepository2;
 
@@ -20,14 +19,14 @@ public class UserService {  // 유저 프로필 핵심 로직 구현
         this.userRepository2 = userRepository2;
     }
 
-    /*
-            유저 한명 조회
-         */
+    /**
+      유저 한명 조회
+     */
     public User getUserById(Long id){
         return userRepository.findById(id);
     }
 
-    /*
+    /**
         유저 정보 변경
      */
     public User updateUser(UserDto userDto){
@@ -38,14 +37,14 @@ public class UserService {  // 유저 프로필 핵심 로직 구현
         return userRepository.save(findUser);
     }
 
-    /*
+    /**
         전체 유저 반환
      */
     public List<User> getAllUser() throws NoResultException {
         return userRepository.findAll();
     }
 
-    /*
+    /**
         회원 탈퇴
      */
     public boolean deleteUser(Long userId){
@@ -58,7 +57,7 @@ public class UserService {  // 유저 프로필 핵심 로직 구현
         }
     }
 
-    /*
+    /**
         유저 랭킹 반환
      */
     public List<UserRankingDto> getUserRanking() {

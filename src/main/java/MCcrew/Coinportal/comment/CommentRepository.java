@@ -21,7 +21,7 @@ public class CommentRepository {
         this.em = em;
     }
 
-    /*
+    /**
          댓글 저장
      */
     public Comment save(Comment comment) {
@@ -35,14 +35,14 @@ public class CommentRepository {
         }
     }
 
-    /*
+    /**
         댓글 찾기
      */
     public Comment findById(Long commentId) {
         return em.find(Comment.class, commentId);
     }
 
-    /*
+    /**
         디비에서 댓글 삭제
      */
     public int delete(Long commentId) {
@@ -51,7 +51,7 @@ public class CommentRepository {
         return query.executeUpdate(); // return number of deleted column
     }
 
-    /*
+    /**
         userId로 댓글 조회
      */
     public List<Comment> findByUserId(Long userId){

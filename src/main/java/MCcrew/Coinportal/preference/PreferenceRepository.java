@@ -29,7 +29,7 @@ public class PreferenceRepository {
         }
     }
 
-    /*
+    /**
         postId와 userId에 매칭되는 preference 찾기
      */
     public Preference findByPostIdAndUserId(Long postId, Long userId) throws NoResultException {
@@ -39,7 +39,6 @@ public class PreferenceRepository {
                 .setParameter("userId", userId)
                 .getSingleResult();
     }
-
 
     public List<Preference> findAllByUserId(Long userId) throws NoResultException{
         String sql = "select p from Preference p where p.userId = :userId";

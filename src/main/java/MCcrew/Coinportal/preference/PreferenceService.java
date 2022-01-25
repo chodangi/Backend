@@ -16,7 +16,7 @@ public class PreferenceService {
         this.preferenceRepository = preferenceRepository;
     }
 
-    /*
+    /**
         좋아요 클릭
      */
     public Preference clickLikes(Long postId, Long userId) {
@@ -34,7 +34,7 @@ public class PreferenceService {
         return preferenceRepository.save(preference);
     }
 
-    /*
+    /**
         싫어요 클릭
      */
     public Preference clickDislikes(Long postId, Long userId) {
@@ -52,7 +52,7 @@ public class PreferenceService {
         return preferenceRepository.save(preference);
     }
 
-    /*
+    /**
         내 모든 좋아요 가져오기
      */
     public List<Preference> getMyLikeAll(Long userId) {
@@ -64,7 +64,7 @@ public class PreferenceService {
         }
     }
 
-    /*
+    /**
         해당 게시글 내 좋아요 가져오기
      */
     public Preference getMyLike(Long postId, Long userId) {

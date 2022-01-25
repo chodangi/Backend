@@ -24,7 +24,7 @@ public class UserRepository {
         this.em = em;
     }
 
-    /*
+    /**
       유저 엔티티 저장
     */
     public User save(User user){
@@ -37,14 +37,14 @@ public class UserRepository {
         }
     }
 
-    /*
+    /**
         유저 엔티티 한개 반환
      */
     public User findById(Long id){
         return em.find(User.class, id);
     }
 
-    /*
+    /**
         사용자 닉네임으로 사용자정보 조회
      */
     public User findByNickname(String userNickname){
@@ -54,7 +54,7 @@ public class UserRepository {
                 .get(0);
     }
 
-    /*
+    /**
         유저 엔티티 전체 반환
      */
     public List<User> findAll() throws NoResultException{
@@ -62,7 +62,7 @@ public class UserRepository {
                 .getResultList(); // 전체 유저 목록 가져오기
     }
 
-    /*
+    /**
         사용자 이메일로 정보 조회
     */
     public User findByEmail(String email) {
@@ -82,7 +82,7 @@ public class UserRepository {
         return result;
     }
 
-    /*
+    /**
         이름과 이메일로 유저 찾기
      */
     public User findByNameAndEmail(String name, String email){
@@ -98,7 +98,7 @@ public class UserRepository {
         }
     }
 
-    /*
+    /**
         userId로 삭제
      */
     public int deleteById(Long userId) {

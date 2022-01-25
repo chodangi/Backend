@@ -9,11 +9,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface BoardRepository2 extends JpaRepository<Post, Long> {
-    /*
+    /**
         키워드로 게시글 검색
      */
     List<Post> findByContentContaining(String keyword);
-    /*
+
+    /**
         닉네임으로 게시글 검색
      */
     List<Post> findByUserNicknameContaining(String nickname);

@@ -38,7 +38,6 @@ public class BoardService {
     private final AttachmentRepository attachmentRepository;
     private final AdminRepository adminRepository;
 
-    // 로깅
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
@@ -55,9 +54,9 @@ public class BoardService {
         this.adminRepository = adminRepository;
     }
 
-    /*
-                                키워드로 게시글 검색
-                             */
+    /**
+       키워드로 게시글 검색
+    */
     @Transactional
     public List<Post> searchPostsByKeyword(String keyword) {
         List<Post> postList = boardRepository2.findByContentContaining(keyword); // spring Data 사용
@@ -65,7 +64,8 @@ public class BoardService {
             return new ArrayList<>();
         return postList;
     }
-    /*
+
+    /**
         닉네임으로 게시글 검색
      */
     @Transactional
@@ -74,7 +74,7 @@ public class BoardService {
         if(postList.isEmpty()) return new ArrayList<>();
         return postList;
     }
-    /*
+    /**
        인기순으로 게시글 검색
     */
     @Transactional
@@ -85,7 +85,9 @@ public class BoardService {
         return postList;
     }
 
-    // 게시글 하나 조회
+    /**
+       게시글 하나 조회
+     */
     public Post getSinglePost(Long id){
         return boardRepository.findById(id);
     }
@@ -99,7 +101,7 @@ public class BoardService {
         }
     }
 
-    /*
+    /**
         회원일 경우 글 등록
      */
     @Transactional
@@ -122,7 +124,7 @@ public class BoardService {
         return boardRepository.save(newPost);
     }
 
-    /*
+    /**
         선택한 게시글 수정
      */
     public Post updatePost(PostDto postDto, Long userId){
@@ -140,7 +142,7 @@ public class BoardService {
         }
     }
 
-    /*
+    /**
         선택한 게시글 좋아요
      */
     public int likePost(Long postId){
@@ -149,7 +151,7 @@ public class BoardService {
         boardRepository.save(findPost);
         return findPost.getUpCnt();
     }
-    /*
+    /**
         선택한 게시글 싫어요
      */
     public int dislikePost(Long postId){
@@ -159,7 +161,7 @@ public class BoardService {
         return findPost.getDownCnt();
     }
 
-    /*
+    /**
         선택한 게시글 신고
      */
     public int reportPost(Long postId) throws Exception{
@@ -168,7 +170,7 @@ public class BoardService {
         return findPost.getReportCnt();
     }
 
-    /*
+    /**
         선택한 게시글 조회수 증가
      */
     public void viewPost(Long postId) {
@@ -177,7 +179,7 @@ public class BoardService {
         boardRepository.save(findPost);
     }
 
-    /*
+    /**
         파일 삭제
      */
     public boolean deleteFile(String fileName){
@@ -195,7 +197,7 @@ public class BoardService {
         return false;
     }
 
-    /*
+    /**
        선택한 게시글 완전 삭제
     */
     public boolean deletePost(Long postId) {
@@ -220,7 +222,7 @@ public class BoardService {
         }
     }
 
-    /*
+    /**
         삭제 상태로 변경 - deprecated
      */
     public boolean status2Delete(Long postId, Long userId) {
@@ -237,7 +239,7 @@ public class BoardService {
     private static final int BLOCK_PAGE_NUM_COUNT = 5; // 블럭에 존재하는 페이지 번호 수
     private static final int PAGE_POST_COUNT = 4;       // 한 페이지에 존재하는 게시글 수
 
-    /*
+    /**
         페이징된 게시글 리스트
      */
     @Transactional
@@ -247,7 +249,7 @@ public class BoardService {
         return postList;
     }
 
-    /*
+    /**
         전체 게시글 개수
      */
     @Transactional
@@ -255,7 +257,7 @@ public class BoardService {
         return boardRepository2.count();
     }
 
-    /*
+    /**
         게시판별 게시글 개수
      */
     @Transactional
@@ -263,7 +265,7 @@ public class BoardService {
         return boardRepository.findByBoardName(boardName).size();
     }
 
-    /*
+    /**
         페이징 번호 리스트
      */
     public int[] getPageList(String boardName, int curPageNum) {
@@ -300,7 +302,7 @@ public class BoardService {
         return pageList;
     }
 
-    /*
+    /**
         사진 업로드하기
      */
     public Post post(PostDto postDto, Long userIdx) throws IOException {
@@ -328,14 +330,14 @@ public class BoardService {
         return boardRepository.save(savedPost);
     }
 
-    /*
+    /**
         내가 작성한 게시글 반환
      */
     public List<Post> getMyPost(Long userId) {
         return boardRepository.findByUserId(userId);
     }
 
-    /*
+    /**
         전체 공지글 가져오기
      */
     public List<Notice> getNotice() {

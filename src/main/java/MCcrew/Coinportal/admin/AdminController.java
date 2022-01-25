@@ -33,7 +33,6 @@ public class AdminController {
     private final UserService userService;
     private final AdminService adminService;
 
-    // 로깅
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Value("${admin.pwd}")
@@ -59,12 +58,13 @@ public class AdminController {
         }
     }
 
-    /*
+    /**
         모든 공지글 가져오기
      */
     @GetMapping("/admin/notices")
     @ResponseBody
     public ResponseEntity<List<Notice>> getNoticeController(){
+        logger.info("getNoticeController()");
         List<Notice> resultList = boardService.getNotice();
         if(resultList.isEmpty()){
             return new ResponseEntity<>(resultList, HttpStatus.NOT_FOUND);
@@ -72,30 +72,33 @@ public class AdminController {
         return new ResponseEntity<>(resultList, HttpStatus.OK);
     }
 
-    /*
+    /**
         공지글 작성
      */
     @PostMapping("/admin/notice")
     @ResponseBody
     public Notice createNoticeController(@RequestBody NoticeDto noticeDto){
+        logger.info("createNoticeController()");
         return adminService.createNotice(noticeDto);
     }
 
-    /*
+    /**
         공지글 수정
      */
     @PutMapping("/admin/notice/{noticeId}")
     @ResponseBody
     public Notice updateNoticeController(@RequestBody NoticeDto noticeDto, @PathVariable Long noticeId){
+        logger.info("updateNoticeController()");
         return adminService.updateNotice(noticeDto, noticeId);
     }
 
-    /*
+    /**
         공지글 삭제
      */
     @DeleteMapping("/admin/notice/{noticeId}")
     @ResponseBody
     public boolean deleteNoticeController(@PathVariable Long noticeId){
+        logger.info("deleteNoticeController()");
         return adminService.deleteNotice(noticeId);
     }
 }

@@ -35,16 +35,21 @@ public class LoginController {
         this.jwtService = jwtService;
     }
 
-    /*
-        디폴트 컨트롤러
+    /**
+        메인 페이지 컨트롤러
      */
     @GetMapping(value = "/main-page")
     public String indexController(){
+        logger.info("indexController(): 메인 페이지로 이동");
         return "authLogin";
     }
 
+    /**
+        카카오 로그인 페이지로 이동
+     */
     @GetMapping("/tokakao")
     public String tokakaoController(){
+        logger.info("tokakaoController(): 카카오 로그인 페이지로 이동");
         return "redirect:https://kauth.kakao.com/oauth/authorize"
                 + "?client_id="
                 + client_id
@@ -52,8 +57,12 @@ public class LoginController {
                 + redirect_uri;
     }
 
+    /**
+        카카오 로그아웃 페이지로 이동
+     */
     @GetMapping("/tokakao/logout")
     public String tokakaoLogoutController(){
+        logger.info("tokakaoLogoutController(): 카카오 로그아웃 페이지로 이동");
         return "redirect:https://kauth.kakao.com/oauth/logout"
                 + "?client_id="
                 + client_id
@@ -62,21 +71,23 @@ public class LoginController {
     }
 
 
-    /*
+    /**
         로그인 컨트롤러
      */
     @GetMapping(value = "/login")
     public String loginController(@RequestParam("code") String code, RedirectAttributes re) throws UnsupportedEncodingException {
-            String jwt = loginService.getJwt(code);
-            re.addAttribute("jwt", jwt);
-            return "redirect:/main-page";
+        logger.info("loginController(): 로그인");
+        String jwt = loginService.getJwt(code);
+        re.addAttribute("jwt", jwt);
+        return "redirect:/main-page";
     }
 
-    /*
+    /**
         로그아웃 컨트롤러
      */
     @GetMapping(value="/logout")
     public void logoutController() throws Exception {
+        logger.info("logoutController(): 로그아웃");
         URL url = new URL(reqURL);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
@@ -89,8 +100,7 @@ public class LoginController {
         sb.append("&logout_redirect_uri=" + logout_redirect_uri);
         bw.write(sb.toString());
         bw.flush();
-        //    결과 코드가 200이라면 성공
-        int responseCode = conn.getResponseCode();
+        int responseCode = conn.getResponseCode(); // 결과 코드가 200이라면 성공
         logger.info("logoutController responseCode " + responseCode );
     }
 }

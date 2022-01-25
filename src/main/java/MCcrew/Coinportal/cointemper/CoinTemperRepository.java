@@ -18,7 +18,7 @@ public class CoinTemperRepository {
         this.em = em;
     }
 
-    /*
+    /**
         저장
      */
     public CoinComment save(CoinComment coinComment) {
@@ -31,7 +31,7 @@ public class CoinTemperRepository {
         }
     }
 
-    /*
+    /**
         symbol로 CoinComment 조회
      */
     public List<CoinComment> findByCoinSymbol(String symbol) {
@@ -39,7 +39,7 @@ public class CoinTemperRepository {
         return em.createQuery(sql, CoinComment.class).setParameter("symbol",symbol).getResultList();
     }
 
-    /*
+    /**
         id로 조회
      */
     public CoinComment findById(Long id){
@@ -47,7 +47,7 @@ public class CoinTemperRepository {
     }
 
 
-    /*
+    /**
         댓글 삭제
      */
     public int delete(Long commentId) {

@@ -37,6 +37,9 @@ public class GameRepository {
        return em.createQuery(sql, BetHistory.class).setParameter("userId", userId).getResultList();
     }
 
+    /**
+         deprecated
+     */
     public List<BetHistory> findAllByDate(Date tempDate) {
         String sql = "select b from BetHistory b where b.predictedAt > :tempDate";
         return em.createQuery(sql, BetHistory.class).setParameter("tempDate", tempDate, TemporalType.TIMESTAMP).getResultList();

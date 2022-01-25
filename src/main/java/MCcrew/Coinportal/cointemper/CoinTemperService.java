@@ -26,9 +26,9 @@ public class CoinTemperService {
         this.coinTemperRepository = coinTemperRepository;
     }
 
-    /*
-            현재 코인 체감 온도 반환
-         */
+    /**
+         현재 코인 체감 온도 반환
+     */
     public List<Double> getCoinTemper() throws Exception{
         List<Double> coinList = new ArrayList<>();
         coinList.add(coinTemperBTC.doubleValue());
@@ -37,7 +37,7 @@ public class CoinTemperService {
         return coinList;
     }
 
-    /*
+    /**
         매도 온도
      */
     public double temperDecrease(String symbol){
@@ -59,7 +59,7 @@ public class CoinTemperService {
         return result;
     }
 
-    /*
+    /**
         매수 온도
      */
     public double temperIncrease(String symbol){
@@ -81,6 +81,9 @@ public class CoinTemperService {
         return result;
     }
 
+    /**
+        코인 온도 증가
+     */
     public BigDecimal coinDec(BigDecimal coinTemper){
         if((coinTemper.subtract(diff)).compareTo(min_val) != -1){
             coinTemper = coinTemper.subtract(diff);
@@ -90,6 +93,9 @@ public class CoinTemperService {
             return min_val;
         }
     }
+    /**
+        코인 온도 감소
+     */
     public BigDecimal coinInc(BigDecimal coinTemper){
         if((coinTemper.add(diff)).compareTo(max_val) != 1){
             coinTemper = coinTemper.add(diff);
@@ -99,7 +105,8 @@ public class CoinTemperService {
             return max_val;
         }
     }
-    /*
+
+    /**
         댓글달기
     */
     public CoinComment createComment(CoinCommentDto coinCommentDto, String symbol, Long userIdx) {
@@ -117,7 +124,7 @@ public class CoinTemperService {
         return coinTemperRepository.save(coinComment);
     }
 
-    /*
+    /**
         symbol 모든 댓글 반환
      */
     public List<CoinComment> getCommentList(String symbol) {
@@ -125,7 +132,7 @@ public class CoinTemperService {
         return coinCommentList;
     }
 
-    /*
+    /**
         댓글 신고
      */
     public int reportCoinComment(Long id){
@@ -134,7 +141,7 @@ public class CoinTemperService {
         return coinTemperRepository.save(coinComment).getReportCnt();
     }
 
-    /*
+    /**
         댓글 좋아요
      */
     public int likeCoinComment(Long id){
@@ -143,7 +150,7 @@ public class CoinTemperService {
         return coinTemperRepository.save(coinComment).getUpCnt();
     }
 
-    /*
+    /**
         댓글 싫어요
      */
     public int dislikeCoinComment(Long id){
@@ -152,7 +159,7 @@ public class CoinTemperService {
         return coinTemperRepository.save(coinComment).getDownCnt();
     }
 
-    /*
+    /**
         회원 댓글 수정
      */
     public CoinComment updateCoinComment(CoinCommentDto coinCommentDto, Long userId) {
@@ -169,7 +176,7 @@ public class CoinTemperService {
         }
     }
 
-    /*
+    /**
         비회원 댓글 수정
      */
     public CoinComment updateCoinCommentByNonUser(CoinCommentDto coinCommentDto) {
@@ -185,7 +192,7 @@ public class CoinTemperService {
         }
     }
 
-    /*
+    /**
         회원 댓글 삭제
      */
     public boolean deleteCoinComment(CoinCommentDto coinCommentDto , Long userId) {
@@ -204,7 +211,7 @@ public class CoinTemperService {
         }
     }
 
-    /*
+    /**
         비회원 댓글 삭제
      */
     public boolean deleteCoinCommentByNonUser(CoinCommentDto coinCommentDto) {
@@ -218,7 +225,7 @@ public class CoinTemperService {
             else{
                 return false;
             }
-        }else{ // 댓글 비밀번호가 틀리다면 삭제 불가
+        }else{
             return false;
         }
     }

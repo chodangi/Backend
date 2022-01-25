@@ -26,7 +26,6 @@ public class AttachmentController {
     private final JwtService jwtService;
     private final BoardService boardService;
 
-    // 로깅
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public AttachmentController(FileStore fileStore, JwtService jwtService, BoardService boardService) {
@@ -35,12 +34,13 @@ public class AttachmentController {
         this.boardService = boardService;
     }
 
-    /*
+    /**
         게시글과 이미지 포스팅하기
      */
     @PostMapping("/attach/post-image")
     @ResponseBody
     public Post doPost(@ModelAttribute PostDto postDto, @RequestHeader String jwt) throws IOException {
+        logger.info("doPost(): 게시글 포스팅하기");
         Long userIdx = 0L;
         try{ // 유저 인증
             userIdx = jwtService.getUserIdByJwt(jwt);
@@ -52,21 +52,23 @@ public class AttachmentController {
         return post;
     }
 
-    /*
+    /**
         이미지 로드
      */
     @GetMapping("/attach/{filename}")
     @ResponseBody
     public Resource processImg(@PathVariable String filename) throws MalformedURLException {
+        logger.info("processImg(): " + filename+ "이미지 로드하기");
         return new UrlResource("file:" + fileStore.createPath(filename));
     }
 
-    /*
+    /**
         이미지 다운로드
      */
     @GetMapping("/attach/download/{filename}")
     @ResponseBody
     public ResponseEntity<Resource> processAttaches(@PathVariable String filename, @RequestParam String originName) throws MalformedURLException {
+        logger.info("processAttaches(): " + filename+ "이미지 다운로드 링크");
         UrlResource urlResource = new UrlResource("file:" + fileStore.createPath(filename));
 
         String encodedUploadFileName = UriUtils.encode(originName, StandardCharsets.UTF_8);

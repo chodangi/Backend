@@ -101,7 +101,11 @@ adminController 추가 구현 사항
     7. 모든 댓글 확인
 1. log import
 2. 계속 리팩토링하기요...
-3. print문 제거하고 log 로 전부 변경하기
+3. print문 제거하고 log 로 전부 변경하기 (완료)
+4. s3 + security만 적용하면 괜찮아질려나...
+5. controller에 예외 로직이 있는데 서비스로 집어넣을까 그대로 둘까...홍홍
+6. logger 전부다 aop로 한번에 할 순 없을라나
+
 
 리팩토링사항:
 1. postDto  에서 postId 필드를 게시글 수정때문에 유지함. ->불필요함. 없애고 게시글 수정시에 postId를 requestParam으로 전달하고 body에는 수정사항 전달하게끔 수정하기

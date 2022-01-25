@@ -19,13 +19,12 @@ import java.util.List;
 
 @Slf4j
 @Controller
-public class BoardController {  // 게시판 관련 컨트롤러
+public class BoardController {
 
     private final BoardService boardService;
     private final JwtService jwtService;
     private final PreferenceService preferenceService;
 
-    // 로깅
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public BoardController(BoardService boardService, JwtService jwtService, PreferenceService preferenceService) {
@@ -34,12 +33,13 @@ public class BoardController {  // 게시판 관련 컨트롤러
         this.preferenceService = preferenceService;
     }
 
-    /*
-            게시글 키워드로 검색
-         */
+    /**
+     * 게시글 키워드로 검색
+     */
     @GetMapping("/community/post-by-keyword/{keyword}")
     @ResponseBody
     public Message searchByKeywordController(@PathVariable String keyword){
+        logger.info("searchByKeywordController(): "+keyword + "키워드로 게시글을 검색합니다.");
         List<Post> postList = boardService.searchPostsByKeyword(keyword);
         if(postList.size() == 0){
             return new Message(StatusEnum.NOT_FOUND, "NOT_FOUND", postList);
@@ -47,12 +47,13 @@ public class BoardController {  // 게시판 관련 컨트롤러
         return new Message(StatusEnum.OK,"OK",postList);
     }
 
-    /*
+    /**
         게시글 사용자 닉네임으로 검색
      */
     @GetMapping("/community/post-by-nickname/{nickname}")
     @ResponseBody
     public Message searchByNicknameController(@PathVariable String nickname){
+        logger.info("searchByNicknameController(): "+ nickname + "닉네임으로 게시글을 검색합니다.");
         List<Post> postList = boardService.searchPostsByNickname(nickname);
         if(postList.size() == 0){
             return new Message(StatusEnum.NOT_FOUND, "NOT_FOUND", postList);
@@ -60,12 +61,13 @@ public class BoardController {  // 게시판 관련 컨트롤러
         return new Message(StatusEnum.OK,"OK",postList);
      }
 
-     /*
+     /**
         실시간 인기글 리스트 검색
       */
     @GetMapping("/community/up-count")
     @ResponseBody
     public Message searchByPopularityController(){
+        logger.info("searchByPopularityController(): 실시간 인기글 리스트 검색");
         List<Post> postList = boardService.searchPostsByPopularity();
         if(postList.size() == 0){
             return new Message(StatusEnum.NOT_FOUND, "NOT_FOUND", postList);
@@ -73,13 +75,13 @@ public class BoardController {  // 게시판 관련 컨트롤러
         return new Message(StatusEnum.OK,"OK",postList);
     }
 
-    /*
+    /**
         게시글 페이징 구현
      */
     @GetMapping("/community/{board-name}/{page}")
     @ResponseBody
     public Message listController(@PathVariable("board-name") String boardName, @PathVariable("page") int page){
-        logger.info("searching post about" + boardName + " with page " + page);
+        logger.info("listController(): searching post about" + boardName + " with page " + page);
         List<Post> postList = boardService.getPostlist(boardName, page);
         if(postList.size() == 0){
             return new Message(StatusEnum.NOT_FOUND, "NOT_FOUND", postList);
@@ -91,12 +93,13 @@ public class BoardController {  // 게시판 관련 컨트롤러
         return new Message(StatusEnum.OK, "OK", pagingInfo);
     }
 
-    /*
+    /**
         단일 게시글 조회
      */
     @GetMapping("/community/post/{post-id}")
     @ResponseBody
     public Message getContentController(@PathVariable("post-id") Long postId, @RequestHeader String jwt){
+        logger.info("getContentController(): "+ postId + "번 게시글 조회");
         Long userId = 0L;
         HashMap hashMap = new HashMap();
         if(jwt == null){
@@ -117,12 +120,13 @@ public class BoardController {  // 게시판 관련 컨트롤러
         }
     }
 
-    /*
+    /**
         전체 게시글 조회
      */
     @GetMapping("/community")
     @ResponseBody
     public Message getAllContentsController(){
+        logger.info("getAllContentsController(): 전체 게시글 조회");
         List<Post> postList = boardService.getAllPost();
         if(postList.size() == 0){
             return new Message(StatusEnum.NOT_FOUND, "NOT_FOUND", postList);
@@ -130,12 +134,13 @@ public class BoardController {  // 게시판 관련 컨트롤러
         return new Message(StatusEnum.OK, "OK", postList);
     }
 
-    /*
+    /**
         선택한 게시글 수정
      */
     @PutMapping("/community/post")
     @ResponseBody
     public Message updateController(@RequestBody PostDto postDto, @RequestHeader String jwt){
+        logger.info("updateController(): 게시글을 수정합니다.");
         Long userId = 0L;
         userId = jwtService.getUserIdByJwt(jwt);
         if(userId == 0L){
@@ -150,12 +155,13 @@ public class BoardController {  // 게시판 관련 컨트롤러
         }
     }
 
-    /*
+    /**
        선택한 게시글 신고
     */
     @PostMapping("/community/post/report")
     @ResponseBody
     public Message reportController(@RequestParam("postId") Long postId){
+        logger.info("reportController(): " +postId + "번 게시글을 신고합니다.");
         try{
         int reportCnt = boardService.reportPost(postId);
         return new Message(StatusEnum.OK, "OK", reportCnt);
@@ -164,12 +170,13 @@ public class BoardController {  // 게시판 관련 컨트롤러
         }
     }
 
-    /*
+    /**
         삭제 상태로 변경
      */
     @PostMapping("/community/post/status/{post-id}")
     @ResponseBody
     public Message deleteController(@PathVariable("post-id") Long postId, @RequestHeader String jwt){
+        logger.info("deleteController(): " +postId + "번 게시글을 삭제 상태로 변경합니다.");
         Long userId = 0L;
             userId = jwtService.getUserIdByJwt(jwt);
         if(userId == 0L){
@@ -179,12 +186,13 @@ public class BoardController {  // 게시판 관련 컨트롤러
         }
     }
 
-    /*
+    /**
         선택한 게시글 디비에서 삭제
      */
     @DeleteMapping("/community/post/{post-id}")
     @ResponseBody
-    public Message deleteContent(@PathVariable("post-id") Long postId, @RequestHeader String jwt){
+    public Message deleteContentController(@PathVariable("post-id") Long postId, @RequestHeader String jwt){
+        logger.info("deleteContentController(): " +postId + "번 게시글을 삭제합니다.");
         Long userId = 0L;
             userId = jwtService.getUserIdByJwt(jwt);
         if(userId == 0L){
@@ -197,12 +205,13 @@ public class BoardController {  // 게시판 관련 컨트롤러
         }
     }
 
-    /*
+    /**
         모든 공지글 가져오기
      */
     @GetMapping("/community/notices")
     @ResponseBody
     public Message getNoticeController(){
+        logger.info("getNoticeController(): 모든 공지글을 가져옵니다.");
         List<Notice> notices = boardService.getNotice();
         if(notices.size() == 0){
             return new Message(StatusEnum.NOT_FOUND, "NOT_FOUND", notices);

@@ -22,7 +22,7 @@ public class BoardRepository{
         this.em = em;
     }
 
-    /*
+    /**
         게시물 등록
      */
     public Post save(Post post) {
@@ -35,21 +35,22 @@ public class BoardRepository{
         }
     }
 
-    /*
+    /**
         단일 게시물 조회
      */
     public Post findById(Long id) {
         return em.find(Post.class, id);
     }
 
-    /*
+    /**
         모든 게시물 조회 
      */
     public List<Post> findAll() throws NoResultException {
         String sql = "select p from Post p";
         return em.createQuery(sql, Post.class).getResultList(); // 전체 글 목록 가져오기
     }
-    /*
+
+    /**
         인기순으로 게시글 조회
      */
     public List<Post> findByPopularity() {
@@ -57,7 +58,7 @@ public class BoardRepository{
         return em.createQuery(sql, Post.class).getResultList();
     }
 
-    /*
+    /**
         닉네임으로 게시물 조회
      */
     public Post findByNickname(String userNickname){
@@ -65,7 +66,8 @@ public class BoardRepository{
         return em.createQuery(sql, Post.class)
                 .setParameter("userNickname", userNickname).getResultList().get(0);
     }
-    /*
+
+    /**
         게시판별로 게시글 조회
      */
     public List<Post> findByBoardName(String boardName){
@@ -73,7 +75,7 @@ public class BoardRepository{
         return em.createQuery(sql, Post.class).setParameter("boardName", boardName).getResultList();
     }
 
-    /*
+    /**
         해당 게시물 삭제
      */
     public int delete(Long postId) {
@@ -82,7 +84,7 @@ public class BoardRepository{
         return query.executeUpdate(); // return number of deleted column
     }
 
-    /*
+    /**
         내가 작성한 게시글 반환
      */
     public List<Post> findByUserId(Long userId) {

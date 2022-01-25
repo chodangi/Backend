@@ -28,14 +28,14 @@ public class GameService {
     private static List<Long> playerList = new ArrayList<>();  // 플레이에 참여한 유저
     private static  Random randomGen = new Random();
 
-    private static int botPreviousWins = 0;    // 훈수 이전 승리 횟수
-    private static int botTotalPlay = 0;       // 훈수 전체 플레이 횟수
-    private static int botPoint = 0;           // 훈수 점수
-    private static double botWinRate = 0.0;    // 훈수 승률
+    private static int botPreviousWins = 0;                     // 훈수 이전 승리 횟수
+    private static int botTotalPlay = 0;                        // 훈수 전체 플레이 횟수
+    private static int botPoint = 0;                            // 훈수 점수
+    private static double botWinRate = 0.0;                     // 훈수 승률
 
-    private static double botBtcPriceTemp = 0;        // 훈수 당시 btc 가격
-    private static double botEthPriceTemp = 0;        // 훈수 당시 eth 가격
-    private static double botXrpPriceTemp = 0;        // 훈수 당시 xrp 가격
+    private static double botBtcPriceTemp = 0;                  // 훈수 당시 btc 가격
+    private static double botEthPriceTemp = 0;                  // 훈수 당시 eth 가격
+    private static double botXrpPriceTemp = 0;                  // 훈수 당시 xrp 가격
 
     private static boolean botBTC = false;
     private static boolean botETH = false;
@@ -47,15 +47,15 @@ public class GameService {
         this.userService = userService;
     }
 
-    /*
+    /**
        승률 계산: (승리/전체플레이)*100 = 승률%
     */
     public static double calWinRate(int previousWins, int totalPlay, int wins){
         return (double) (((previousWins + wins) / (totalPlay)) * 100);
     }
-    /*
-            코인 게임 코어 로직
-         */
+    /**
+        코인 게임 코어 로직
+    */
     public static boolean gameTimer() {
         System.out.println("creating timer...");
         Timer m = new Timer();
@@ -167,7 +167,6 @@ public class GameService {
                     userRepository.save(findUser);
                 }
 
-                // changing random prediction
                 botBTC = randomGen.nextBoolean();
                 botETH = randomGen.nextBoolean();
                 botXRP = randomGen.nextBoolean();
@@ -191,7 +190,7 @@ public class GameService {
         return true;
     }
 
-    /*
+    /**
        빗썸에서 코인 현재가격 가져오기
     */
     public static String getPriceFromBithumb(String coinSymbol){
@@ -221,7 +220,7 @@ public class GameService {
         return closing_price;
     }
 
-    /*
+    /**
         <반환값 포맷>
         기준시간 - 시가 - 종가 - 고가 - 저가 - 거래량
      */
@@ -244,7 +243,7 @@ public class GameService {
         return response.toString();
     }
 
-    /*
+    /**
         코인 궁예하기
      */
     public BetHistory predict(BetHistoryDto betHistoryDto, Long userId) {
@@ -276,7 +275,7 @@ public class GameService {
         return gameRepository.save(betHistory);
     }
 
-    /*
+    /**
         코인 훈수 따라가기
      */
     public BetHistory predictRandom(Long userId) {
@@ -308,14 +307,14 @@ public class GameService {
         return gameRepository.save(betHistory);
     }
 
-    /*
+    /**
         내 전적 보기
      */
     public List<BetHistory> getMyBetHistory(Long userId) {
         return gameRepository.findById(userId);
     }
 
-    /*
+    /**
         현재 코인 훈수 보기
      */
     public BetHistoryDto getRandomCoinPrediction() {
@@ -326,7 +325,7 @@ public class GameService {
         return betHistoryDto;
     }
 
-    /*
+    /**
         랭킹 가져오기 + 코인봇 점수 추가해서 리턴
      */
     public List<UserRankingDto> getGamePointRanking() {

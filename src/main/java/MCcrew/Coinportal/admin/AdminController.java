@@ -9,13 +9,16 @@ import MCcrew.Coinportal.game.GameService;
 import MCcrew.Coinportal.login.LoginService;
 import MCcrew.Coinportal.photo.AttachmentService;
 import MCcrew.Coinportal.user.UserService;
+import MCcrew.Coinportal.util.BasicResponse;
+import MCcrew.Coinportal.util.CommonResponse;
+import MCcrew.Coinportal.util.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.connector.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -63,47 +66,50 @@ public class AdminController {
         모든 공지글 가져오기
      */
     @GetMapping("/notices")
-    public ResponseEntity<List<Notice>> getNoticeController(){
+    public ResponseEntity<? extends BasicResponse> getNoticeController(){
         logger.info("getNoticeController()");
         List<Notice> resultList = boardService.getNotice();
         if(resultList.isEmpty()){
-            return new ResponseEntity<>(resultList, HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse("존재하는 공지글이 없습니다."));
         }
-        return new ResponseEntity<>(resultList, HttpStatus.OK);
+        return ResponseEntity.ok().body(new CommonResponse(resultList));
     }
 
     /**
         공지글 작성
      */
     @PostMapping("/notice")
-    public Notice createNoticeController(@RequestBody NoticeDto noticeDto){
+    public ResponseEntity<? extends BasicResponse> createNoticeController(@RequestBody NoticeDto noticeDto){
         logger.info("createNoticeController()");
-        return adminService.createNotice(noticeDto);
+        Notice notice = adminService.createNotice(noticeDto);
+        return ResponseEntity.ok().body(new CommonResponse(notice));
     }
 
     /**
         공지글 수정
      */
     @PutMapping("/notice/{noticeId}")
-    public Notice updateNoticeController(@RequestBody NoticeDto noticeDto, @PathVariable Long noticeId){
+    public ResponseEntity<? extends BasicResponse> updateNoticeController(@RequestBody NoticeDto noticeDto, @PathVariable Long noticeId){
         logger.info("updateNoticeController()");
-        return adminService.updateNotice(noticeDto, noticeId);
+        Notice notice = adminService.updateNotice(noticeDto, noticeId);
+        return ResponseEntity.ok().body(new CommonResponse(notice));
     }
 
     /**
         공지글 삭제
      */
     @DeleteMapping("/notice/{noticeId}")
-    public boolean deleteNoticeController(@PathVariable Long noticeId){
+    public ResponseEntity<? extends BasicResponse> deleteNoticeController(@PathVariable Long noticeId){
         logger.info("deleteNoticeController()");
-        return adminService.deleteNotice(noticeId);
+        return ResponseEntity.noContent().build();
     }
 
     /**
        메모리 사용량 체크
      */
     @GetMapping("/memory")
-    public String checkMemoryController(){
-        return adminService.memoryUsage();
+    public ResponseEntity<? extends BasicResponse> checkMemoryController(){
+        String usage = adminService.memoryUsage();
+        return ResponseEntity.ok().body(new CommonResponse(usage));
     }
 }

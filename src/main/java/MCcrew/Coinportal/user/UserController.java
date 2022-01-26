@@ -7,11 +7,14 @@ import MCcrew.Coinportal.domain.Comment;
 import MCcrew.Coinportal.domain.Post;
 import MCcrew.Coinportal.domain.User;
 import MCcrew.Coinportal.login.JwtService;
-import MCcrew.Coinportal.util.Message;
-import MCcrew.Coinportal.util.StatusEnum;
+import MCcrew.Coinportal.util.BasicResponse;
+import MCcrew.Coinportal.util.CommonResponse;
+import MCcrew.Coinportal.util.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.NoResultException;
@@ -40,14 +43,14 @@ public class UserController {
         모든 유저 반환
     */
     @GetMapping("/users")
-    public Message getAllUserController(){
+    public ResponseEntity<? extends BasicResponse> getAllUserController(){
         logger.info("getAllUserController(): 모든 유저 반환");
         List<User> result = null;
         try {
             result = userService.getAllUser();
-            return new Message(StatusEnum.OK, "OK", result);
+            return ResponseEntity.ok().body(new CommonResponse(result));
         }catch(NoResultException e){
-            return new Message(StatusEnum.NOT_FOUND, "NOT_FOUND", result);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse("유저가 존재하지 않습니다."));
         }
     }
 
@@ -55,17 +58,17 @@ public class UserController {
         내가 작성한 게시글 반환
      */
     @GetMapping("/my-post")
-    public Message getMyPostController(@RequestHeader String jwt) {
+    public ResponseEntity<? extends BasicResponse> getMyPostController(@RequestHeader String jwt) {
         logger.info("getMyPostController(): 내가 작성한 게시글 반환");
         if(jwt == null){
-            return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("허가되지 않은 사용자입니다."));
         }
         Long userId = jwtService.getUserIdByJwt(jwt);
         if(userId == 0L){
-            return new Message(StatusEnum.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("허가되지 않은 사용자입니다."));
         }else{
             List<Post> result = boardService.getMyPost(userId);
-            return new Message(StatusEnum.OK, "OK", result);
+            return ResponseEntity.ok().body(new CommonResponse(result));
         }
     }
 
@@ -73,17 +76,17 @@ public class UserController {
         내가 작성한 댓글 반환
      */
     @GetMapping("/my-comment")
-    public Message getMyCommentController(@RequestHeader String jwt){
+    public ResponseEntity<? extends BasicResponse> getMyCommentController(@RequestHeader String jwt){
         logger.info("getMyCommentController(): 내가 작성한 댓글 반환");
         if(jwt == null){
-            return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("허가되지 않은 사용자입니다."));
         }
         Long userId = jwtService.getUserIdByJwt(jwt);
         if(userId == 0L){
-            return new Message(StatusEnum.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("허가되지 않은 사용자입니다."));
         }else{
             List<Comment> commentList =  commentService.getMyComment(userId);
-            return new Message(StatusEnum.OK ,"OK", commentList);
+            return ResponseEntity.ok().body(new CommonResponse(commentList));
         }
     }
 
@@ -91,17 +94,17 @@ public class UserController {
         내 설정값 반환
      */
     @GetMapping("/my-settings")
-    public Message getMySettingController(@RequestHeader String jwt ) {
+    public ResponseEntity<? extends BasicResponse> getMySettingController(@RequestHeader String jwt ) {
         logger.info("getMySettingController(): 내 설정값 반환");
         if(jwt == null){
-            return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("허가되지 않은 사용자입니다."));
         }
         Long userId = jwtService.getUserIdByJwt(jwt);
         if(userId == 0L){
-            return new Message(StatusEnum.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("허가되지 않은 사용자입니다."));
         }else{
             User user =  userService.getUserById(userId);
-            return new Message(StatusEnum.OK ,"OK", user);
+            return ResponseEntity.ok().body(new CommonResponse(user));
         }
     }
 
@@ -109,17 +112,17 @@ public class UserController {
         설정 변경 - 닉네임 변경도 해당 api 에서 수행
      */
     @PostMapping("/my-settings")
-    public Message updateMySettingController(@RequestBody UserDto userDto, @RequestHeader String jwt ){
+    public ResponseEntity<? extends BasicResponse> updateMySettingController(@RequestBody UserDto userDto, @RequestHeader String jwt ){
         logger.info("updateMySettingController(): 설정 변경");
         if(jwt == null){
-            return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("허가되지 않은 사용자입니다."));
         }
         Long userId = jwtService.getUserIdByJwt(jwt);
         if(userId == 0L){
-            return new Message(StatusEnum.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("허가되지 않은 사용자입니다."));
         }else{
             User user = userService.updateUser(userDto);
-            return new Message(StatusEnum.OK ,"OK", user);
+            return ResponseEntity.ok().body(new CommonResponse(user));
         }
     }
 
@@ -127,17 +130,17 @@ public class UserController {
         회원 탈퇴
      */
     @DeleteMapping("/user")
-    public Message deleteUserController(@RequestHeader String jwt) {
+    public ResponseEntity<? extends BasicResponse> deleteUserController(@RequestHeader String jwt) {
         logger.info("deleteUserController(): 회원 탈퇴");
         if(jwt == null){
-            return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("허가되지 않은 사용자입니다."));
         }
         Long userId = jwtService.getUserIdByJwt(jwt);
         if(userId == 0L){
-            return new Message(StatusEnum.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("허가되지 않은 사용자입니다."));
         }else{
             boolean result =  userService.deleteUser(userId);
-            return new Message(StatusEnum.OK ,"OK", result);
+            return ResponseEntity.ok().body(new CommonResponse(result));
         }
     }
 }

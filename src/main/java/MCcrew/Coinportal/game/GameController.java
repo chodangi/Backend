@@ -4,12 +4,13 @@ import MCcrew.Coinportal.domain.Dto.BetHistoryDto;
 import MCcrew.Coinportal.domain.Dto.UserRankingDto;
 import MCcrew.Coinportal.domain.BetHistory;
 import MCcrew.Coinportal.login.JwtService;
-import MCcrew.Coinportal.util.Message;
-import MCcrew.Coinportal.util.StatusEnum;
+import MCcrew.Coinportal.util.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,13 +41,14 @@ public class GameController {
             리플: XRP/KRW
      */
     @GetMapping("/coin-price/{symbol}")
-    public Message coinInfo(@PathVariable String symbol){
+    public ResponseEntity<? extends BasicResponse> coinInfo(@PathVariable String symbol){
         logger.info("coinInfo(): "+ symbol + "코인의 현재가격 가져오기");
         String result =  gameService.getPriceFromBithumb(symbol);
         if(result.equals("null")){
-            return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", result);
+            return ResponseEntity.internalServerError().build();
         }
-        return new Message(StatusEnum.OK, "OK", result);
+        return ResponseEntity.ok().body(new CommonResponse(result));
+
     }
 
     /**
@@ -57,32 +59,32 @@ public class GameController {
         XRP_KRW
      */
     @GetMapping("/coin-chart/{symbol}")
-    public Message coinChart(@PathVariable String symbol){
+    public ResponseEntity<? extends BasicResponse> coinChart(@PathVariable String symbol){
         logger.info("coinChart(): "+ symbol + "코인의 차트 정보 가져오기");
         String result = "";
         try {
             result = gameService.getChartFromBithumb(symbol);
         }catch(Exception e){
-            return new Message(StatusEnum.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", result);
+            return ResponseEntity.internalServerError().build();
         }
-        return new Message(StatusEnum.OK, "OK", result);
+        return ResponseEntity.ok().body(new CommonResponse(result));
     }
 
     /**
         코인 궁예하기
      */
     @PostMapping("/game-play")
-    public Message predictCoinController(@RequestBody BetHistoryDto betHistoryDto, @RequestHeader String jwt){
+    public ResponseEntity<? extends BasicResponse> predictCoinController(@RequestBody BetHistoryDto betHistoryDto, @RequestHeader String jwt){
         logger.info("predictCoinController(): 코인 궁예시작하기 - 게임 스타트 ");
         if(jwt == null){
-            return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", new BetHistory());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("허가되지 않은 사용자입니다."));
         }
         Long userId = jwtService.getUserIdByJwt(jwt);
         if(userId == 0L){
-            return new Message(StatusEnum.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", new BetHistory());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("허가되지 않은 사용자입니다."));
         }else{
             BetHistory betHistory = gameService.predict(betHistoryDto, userId);
-            return new Message(StatusEnum.OK, "OK", betHistory);
+            return ResponseEntity.ok().body(new CommonResponse(betHistory));
         }
     }
 
@@ -90,17 +92,17 @@ public class GameController {
         코인 훈수 예측 따라가기
      */
     @PostMapping("/random")
-    public Message predictCoinRandomController(@RequestHeader String jwt){
+    public ResponseEntity<? extends BasicResponse> predictCoinRandomController(@RequestHeader String jwt){
         logger.info("predictCoinRandomController(): 코인 훈수 예측 따라가기 - 랜덤 생성");
         if(jwt == null){
-            return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", new BetHistory());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("허가되지 않은 사용자입니다."));
         }
         Long userId = jwtService.getUserIdByJwt(jwt);
         if(userId == 0L){
-            return new Message(StatusEnum.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", new BetHistory());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("허가되지 않은 사용자입니다."));
         }else{
             BetHistory betHistory = gameService.predictRandom(userId);
-            return new Message(StatusEnum.OK, "OK", betHistory);
+            return ResponseEntity.ok().body(new CommonResponse(betHistory));
         }
     }
 
@@ -108,17 +110,17 @@ public class GameController {
         내 전적 보기
      */
     @GetMapping("/my-history")
-    public Message getMyBetHistoryController(@RequestHeader String jwt){
+    public ResponseEntity<? extends BasicResponse> getMyBetHistoryController(@RequestHeader String jwt){
         logger.info("getMyBetHistoryController(): 내 전적 보기");
         if(jwt == null){
-            return new Message(StatusEnum.BAD_REQUEST, "BAD_REQUEST", new ArrayList<>());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("허가되지 않은 사용자입니다."));
         }
         Long userId = jwtService.getUserIdByJwt(jwt);
         if(userId == 0L){
-            return new Message(StatusEnum.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", new ArrayList<>());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("허가되지 않은 사용자입니다."));
         }else{
             List<BetHistory> betHistoryList = gameService.getMyBetHistory(userId);
-            return new Message(StatusEnum.OK, "OK", betHistoryList);
+            return ResponseEntity.ok().body(new CommonResponse(betHistoryList));
         }
     }
 
@@ -126,19 +128,19 @@ public class GameController {
         현재 코인 훈수 보기
      */
     @GetMapping("/coin-prediction")
-    public Message getRandomCoinPredictionController(){
+    public ResponseEntity<? extends BasicResponse> getRandomCoinPredictionController(){
         logger.info("getRandomCoinPredictionController(): 현재 코인 훈수 보기 ");
         BetHistoryDto betHistoryDto =  gameService.getRandomCoinPrediction();
-        return new Message(StatusEnum.OK, "OK", betHistoryDto);
+        return ResponseEntity.ok().body(new CommonResponse(betHistoryDto));
     }
 
     /**
         유저 랭킹
      */
     @GetMapping("/ranking")
-    public Message getUserRankingController(){
+    public ResponseEntity<? extends BasicResponse> getUserRankingController(){
         logger.info("getUserRankingController(): 유저 랭킹 보기");
         List<UserRankingDto> resultList = gameService.getGamePointRanking();
-        return new Message(StatusEnum.OK, "OK", resultList);
+        return ResponseEntity.ok().body(new CommonResponse(resultList));
     }
 }

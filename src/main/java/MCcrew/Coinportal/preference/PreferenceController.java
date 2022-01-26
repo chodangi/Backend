@@ -7,14 +7,14 @@ import MCcrew.Coinportal.util.StatusEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Controller
+@RestController
+@RequestMapping("/preference")
 public class PreferenceController {
 
     private final PreferenceService preferenceService;
@@ -30,8 +30,7 @@ public class PreferenceController {
     /**
         게시글 좋아요 클릭
     */
-    @PostMapping("/preference/post-like/{post-id}")
-    @ResponseBody
+    @PostMapping("/preference-like/{post-id}")
     public Message likeController(@PathVariable("post-id") Long postId, @RequestHeader String jwt)  {
         logger.info("likeController(): " + postId + "번 게시글 좋아요 클릭");
         if(jwt == null){
@@ -52,8 +51,7 @@ public class PreferenceController {
     /**
         게시글 싫어요 클릭
      */
-    @PostMapping("/preference/post-dislike/{post-id}")
-    @ResponseBody
+    @PostMapping("/preference-dislike/{post-id}")
     public Message dislikeController(@PathVariable("post-id") Long postId, @RequestHeader String jwt){
         logger.info("dislikeController(): " + postId + "번 게시글 싫어요 클릭");
         if(jwt == null){
@@ -74,8 +72,7 @@ public class PreferenceController {
     /**
         내가 누른 좋아요 모두 보기
      */
-    @GetMapping("/preference/my-like")
-    @ResponseBody
+    @GetMapping("/my-like")
     public Message myLikeController(@RequestHeader String jwt){
         logger.info("myLikeController(): 내가 누른 좋아요 모두 보기");
         if(jwt == null){

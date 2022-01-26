@@ -18,7 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Controller
+@RestController
+@RequestMapping("/temper")
 public class CoinTemperController {
 
     private final CoinTemperService coinTemperService;
@@ -35,8 +36,7 @@ public class CoinTemperController {
     /**
         현재 코인 체감 온도
      */
-    @GetMapping("/temper/coin-temper")
-    @ResponseBody
+    @GetMapping("/coin-temper")
     public Message coinTemperController(){
         logger.info("coinTemperController(): 현재 코인 체감 온도 반환");
         try {
@@ -51,8 +51,7 @@ public class CoinTemperController {
         코인 매수
         symbol = BTC or ETH or XRP
      */
-    @GetMapping("/temper/up/{symbol}")
-    @ResponseBody
+    @GetMapping("/up/{symbol}")
     public Message coinBuyController(@PathVariable String symbol, @RequestHeader String jwt){
         logger.info("coinBuyController(): " + symbol +"코인 온도가 증가합니다."); 
         Long userId = jwtService.getUserIdByJwt(jwt);
@@ -68,8 +67,7 @@ public class CoinTemperController {
             코인 매도
             symbol = BTC or ETH or XRP
     */
-    @GetMapping("/temper/down/{symbol}")
-    @ResponseBody
+    @GetMapping("/down/{symbol}")
     public Message coinSellController(@PathVariable String symbol, @RequestHeader String jwt){
         logger.info("coinSellController(): " + symbol +"코인 온도가 감소합니다.");
         Long userId = jwtService.getUserIdByJwt(jwt);
@@ -85,8 +83,7 @@ public class CoinTemperController {
         코인 체감 온도 댓글달기
         symbol = BTC or ETH or XRP
      */
-    @PostMapping("/temper/{symbol}/comment")
-    @ResponseBody
+    @PostMapping("/comment/{symbol}")
     public Message createCommentController(@PathVariable String symbol, @RequestBody CoinCommentDto coinCommentDto, @RequestHeader String jwt){
         logger.info("createCommentController(): " + symbol + "에 댓글을 작성합니다.");
         Long userIdx = jwtService.getUserIdByJwt(jwt);
@@ -102,8 +99,7 @@ public class CoinTemperController {
         코인 체감 온도 댓글 반환
         symbol = BTC or ETH or XRP
      */
-    @GetMapping("/temper/{symbol}/comments")
-    @ResponseBody
+    @GetMapping("/comments/{symbol}")
     public Message getCommentController(@PathVariable String symbol){
         logger.info("getCommentController(): " + symbol + "의 댓글을 반환합니다. ");
         List<CoinComment> coinCommentList = coinTemperService.getCommentList(symbol);
@@ -113,8 +109,7 @@ public class CoinTemperController {
     /**
         수정
      */
-    @PostMapping("/temper/comment")
-    @ResponseBody
+    @PostMapping("/comment")
     public Message updateCommentController(@RequestBody CoinCommentDto coinCommentDto, @RequestHeader String jwt){
         logger.info("updateCommentController(): 댓글을 수정합니다.");
         CoinComment coinComment;
@@ -144,8 +139,7 @@ public class CoinTemperController {
     /**
         삭제
      */
-    @DeleteMapping("/temper/comment")
-    @ResponseBody
+    @DeleteMapping("/comment")
     public Message deleteCommentController(@RequestBody CoinCommentDto coinCommentDto, @RequestHeader String jwt ){
         logger.info("deleteCommentController(): 댓글을 삭제합니다.");
         if(jwt != null){ //회원의 글이라면
@@ -171,8 +165,7 @@ public class CoinTemperController {
     /**
         신고
     */
-    @PostMapping("/temper/comment-report")
-    @ResponseBody
+    @PostMapping("/comment-report")
     public Message reportCommentController(@RequestParam Long commentId){
         logger.info("reportCommentController(): " + commentId+ "번 댓글을 신고합니다.");
         int report = coinTemperService.reportCoinComment(commentId);
@@ -182,8 +175,7 @@ public class CoinTemperController {
     /**
         좋아요
      */
-    @PostMapping("/temper/comment-like")
-    @ResponseBody
+    @PostMapping("/comment-like")
     public Message likeCommentController(@RequestParam Long commentId){
         logger.info("likeCommentController(): " + commentId+ "번 댓글을 좋아합니다.");
         int like =  coinTemperService.likeCoinComment(commentId);
@@ -193,8 +185,7 @@ public class CoinTemperController {
     /**
         싫어요
      */
-    @PostMapping("/temper/comment-dislike")
-    @ResponseBody
+    @PostMapping("/comment-dislike")
     public Message dislikeCommentController(@RequestParam Long commentId){
         logger.info("dislikeCommentController(): " + commentId+ "번 댓글을 싫어합니다.");
 

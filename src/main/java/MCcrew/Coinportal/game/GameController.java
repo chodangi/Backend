@@ -18,7 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Controller
+@RestController
+@RequestMapping("/game")
 public class GameController {
 
     private final GameService gameService;
@@ -38,8 +39,7 @@ public class GameController {
             이더: ETH/KRW
             리플: XRP/KRW
      */
-    @GetMapping("/game/coin-price/{symbol}")
-    @ResponseBody
+    @GetMapping("/coin-price/{symbol}")
     public Message coinInfo(@PathVariable String symbol){
         logger.info("coinInfo(): "+ symbol + "코인의 현재가격 가져오기");
         String result =  gameService.getPriceFromBithumb(symbol);
@@ -56,8 +56,7 @@ public class GameController {
         ETH_KRW
         XRP_KRW
      */
-    @GetMapping("/game/coin-chart/{symbol}")
-    @ResponseBody
+    @GetMapping("/coin-chart/{symbol}")
     public Message coinChart(@PathVariable String symbol){
         logger.info("coinChart(): "+ symbol + "코인의 차트 정보 가져오기");
         String result = "";
@@ -72,8 +71,7 @@ public class GameController {
     /**
         코인 궁예하기
      */
-    @PostMapping("/game/game-play")
-    @ResponseBody
+    @PostMapping("/game-play")
     public Message predictCoinController(@RequestBody BetHistoryDto betHistoryDto, @RequestHeader String jwt){
         logger.info("predictCoinController(): 코인 궁예시작하기 - 게임 스타트 ");
         if(jwt == null){
@@ -91,8 +89,7 @@ public class GameController {
     /**
         코인 훈수 예측 따라가기
      */
-    @PostMapping("/game/random")
-    @ResponseBody
+    @PostMapping("/random")
     public Message predictCoinRandomController(@RequestHeader String jwt){
         logger.info("predictCoinRandomController(): 코인 훈수 예측 따라가기 - 랜덤 생성");
         if(jwt == null){
@@ -110,8 +107,7 @@ public class GameController {
     /**
         내 전적 보기
      */
-    @GetMapping("/game/my-history")
-    @ResponseBody
+    @GetMapping("/my-history")
     public Message getMyBetHistoryController(@RequestHeader String jwt){
         logger.info("getMyBetHistoryController(): 내 전적 보기");
         if(jwt == null){
@@ -129,8 +125,7 @@ public class GameController {
     /**
         현재 코인 훈수 보기
      */
-    @GetMapping("/game/coin-prediction")
-    @ResponseBody
+    @GetMapping("/coin-prediction")
     public Message getRandomCoinPredictionController(){
         logger.info("getRandomCoinPredictionController(): 현재 코인 훈수 보기 ");
         BetHistoryDto betHistoryDto =  gameService.getRandomCoinPrediction();
@@ -140,8 +135,7 @@ public class GameController {
     /**
         유저 랭킹
      */
-    @GetMapping("/game/ranking")
-    @ResponseBody
+    @GetMapping("/ranking")
     public Message getUserRankingController(){
         logger.info("getUserRankingController(): 유저 랭킹 보기");
         List<UserRankingDto> resultList = gameService.getGamePointRanking();

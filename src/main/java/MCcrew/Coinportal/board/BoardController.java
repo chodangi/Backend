@@ -18,7 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
-@Controller
+@RestController
+@RequestMapping("/community")
 public class BoardController {
 
     private final BoardService boardService;
@@ -36,8 +37,7 @@ public class BoardController {
     /**
      * 게시글 키워드로 검색
      */
-    @GetMapping("/community/post-by-keyword/{keyword}")
-    @ResponseBody
+    @GetMapping("/posts-by-keyword/{keyword}")
     public Message searchByKeywordController(@PathVariable String keyword){
         logger.info("searchByKeywordController(): "+keyword + "키워드로 게시글을 검색합니다.");
         List<Post> postList = boardService.searchPostsByKeyword(keyword);
@@ -50,8 +50,7 @@ public class BoardController {
     /**
         게시글 사용자 닉네임으로 검색
      */
-    @GetMapping("/community/post-by-nickname/{nickname}")
-    @ResponseBody
+    @GetMapping("/posts-by-nickname/{nickname}")
     public Message searchByNicknameController(@PathVariable String nickname){
         logger.info("searchByNicknameController(): "+ nickname + "닉네임으로 게시글을 검색합니다.");
         List<Post> postList = boardService.searchPostsByNickname(nickname);
@@ -64,8 +63,7 @@ public class BoardController {
      /**
         실시간 인기글 리스트 검색
       */
-    @GetMapping("/community/up-count")
-    @ResponseBody
+    @GetMapping("/up-count")
     public Message searchByPopularityController(){
         logger.info("searchByPopularityController(): 실시간 인기글 리스트 검색");
         List<Post> postList = boardService.searchPostsByPopularity();
@@ -78,8 +76,7 @@ public class BoardController {
     /**
         게시글 페이징 구현
      */
-    @GetMapping("/community/{board-name}/{page}")
-    @ResponseBody
+    @GetMapping("/{board-name}/{page}")
     public Message listController(@PathVariable("board-name") String boardName, @PathVariable("page") int page){
         logger.info("listController(): searching post about" + boardName + " with page " + page);
         List<Post> postList = boardService.getPostlist(boardName, page);
@@ -96,8 +93,7 @@ public class BoardController {
     /**
         단일 게시글 조회
      */
-    @GetMapping("/community/post/{post-id}")
-    @ResponseBody
+    @GetMapping("/post/{post-id}")
     public Message getContentController(@PathVariable("post-id") Long postId, @RequestHeader String jwt){
         logger.info("getContentController(): "+ postId + "번 게시글 조회");
         Long userId = 0L;
@@ -123,8 +119,7 @@ public class BoardController {
     /**
         전체 게시글 조회
      */
-    @GetMapping("/community")
-    @ResponseBody
+    @GetMapping("/posts")
     public Message getAllContentsController(){
         logger.info("getAllContentsController(): 전체 게시글 조회");
         List<Post> postList = boardService.getAllPost();
@@ -137,8 +132,7 @@ public class BoardController {
     /**
         선택한 게시글 수정
      */
-    @PutMapping("/community/post")
-    @ResponseBody
+    @PutMapping("/post")
     public Message updateController(@RequestBody PostDto postDto, @RequestHeader String jwt){
         logger.info("updateController(): 게시글을 수정합니다.");
         Long userId = 0L;
@@ -158,8 +152,7 @@ public class BoardController {
     /**
        선택한 게시글 신고
     */
-    @PostMapping("/community/post/report")
-    @ResponseBody
+    @PostMapping("/post/report")
     public Message reportController(@RequestParam("postId") Long postId){
         logger.info("reportController(): " +postId + "번 게시글을 신고합니다.");
         try{
@@ -173,8 +166,7 @@ public class BoardController {
     /**
         삭제 상태로 변경
      */
-    @PostMapping("/community/post/status/{post-id}")
-    @ResponseBody
+    @PostMapping("/post/status/{post-id}")
     public Message deleteController(@PathVariable("post-id") Long postId, @RequestHeader String jwt){
         logger.info("deleteController(): " +postId + "번 게시글을 삭제 상태로 변경합니다.");
         Long userId = 0L;
@@ -189,8 +181,7 @@ public class BoardController {
     /**
         선택한 게시글 디비에서 삭제
      */
-    @DeleteMapping("/community/post/{post-id}")
-    @ResponseBody
+    @DeleteMapping("/post/{post-id}")
     public Message deleteContentController(@PathVariable("post-id") Long postId, @RequestHeader String jwt){
         logger.info("deleteContentController(): " +postId + "번 게시글을 삭제합니다.");
         Long userId = 0L;
@@ -208,8 +199,7 @@ public class BoardController {
     /**
         모든 공지글 가져오기
      */
-    @GetMapping("/community/notices")
-    @ResponseBody
+    @GetMapping("/notices")
     public Message getNoticeController(){
         logger.info("getNoticeController(): 모든 공지글을 가져옵니다.");
         List<Notice> notices = boardService.getNotice();

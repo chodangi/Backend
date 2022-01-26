@@ -21,7 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Slf4j
-@Controller
+@RestController
+@RequestMapping("/admin")
 public class AdminController {
 
     private final BoardService boardService;
@@ -61,8 +62,7 @@ public class AdminController {
     /**
         모든 공지글 가져오기
      */
-    @GetMapping("/admin/notices")
-    @ResponseBody
+    @GetMapping("/notices")
     public ResponseEntity<List<Notice>> getNoticeController(){
         logger.info("getNoticeController()");
         List<Notice> resultList = boardService.getNotice();
@@ -75,8 +75,7 @@ public class AdminController {
     /**
         공지글 작성
      */
-    @PostMapping("/admin/notice")
-    @ResponseBody
+    @PostMapping("/notice")
     public Notice createNoticeController(@RequestBody NoticeDto noticeDto){
         logger.info("createNoticeController()");
         return adminService.createNotice(noticeDto);
@@ -85,8 +84,7 @@ public class AdminController {
     /**
         공지글 수정
      */
-    @PutMapping("/admin/notice/{noticeId}")
-    @ResponseBody
+    @PutMapping("/notice/{noticeId}")
     public Notice updateNoticeController(@RequestBody NoticeDto noticeDto, @PathVariable Long noticeId){
         logger.info("updateNoticeController()");
         return adminService.updateNotice(noticeDto, noticeId);
@@ -95,8 +93,7 @@ public class AdminController {
     /**
         공지글 삭제
      */
-    @DeleteMapping("/admin/notice/{noticeId}")
-    @ResponseBody
+    @DeleteMapping("/notice/{noticeId}")
     public boolean deleteNoticeController(@PathVariable Long noticeId){
         logger.info("deleteNoticeController()");
         return adminService.deleteNotice(noticeId);
@@ -105,8 +102,7 @@ public class AdminController {
     /**
        메모리 사용량 체크
      */
-    @GetMapping("/admin/memory")
-    @ResponseBody
+    @GetMapping("/memory")
     public String checkMemoryController(){
         return adminService.memoryUsage();
     }

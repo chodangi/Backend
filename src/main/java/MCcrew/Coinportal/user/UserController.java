@@ -12,14 +12,14 @@ import MCcrew.Coinportal.util.StatusEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.NoResultException;
 import java.util.List;
 
 @Slf4j
-@Controller
+@RestController
+@RequestMapping("/profile")
 public class UserController {
 
     private final UserService userService;
@@ -39,8 +39,7 @@ public class UserController {
     /**
         모든 유저 반환
     */
-    @GetMapping("/profile/users")
-    @ResponseBody
+    @GetMapping("/users")
     public Message getAllUserController(){
         logger.info("getAllUserController(): 모든 유저 반환");
         List<User> result = null;
@@ -55,8 +54,7 @@ public class UserController {
     /**
         내가 작성한 게시글 반환
      */
-    @GetMapping("/profile/my-post")
-    @ResponseBody
+    @GetMapping("/my-post")
     public Message getMyPostController(@RequestHeader String jwt) {
         logger.info("getMyPostController(): 내가 작성한 게시글 반환");
         if(jwt == null){
@@ -74,8 +72,7 @@ public class UserController {
     /**
         내가 작성한 댓글 반환
      */
-    @GetMapping("/profile/my-comment")
-    @ResponseBody
+    @GetMapping("/my-comment")
     public Message getMyCommentController(@RequestHeader String jwt){
         logger.info("getMyCommentController(): 내가 작성한 댓글 반환");
         if(jwt == null){
@@ -93,8 +90,7 @@ public class UserController {
     /**
         내 설정값 반환
      */
-    @GetMapping("/profile/my-settings")
-    @ResponseBody
+    @GetMapping("/my-settings")
     public Message getMySettingController(@RequestHeader String jwt ) {
         logger.info("getMySettingController(): 내 설정값 반환");
         if(jwt == null){
@@ -112,8 +108,7 @@ public class UserController {
     /**
         설정 변경 - 닉네임 변경도 해당 api 에서 수행
      */
-    @PostMapping("/profile/my-settings")
-    @ResponseBody
+    @PostMapping("/my-settings")
     public Message updateMySettingController(@RequestBody UserDto userDto, @RequestHeader String jwt ){
         logger.info("updateMySettingController(): 설정 변경");
         if(jwt == null){
@@ -131,8 +126,7 @@ public class UserController {
     /**
         회원 탈퇴
      */
-    @DeleteMapping("/profile/user")
-    @ResponseBody
+    @DeleteMapping("/user")
     public Message deleteUserController(@RequestHeader String jwt) {
         logger.info("deleteUserController(): 회원 탈퇴");
         if(jwt == null){

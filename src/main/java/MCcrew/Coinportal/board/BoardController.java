@@ -8,11 +8,14 @@ import MCcrew.Coinportal.login.JwtService;
 import MCcrew.Coinportal.preference.PreferenceService;
 import MCcrew.Coinportal.util.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.persistence.Basic;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,7 +95,7 @@ public class BoardController {
 
     /**
         단일 게시글 조회
-     */
+
     @GetMapping("/post/{post-id}")
     public ResponseEntity<? extends BasicResponse> getContentController(@PathVariable("post-id") Long postId, @RequestHeader String jwt){
         logger.info("getContentController(): "+ postId + "번 게시글 조회");
@@ -114,6 +117,17 @@ public class BoardController {
                 return ResponseEntity.ok().body(new CommonResponse(hashMap));
             }
         }
+    } */
+
+    /**
+     *  단일 게시글 조회
+     */
+    @GetMapping("/post/{post-id}")
+    public ResponseEntity<? extends BasicResponse> getContentController(@PathVariable("post-id") Long postId){
+        logger.info("getContentController(): "+ postId + "번 게시글 조회");
+        boardService.viewPost(postId); // 조회수 1 증가
+        Post resultPost = boardService.getSinglePost(postId);
+        return ResponseEntity.ok().body(new CommonResponse(resultPost));
     }
 
     /**
@@ -126,7 +140,9 @@ public class BoardController {
         if(postList.size() == 0){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse("게시글이 존재하지 않습니다. "));
         }
-        return ResponseEntity.ok().body(new CommonResponse(postList));
+        logger.info("getAllContentsController(): 전체 게시물 반환");
+        CommonResponse commonResponse = new CommonResponse(postList);
+        return ResponseEntity.ok().body(commonResponse);
     }
 
     /**
@@ -204,5 +220,24 @@ public class BoardController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok().body(new CommonResponse(noticeList));
+    }
+
+    /**
+        비회원 글 삭제
+     */
+    @GetMapping("/post/non-user/{post-id}/{pwd}")
+    public ResponseEntity<? extends BasicResponse> deleteContentNonUserController(@PathVariable("post-id") Long postId, @PathVariable("pwd") String pwd){
+        logger.info("deleteContentNonUserController(): 비회원 게시글을 삭제합니다. ");
+        boolean deleted = boardService.deleteNonUserPost(postId, pwd);
+        return ResponseEntity.ok().body(new CommonResponse(deleted)); // 삭제 여부 반환
+    }
+    /**
+        비회원 글 수정
+     */
+    @PutMapping("/post/non-user/{post-id}/{pwd}")
+    public ResponseEntity<? extends BasicResponse> updateContentNonUerController(@PathVariable("post-id") Long postId, @PathVariable("pwd") String pwd, @RequestBody PostDto postDto){
+        logger.info("deleteContentNonUserController(): 비회원 게시글을 수정합니다. ");
+        Post post = boardService.updateNonUserPost(postId, pwd, postDto);
+        return ResponseEntity.ok().body(new CommonResponse(post));
     }
 }

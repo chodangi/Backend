@@ -223,6 +223,25 @@ public class BoardService {
     }
 
     /**
+     *  비회원 게시글 완전 삭제
+     */
+    public boolean deleteNonUserPost(Long postId, String pwd){
+        Post findPost = boardRepository.findById(postId);
+        if (pwd.equals(findPost.getGuestPwd())){
+            int deletedPost = boardRepository.delete(findPost.getId());
+            if(deletedPost > 0){ // delete 된 컬럼이 존재한다면
+                logger.info("게시물을 삭제했습니다.");
+                return true;
+            }else{
+                logger.info("게시물 삭제에 실패했습니다.");
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+
+    /**
         삭제 상태로 변경 - deprecated
      */
     public boolean status2Delete(Long postId, Long userId) {
@@ -330,6 +349,33 @@ public class BoardService {
         return boardRepository.save(savedPost);
     }
 
+    /*
+        비회원 게시물 등록
+     */
+    public Post postByNonUser(PostDto postDto, Long userIdx) throws IOException {
+        List<Attachment> attachments = attachmentService.saveAttachments(postDto.getAttachedFiles(), postDto.getPostId());
+        Date date = new Date();
+
+        Post post = new Post();
+        post.setUserId(userIdx);
+        post.setComments(new ArrayList<>());
+        post.setUserNickname(postDto.getGuestName());
+        post.setBoardName(postDto.getBoardName());
+        post.setGuestName(postDto.getGuestName());
+        post.setGuestPwd(postDto.getGuestPwd());
+        post.setContent(postDto.getContent());
+        post.setUpCnt(0);
+        post.setDownCnt(0);
+        post.setViewCnt(0);
+        post.setReportCnt(0);
+        post.setCreatedAt(date);
+        post.setUpdatedAt(date);
+        post.setStatus('A');
+        post.setAttachedFiles(attachments);
+
+        return boardRepository.save(post);
+    }
+
     /**
         내가 작성한 게시글 반환
      */
@@ -346,6 +392,23 @@ public class BoardService {
         }catch(NoResultException e){
             e.printStackTrace();
             return new ArrayList<>();
+        }
+    }
+
+    /**
+     *     비회원 게시글 수정하기
+     * */
+    public Post updateNonUserPost(Long postId, String pwd, PostDto postDto) {
+        Post findPost = boardRepository.findById(postId);
+        if (findPost.getGuestPwd().equals(pwd)){
+            findPost.setContent(postDto.getContent());
+            findPost.setBoardName(postDto.getBoardName());
+            findPost.setGuestName(postDto.getGuestName());
+            findPost.setGuestPwd(postDto.getGuestPwd());
+
+            return boardRepository.save(findPost);
+        }else{
+            return new Post();
         }
     }
 }

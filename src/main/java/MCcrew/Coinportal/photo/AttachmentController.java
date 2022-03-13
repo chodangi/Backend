@@ -59,6 +59,18 @@ public class AttachmentController {
     }
 
     /**
+     비회원 게시물 등록
+     */
+    @PostMapping("/post/non-user")
+    @ResponseBody
+    public Post doPostByNonUser(@ModelAttribute PostDto postDto) throws IOException {
+        Long userIdx = 0L;
+        System.out.println("userIdx : " + postDto.getGuestName());
+        Post post = boardService.postByNonUser(postDto, userIdx);
+        return post;
+    }
+
+    /**
         이미지 로드
      */
     @GetMapping("/attach/{filename}")

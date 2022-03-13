@@ -1,11 +1,12 @@
 package MCcrew.Coinportal.util;
 
+import com.fasterxml.jackson.databind.introspect.TypeResolutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ErrorResponse extends BasicResponse{
+public class ErrorResponse extends BasicResponse {
     private String errorMessage;
     private String errorCode;
 

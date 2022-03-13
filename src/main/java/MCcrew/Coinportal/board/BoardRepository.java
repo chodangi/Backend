@@ -1,5 +1,6 @@
 package MCcrew.Coinportal.board;
 
+import MCcrew.Coinportal.domain.Attachment;
 import MCcrew.Coinportal.domain.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -39,7 +40,11 @@ public class BoardRepository{
         단일 게시물 조회
      */
     public Post findById(Long id) {
-        return em.find(Post.class, id);
+        Post result = em.find(Post.class, id);
+        if (result.getAttachedFiles().size() == 0){
+            result.setAttachedFiles(null);
+        }
+        return result;
     }
 
     /**
@@ -47,7 +52,12 @@ public class BoardRepository{
      */
     public List<Post> findAll() throws NoResultException {
         String sql = "select p from Post p";
-        return em.createQuery(sql, Post.class).getResultList(); // 전체 글 목록 가져오기
+        List<Post> result = em.createQuery(sql, Post.class).getResultList(); // 전체 글 목록 가져오기
+        for(Post post : result){
+            if (post.getAttachedFiles().size() ==0)
+                post.setAttachedFiles(null);
+        }
+        return result;
     }
 
     /**

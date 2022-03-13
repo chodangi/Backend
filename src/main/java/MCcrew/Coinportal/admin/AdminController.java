@@ -13,7 +13,6 @@ import MCcrew.Coinportal.util.BasicResponse;
 import MCcrew.Coinportal.util.CommonResponse;
 import MCcrew.Coinportal.util.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.connector.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

@@ -117,6 +117,8 @@ public class CoinTemperService {
         coinComment.setNickname(coinCommentDto.getNickname());
         coinComment.setPassword(coinCommentDto.getPassword());
         coinComment.setContent(coinCommentDto.getContent());
+        coinComment.setCommentGroup(coinCommentDto.getCommentGroup());
+        coinComment.setLevel(coinCommentDto.getLevel());
         coinComment.setCreatedAt(date);
         coinComment.setUpCnt(0);
         coinComment.setDownCnt(0);

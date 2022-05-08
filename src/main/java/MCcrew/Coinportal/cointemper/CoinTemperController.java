@@ -88,6 +88,10 @@ public class CoinTemperController {
         }
     }
 
+
+    /**
+     * 05.08 수정 - 대댓글 기능 추가
+     */
     /**
         코인 체감 온도 댓글달기
         symbol = BTC or ETH or XRP

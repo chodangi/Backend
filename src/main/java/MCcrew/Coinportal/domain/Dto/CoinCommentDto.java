@@ -13,4 +13,7 @@ public class CoinCommentDto {
     private String nickname;
     private String password;
     private String content;
+    // 05.08 추가
+    private int commentGroup;
+    private int level;
 }

@@ -23,22 +23,34 @@ public class CoinComment {
     private String nickname;
     private String password;
     private String content;
+
+    // 05.08 추가
+    private int commentGroup;
+    private int level;
+
     private Date createdAt;
     private int upCnt;
     private int downCnt;
     private int reportCnt;
+    // A:active, D:deleted, R:reported
+    private char status;
 
     @Builder
-    public CoinComment(Long id, Long userId, String coinSymbol, String nickname, String password, String content, Date createdAt, int upCnt, int downCnt, int reportCnt) {
+    public CoinComment(Long id, Long userId, String coinSymbol, String nickname, String password, String content,
+                       int commentGroup, int level,
+                       Date createdAt, int upCnt, int downCnt, int reportCnt, char status) {
         this.id = id;
         this.userId = userId;
         this.coinSymbol = coinSymbol;
         this.nickname = nickname;
         this.password = password;
         this.content = content;
+        this.commentGroup = commentGroup;
+        this.level = level;
         this.createdAt = createdAt;
         this.upCnt = upCnt;
         this.downCnt = downCnt;
         this.reportCnt = reportCnt;
+        this.status = status;
     }
 }

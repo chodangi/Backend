@@ -2,21 +2,18 @@ package MCcrew.Coinportal.cointemper;
 
 import MCcrew.Coinportal.domain.Dto.CoinCommentDto;
 import MCcrew.Coinportal.domain.CoinComment;
+import MCcrew.Coinportal.domain.Dto.PostCoinCommentDto;
 import MCcrew.Coinportal.login.JwtService;
 import MCcrew.Coinportal.util.*;
 import io.swagger.annotations.ApiOperation;
-import jdk.jshell.Snippet;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -100,17 +97,36 @@ public class CoinTemperController {
             notes = "PathVariable로는 BTC, ETH, XRP 세가지 값 중 하나를 사용한다. 각각 비트코인, 이더리움, 리플을 뜻함. " +
                     "예를 들어 비트코인 사용자가 체감온도에 댓글을 달면 /temper/comment/BTC 이렇게 사용하면 된다.")
     @PostMapping("/comment/{symbol}")
-    public ResponseEntity<? extends BasicResponse> createCommentController(@PathVariable String symbol, @RequestBody CoinCommentDto coinCommentDto, @RequestHeader String jwt){
+    public ResponseEntity<? extends BasicResponse> commentController(@PathVariable String symbol, @RequestBody PostCoinCommentDto commentDto, @RequestHeader String jwt){
         logger.info("createCommentController(): " + symbol + "에 댓글을 작성합니다.");
         Long userIdx = jwtService.getUserIdByJwt(jwt);
+
         if(userIdx == 0L){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("허가되지 않은 사용자입니다."));
         }else{
             CoinComment result;
-            if (coinCommentDto.getCommentGroup() == -1) {
-                result = coinTemperService.createComment(coinCommentDto, symbol, userIdx);
+            if (commentDto.getCommentGroup() == -1) {
+                result = coinTemperService.createComment(commentDto, symbol, userIdx);
             } else {
-                result = coinTemperService.createReplyComment(coinCommentDto, symbol, userIdx);
+                result = coinTemperService.createReplyComment(commentDto, symbol, userIdx);
+            }
+            return ResponseEntity.ok().body(new CommonResponse(result));
+        }
+    }
+
+    @PostMapping("/comment/{symbol}")
+    public ResponseEntity<? extends BasicResponse> testController(@PathVariable String symbol, @RequestBody PostCoinCommentDto commentDto, @RequestHeader String jwt){
+        logger.info("createCommentController(): " + symbol + "에 댓글을 작성합니다.");
+        Long userIdx = jwtService.getUserIdByJwt(jwt);
+
+        if(userIdx == 0L){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("허가되지 않은 사용자입니다."));
+        }else{
+            CoinComment result;
+            if (commentDto.getCommentGroup() == -1) {
+                result = coinTemperService.createComment(commentDto, symbol, userIdx);
+            } else {
+                result = coinTemperService.createReplyComment(commentDto, symbol, userIdx);
             }
             return ResponseEntity.ok().body(new CommonResponse(result));
         }

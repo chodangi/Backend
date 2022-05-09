@@ -2,6 +2,7 @@ package MCcrew.Coinportal.cointemper;
 
 import MCcrew.Coinportal.domain.Dto.CoinCommentDto;
 import MCcrew.Coinportal.domain.CoinComment;
+import MCcrew.Coinportal.domain.Dto.PostCoinCommentDto;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -109,40 +110,38 @@ public class CoinTemperService {
     /**
         댓글달기
     */
-    public CoinComment createComment(CoinCommentDto coinCommentDto, String symbol, Long userIdx) {
+    public CoinComment createComment(PostCoinCommentDto dto, String symbol, Long userIdx) {
         Date date = new Date();
         CoinComment coinComment = new CoinComment();
         coinComment.setUserId(userIdx);
-        coinComment.setCoinSymbol(coinCommentDto.getCoinSymbol());
-        coinComment.setNickname(coinCommentDto.getNickname());
-        coinComment.setPassword(coinCommentDto.getPassword());
-        coinComment.setContent(coinCommentDto.getContent());
-        coinComment.setCommentGroup(coinTemperRepository.getLastGroup()+1);
-        coinComment.setLevel(coinCommentDto.getLevel());
+        coinComment.setCoinSymbol(symbol);
+        coinComment.setNickname(dto.getNickname());
+        coinComment.setPassword(dto.getPassword());
+        coinComment.setContent(dto.getContent());
+        coinComment.setCommentGroup(coinTemperRepository.getLastGroup().get(0)+1);
+        coinComment.setLevel(dto.getLevel());
         coinComment.setCreatedAt(date);
-        coinComment.setUpCnt(0);
-        coinComment.setDownCnt(0);
-        coinComment.setReportCnt(0);
+        coinComment.setStatus('A');
+
         return coinTemperRepository.save(coinComment);
     }
 
     /**
      대댓글달기
      */
-    public CoinComment createReplyComment(CoinCommentDto coinCommentDto, String symbol, Long userIdx) {
+    public CoinComment createReplyComment(PostCoinCommentDto dto, String symbol, Long userIdx) {
         Date date = new Date();
         CoinComment coinComment = new CoinComment();
         coinComment.setUserId(userIdx);
-        coinComment.setCoinSymbol(coinCommentDto.getCoinSymbol());
-        coinComment.setNickname(coinCommentDto.getNickname());
-        coinComment.setPassword(coinCommentDto.getPassword());
-        coinComment.setContent(coinCommentDto.getContent());
-        coinComment.setCommentGroup(coinCommentDto.getCommentGroup());
-        coinComment.setLevel(coinCommentDto.getLevel());
+        coinComment.setCoinSymbol(symbol);
+        coinComment.setNickname(dto.getNickname());
+        coinComment.setPassword(dto.getPassword());
+        coinComment.setContent(dto.getContent());
+        coinComment.setCommentGroup(dto.getCommentGroup());
+        coinComment.setLevel(dto.getLevel());
         coinComment.setCreatedAt(date);
-        coinComment.setUpCnt(0);
-        coinComment.setDownCnt(0);
-        coinComment.setReportCnt(0);
+        coinComment.setStatus('A');
+
         return coinTemperRepository.save(coinComment);
     }
 

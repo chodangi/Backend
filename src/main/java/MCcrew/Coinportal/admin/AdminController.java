@@ -1,5 +1,6 @@
 package MCcrew.Coinportal.admin;
 
+import MCcrew.Coinportal.board.BoardRepository;
 import MCcrew.Coinportal.domain.Dto.NoticeDto;
 import MCcrew.Coinportal.board.BoardService;
 import MCcrew.Coinportal.cointemper.CoinTemperService;
@@ -28,6 +29,7 @@ import java.util.List;
 public class AdminController {
 
     private final BoardService boardService;
+    private final BoardRepository boardRepository;
     private final CoinTemperService coinTemperService;
     private final CommentService commentService;
     private final GameService gameService;
@@ -41,8 +43,9 @@ public class AdminController {
     @Value("${admin.pwd}")
     private String pwd; // 관리자 password
 
-    public AdminController(BoardService boardService, CoinTemperService coinTemperService, CommentService commentService, GameService gameService, LoginService loginService, AttachmentService attachmentService, UserService userService, AdminService adminService) {
+    public AdminController(BoardService boardService, BoardRepository boardRepository, CoinTemperService coinTemperService, CommentService commentService, GameService gameService, LoginService loginService, AttachmentService attachmentService, UserService userService, AdminService adminService) {
         this.boardService = boardService;
+        this.boardRepository = boardRepository;
         this.coinTemperService = coinTemperService;
         this.commentService = commentService;
         this.gameService = gameService;
@@ -110,5 +113,14 @@ public class AdminController {
     public ResponseEntity<? extends BasicResponse> checkMemoryController(){
         String usage = adminService.memoryUsage();
         return ResponseEntity.ok().body(new CommonResponse(usage));
+    }
+
+    /**
+     *  게스트 pwd가 null 인 회원 삭제
+     */
+    @DeleteMapping("/pwd-null")
+    public ResponseEntity<? extends BasicResponse> deleteNullGuestPwdUserController(){
+        int deleted = boardRepository.deleteGuestPwdNullUser();
+        return ResponseEntity.ok().body(new CommonResponse<>(deleted));
     }
 }

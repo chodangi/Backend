@@ -7,6 +7,7 @@ import MCcrew.Coinportal.domain.Comment;
 import MCcrew.Coinportal.domain.Post;
 import MCcrew.Coinportal.domain.User;
 import MCcrew.Coinportal.login.JwtService;
+import MCcrew.Coinportal.util.BasicResponse;
 import MCcrew.Coinportal.util.CommonResponse;
 import MCcrew.Coinportal.util.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;

@@ -101,4 +101,18 @@ public class BoardRepository{
         String sql = "select p from Post p where p.userId = :userId";
         return em.createQuery(sql, Post.class).setParameter("userId", userId).getResultList();
     }
+
+    /**
+     * guestPwd가 널인 유저 삭제
+     */
+    public int deleteGuestPwdNullUser(){
+        int deleted = 0;
+        String sql = "delete from Post p where p.guestPwd is null";
+        try {
+            deleted = em.createQuery(sql).executeUpdate();
+        }catch(Exception e){
+            return 0;
+        }
+        return deleted; // return number of deleted column
+    }
 }

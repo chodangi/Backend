@@ -22,7 +22,7 @@ public class SwaggerConfig {
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("MCcrew.Coinportal"))
                 //.paths(PathSelectors.ant("/temper/**"))
-                .paths(PathSelectors.regex("/(temper|oauth)/.*"))
+                //.paths(PathSelectors.regex("/(temper|oauth)/.*"))
                 .build();
     }
 

@@ -43,7 +43,7 @@ public class CommentService {
         newComment.setNickname(commentDto.getNickname());
         newComment.setPassword(commentDto.getPassword());
         newComment.setContent(commentDto.getContent());
-        newComment.setCommentGroup(commentDto.getCommentGroup());
+        newComment.setCommentGroup(commentRepository.getLastGroup()+1);
         newComment.setLevel(commentDto.getLevel());
         newComment.setReportCnt(0);
         newComment.setCreatedAt(date);
@@ -66,7 +66,7 @@ public class CommentService {
         newComment.setNickname(commentDto.getNickname());
         newComment.setPassword(commentDto.getPassword());
         newComment.setContent(commentDto.getContent());
-        newComment.setCommentGroup(commentRepository.getLastGroup()+1);
+        newComment.setCommentGroup(commentDto.getCommentGroup());
         newComment.setLevel(commentDto.getLevel());
         newComment.setReportCnt(0);
         newComment.setCreatedAt(date);

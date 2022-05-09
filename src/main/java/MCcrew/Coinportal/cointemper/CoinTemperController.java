@@ -106,7 +106,12 @@ public class CoinTemperController {
         if(userIdx == 0L){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("허가되지 않은 사용자입니다."));
         }else{
-            CoinComment result = coinTemperService.createComment(coinCommentDto, symbol, userIdx);
+            CoinComment result;
+            if (coinCommentDto.getCommentGroup() == -1) {
+                result = coinTemperService.createComment(coinCommentDto, symbol, userIdx);
+            } else {
+                result = coinTemperService.createReplyComment(coinCommentDto, symbol, userIdx);
+            }
             return ResponseEntity.ok().body(new CommonResponse(result));
         }
     }

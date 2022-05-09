@@ -65,6 +65,7 @@ public class CommentRepository {
     public int getLastGroup() {
         String sql = "select max(c.commentGroup) from Comment c";
         Query query = em.createQuery(sql);
-        return ((Number) query.getSingleResult()).intValue();
+        return (int) query.setMaxResults(1).getResultList().get(0);
+        //return ((Number) query.getSingleResult()).intValue();
     }
 }

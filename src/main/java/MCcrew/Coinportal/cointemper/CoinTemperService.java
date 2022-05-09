@@ -117,6 +117,26 @@ public class CoinTemperService {
         coinComment.setNickname(coinCommentDto.getNickname());
         coinComment.setPassword(coinCommentDto.getPassword());
         coinComment.setContent(coinCommentDto.getContent());
+        coinComment.setCommentGroup(coinTemperRepository.getLastGroup()+1);
+        coinComment.setLevel(coinCommentDto.getLevel());
+        coinComment.setCreatedAt(date);
+        coinComment.setUpCnt(0);
+        coinComment.setDownCnt(0);
+        coinComment.setReportCnt(0);
+        return coinTemperRepository.save(coinComment);
+    }
+
+    /**
+     대댓글달기
+     */
+    public CoinComment createReplyComment(CoinCommentDto coinCommentDto, String symbol, Long userIdx) {
+        Date date = new Date();
+        CoinComment coinComment = new CoinComment();
+        coinComment.setUserId(userIdx);
+        coinComment.setCoinSymbol(coinCommentDto.getCoinSymbol());
+        coinComment.setNickname(coinCommentDto.getNickname());
+        coinComment.setPassword(coinCommentDto.getPassword());
+        coinComment.setContent(coinCommentDto.getContent());
         coinComment.setCommentGroup(coinCommentDto.getCommentGroup());
         coinComment.setLevel(coinCommentDto.getLevel());
         coinComment.setCreatedAt(date);

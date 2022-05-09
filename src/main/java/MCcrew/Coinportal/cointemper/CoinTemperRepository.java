@@ -55,4 +55,13 @@ public class CoinTemperRepository {
         Query query = em.createQuery(sql).setParameter("commentId", commentId);
         return query.executeUpdate();
     }
+
+    /**
+     댓글 마지막 그룹 찾기
+     */
+    public int getLastGroup() {
+        String sql = "select max(c.commentGroup) from Comment c";
+        Query query = em.createQuery(sql);
+        return (int) query.setMaxResults(1).getResultList().get(0);
+    }
 }

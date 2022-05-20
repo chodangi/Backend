@@ -35,7 +35,7 @@ public class CoinTemperRepository {
         symbol로 CoinComment 조회
      */
     public List<CoinComment> findByCoinSymbol(String symbol) {
-        String sql = "select c from CoinComment c where c.coinSymbol = :symbol";
+        String sql = "select c from CoinComment c where c.coinSymbol = :symbol and c.commentGroup > 0";
         return em.createQuery(sql, CoinComment.class).setParameter("symbol",symbol).getResultList();
     }
 

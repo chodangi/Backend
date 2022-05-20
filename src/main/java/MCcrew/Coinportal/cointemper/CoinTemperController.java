@@ -10,24 +10,29 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @RestController
 @RequestMapping("/temper")
 public class CoinTemperController {
 
+    private final CoinTemperRepoImpl coinTemperRepo;
     private final CoinTemperService coinTemperService;
     private final JwtService jwtService;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public CoinTemperController(CoinTemperService coinTemperService, JwtService jwtService) {
+    public CoinTemperController(CoinTemperRepoImpl coinTemperRepo, CoinTemperService coinTemperService, JwtService jwtService) {
+        this.coinTemperRepo = coinTemperRepo;
         this.coinTemperService = coinTemperService;
         this.jwtService = jwtService;
     }
@@ -114,7 +119,7 @@ public class CoinTemperController {
         }
     }
 
-    @PostMapping("/comment/{symbol}")
+    /*@PostMapping("/comment/{symbol}")
     public ResponseEntity<? extends BasicResponse> testController(@PathVariable String symbol, @RequestBody PostCoinCommentDto commentDto, @RequestHeader String jwt){
         logger.info("createCommentController(): " + symbol + "에 댓글을 작성합니다.");
         Long userIdx = jwtService.getUserIdByJwt(jwt);
@@ -130,7 +135,7 @@ public class CoinTemperController {
             }
             return ResponseEntity.ok().body(new CommonResponse(result));
         }
-    }
+    }*/
 
     /**
         코인 체감 온도 댓글 반환
@@ -144,9 +149,62 @@ public class CoinTemperController {
         return ResponseEntity.ok().body(new CommonResponse(coinCommentList));
     }
 
+
     /**
-        수정
+     05.20 추가
+     코인 체감 온도 댓글 페이지네이션 반환
+     symbol = BTC or ETH or XRP
      */
+    @ApiOperation(value = "코인 종류별 체감온도 댓글 페이지네이션 get", notes = "level 0인 것만 부르고 싶으실 때 사용하세요.")
+    @GetMapping("/maincomments/{symbol}")
+    public ResponseEntity<Map<String, Object>> getMainCommentsController(@PathVariable String symbol,
+                                                                             @RequestParam(defaultValue = "0") int page,
+                                                                             @RequestParam(defaultValue = "10") int size){
+        logger.info("getCommentsPageController(): " + symbol + "의 댓글을 반환합니다. ");
+
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+
+            Page<CoinComment> pageComments = coinTemperRepo.findByLevelAndCoinSymbol(0, symbol, pageable);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("comments", pageComments.getContent());
+            response.put("currentPage", pageComments.getNumber());
+            response.put("totalItems", pageComments.getTotalElements());
+            response.put("totalPages", pageComments.getTotalPages());
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     05.20 추가
+     코인 체감 온도 대댓글 반환
+     symbol = BTC or ETH or XRP
+     */
+    @ApiOperation(value = "코인 종류별 체감온도 댓글 페이지네이션 get", notes = "level 1인 것만 부르고 싶으실 때 사용하세요.")
+    @GetMapping("/replycomments/{symbol}")
+    public ResponseEntity<Map<String, Object>> getReplyCommentsController(@PathVariable String symbol, @RequestParam("group") int group) {
+        logger.info("getCommentsPageController(): " + symbol + "의 댓글을 반환합니다. ");
+        try {
+            List<CoinComment> replies = coinTemperRepo.findByCommentGroupAndCoinSymbol(group, symbol);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("replies", replies);
+            response.put("totalItems", replies.size());
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+        /**
+            수정
+         */
     @ApiOperation(value = "체감온도 댓글 수정")
     @PostMapping("/comment")
     public ResponseEntity<? extends BasicResponse> updateCommentController(@RequestBody CoinCommentDto coinCommentDto, @RequestHeader String jwt){

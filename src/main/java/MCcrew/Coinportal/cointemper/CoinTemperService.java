@@ -3,6 +3,9 @@ package MCcrew.Coinportal.cointemper;
 import MCcrew.Coinportal.domain.Dto.CoinCommentDto;
 import MCcrew.Coinportal.domain.CoinComment;
 import MCcrew.Coinportal.domain.Dto.PostCoinCommentDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -111,7 +114,6 @@ public class CoinTemperService {
         댓글달기
     */
     public CoinComment createComment(PostCoinCommentDto dto, String symbol, Long userIdx) {
-        Date date = new Date();
         CoinComment coinComment = new CoinComment();
         coinComment.setUserId(userIdx);
         coinComment.setCoinSymbol(symbol);
@@ -120,7 +122,6 @@ public class CoinTemperService {
         coinComment.setContent(dto.getContent());
         coinComment.setCommentGroup(coinTemperRepository.getLastGroup().get(0)+1);
         coinComment.setLevel(dto.getLevel());
-        coinComment.setCreatedAt(date);
         coinComment.setStatus('A');
 
         return coinTemperRepository.save(coinComment);
@@ -130,7 +131,6 @@ public class CoinTemperService {
      대댓글달기
      */
     public CoinComment createReplyComment(PostCoinCommentDto dto, String symbol, Long userIdx) {
-        Date date = new Date();
         CoinComment coinComment = new CoinComment();
         coinComment.setUserId(userIdx);
         coinComment.setCoinSymbol(symbol);
@@ -139,7 +139,6 @@ public class CoinTemperService {
         coinComment.setContent(dto.getContent());
         coinComment.setCommentGroup(dto.getCommentGroup());
         coinComment.setLevel(dto.getLevel());
-        coinComment.setCreatedAt(date);
         coinComment.setStatus('A');
 
         return coinTemperRepository.save(coinComment);

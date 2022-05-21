@@ -5,10 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -29,17 +27,22 @@ public class CoinComment {
     private int commentGroup;
     private int level;
 
-    private Date createdAt;
+    private LocalDateTime createdAt;
     private int upCnt;
     private int downCnt;
     private int reportCnt;
     // A:active, D:deleted, R:reported
     private char status;
 
+    @PrePersist
+    public void createdAt() {
+        this.createdAt = LocalDateTime.now();
+    }
+
     @Builder
     public CoinComment(Long id, Long userId, String coinSymbol, String nickname, String password, String content,
                        int commentGroup, int level,
-                       Date createdAt, int upCnt, int downCnt, int reportCnt, char status) {
+                       LocalDateTime createdAt, int upCnt, int downCnt, int reportCnt, char status) {
         this.id = id;
         this.userId = userId;
         this.coinSymbol = coinSymbol;

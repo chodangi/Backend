@@ -45,12 +45,15 @@ public class CoinTemperService {
         double result = 0;
         switch(symbol){
             case "BTC":
+                coinTemperBTC = coinDec(coinTemperBTC);
                 result = coinDec(coinTemperBTC).doubleValue();
                 break;
             case "ETH":
+                coinTemperETH = coinDec(coinTemperETH);
                 result = coinDec(coinTemperETH).doubleValue();
                 break;
             case "XRP":
+                coinTemperXRP = coinDec(coinTemperXRP);
                 result = coinDec(coinTemperXRP).doubleValue();
                 break;
             default:
@@ -67,12 +70,15 @@ public class CoinTemperService {
         double result = 0;
         switch(symbol){
             case "BTC":
+                coinTemperBTC = coinInc(coinTemperBTC);
                 result = coinInc(coinTemperBTC).doubleValue();
                 break;
             case "ETH":
+                coinTemperETH = coinInc(coinTemperETH);
                 result =  coinInc(coinTemperETH).doubleValue();
                 break;
             case "XRP":
+                coinTemperXRP = coinInc(coinTemperXRP);
                 result =  coinInc(coinTemperXRP).doubleValue();
                 break;
             default:

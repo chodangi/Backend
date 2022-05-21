@@ -114,24 +114,6 @@ public class CoinTemperController {
         }
     }
 
-    @PostMapping("/comment/{symbol}")
-    public ResponseEntity<? extends BasicResponse> testController(@PathVariable String symbol, @RequestBody PostCoinCommentDto commentDto, @RequestHeader String jwt){
-        logger.info("createCommentController(): " + symbol + "에 댓글을 작성합니다.");
-        Long userIdx = jwtService.getUserIdByJwt(jwt);
-
-        if(userIdx == 0L){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("허가되지 않은 사용자입니다."));
-        }else{
-            CoinComment result;
-            if (commentDto.getCommentGroup() == -1) {
-                result = coinTemperService.createComment(commentDto, symbol, userIdx);
-            } else {
-                result = coinTemperService.createReplyComment(commentDto, symbol, userIdx);
-            }
-            return ResponseEntity.ok().body(new CommonResponse(result));
-        }
-    }
-
     /**
         코인 체감 온도 댓글 반환
         symbol = BTC or ETH or XRP

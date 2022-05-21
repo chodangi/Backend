@@ -190,7 +190,8 @@ public class BoardController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("허가되지 않은 사용자입니다."));
         }else{
             boolean result = boardService.status2Delete(postId, userId);
-            return ResponseEntity.ok().body(new CommonResponse(result));
+            if (result) return ResponseEntity.ok().body(new ErrorResponse("권한이 없는 사용자입니다."));
+            else return ResponseEntity.ok().body(new CommonResponse(result));
         }
     }
 
